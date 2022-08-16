@@ -2,19 +2,22 @@
 import { Fragment } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { MenuIcon, XIcon } from "@heroicons/react/outline";
-
-const navigation = [
-  { name: "Home", href: "/", current: true },
-  { name: "Dashboard", href: "/dashboard", current: false },
-  { name: "My Page", href: "/my-page", current: false },
-  { name: "Governance", href: "/governance", current: false },
-];
+import Link from "next/link";
+import { useRouter } from "next/router";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 
 export default function Navbar() {
+  const router = useRouter();
+
+  const navigation = [
+    { name: "Home", href: "/", current: router.pathname == "/" ? true : false },
+    { name: "Dashboard", href: "/dashboard", current: router.pathname == "/dashboard" ? true : false },
+    { name: "My Page", href: "/my-page", current: router.pathname == "/my-page" ? true : false },
+    { name: "Governance", href: "/governance", current: router.pathname == "/governance" ? true : false },
+  ];
   return (
     <Disclosure as="nav" className="bg-transparent">
       {({ open }) => (
