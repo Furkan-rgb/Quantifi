@@ -1,6 +1,13 @@
+import Navbar from "../components/navbar";
+
 // our-domain.com/governance
 function GovernancePage() {
-  return <div>Governance page</div>;
+  return (
+    <div>
+      <Navbar></Navbar>
+      <p>Governance page</p>
+    </div>
+  );
 }
 
 export default GovernancePage;
