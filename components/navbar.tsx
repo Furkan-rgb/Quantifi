@@ -1,6 +1,7 @@
-import { Disclosure } from "@headlessui/react";
+import { Disclosure, Transition } from "@headlessui/react";
 import { MenuIcon, XIcon } from "@heroicons/react/outline";
 import { useRouter } from "next/router";
+import { Fragment } from "react";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
@@ -56,15 +57,17 @@ export default function Navbar() {
             </div>
           </div>
 
-          <Disclosure.Panel className="sm:hidden">
-            <div className="px-2 pt-2 pb-3 space-y-1">
-              {navigation.map((item) => (
-                <Disclosure.Button key={item.name} as="a" href={item.href} className={classNames(item.current ? " text-white" : "text-gray-300  hover:text-white", "block px-3 py-2 rounded-md text-base font-medium")} aria-current={item.current ? "page" : undefined}>
-                  {item.name}
-                </Disclosure.Button>
-              ))}
-            </div>
-          </Disclosure.Panel>
+          <Transition as={Fragment} enter="duration-150 ease-out" enterFrom="opacity-0 scale-95" enterTo="opacity-100 scale-100" leave="duration-100 ease-in" leaveFrom="opacity-100 scale-100" leaveTo="opacity-0 scale-95">
+            <Disclosure.Panel className="absolute z-10 top-14 inset-x-0 p-2 transition transform origin-top-right md:hidden">
+              <div className="px-2 pt-2 pb-3 space-y-1 rounded-lg shadow-md bg-white dark:bg-gray-900 ring-1 ring-black ring-opacity-5 overflow-hidden">
+                {navigation.map((item) => (
+                  <Disclosure.Button key={item.name} as="a" href={item.href} className={classNames(item.current ? " text-white" : "text-gray-300  hover:text-white", "block px-3 py-2 rounded-md text-base font-medium")} aria-current={item.current ? "page" : undefined}>
+                    {item.name}
+                  </Disclosure.Button>
+                ))}
+              </div>
+            </Disclosure.Panel>
+          </Transition>
         </>
       )}
     </Disclosure>

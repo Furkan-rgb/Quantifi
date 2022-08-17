@@ -23,7 +23,7 @@ function HomePage() {
             <div className="sm:mt-0 mt-2">
               {/* Dashboard button */}
               <div className="sm:ml-3 bg-gradient-to-r from-cyan-500 via-blue-500 to-pink-500 rounded-lg p-0.5 ">
-                <button className="w-full flex items-center justify-center text-base font-medium rounded-md px-8 py-3 md:py-3.5 md:text-lg md:px-8 bg-gray-900 hover:bg-gray-700 transition-all ease-in duration-75">
+                <button className="w-full flex items-center justify-center text-base font-medium rounded-md px-8 py-3 md:py-3.5 md:text-lg md:px-8 hover:bg-gray-200 bg-gray-100 dark:bg-gray-900 dark:hover:bg-gray-700 transition-all ease-in duration-75 text-gray-900 dark:text-gray-200">
                   <a href="/dashboard">View Dashboard</a>
                 </button>
               </div>
