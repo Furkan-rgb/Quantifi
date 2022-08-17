@@ -8,6 +8,19 @@
   }
   body {
     color: white;
-    background: black;
+    background: qdark;
   }
+}
+
+.cone {
+  position: absolute;
+  z-index: -1;
+  width: 933.36px;
+  height: 631.19px;
+  left: -41.74px;
+  top: -81.43px;
+
+  background: conic-gradient(from 164.14deg at 61.44% 127.33%, #051523 -135.65deg, #081a29 144.52deg, #3771a4 151.32deg, #48bed3 158.87deg, #5968ee 168.95deg, #a3aaf1 174.33deg, #5262c7 175.76deg, #c158d7 179.56deg, #ec9f92 195.06deg, #e45784 196.86deg, #8a63b0 208.42deg, #443782 216.35deg, #051523 224.35deg, #081a29 504.52deg);
+  filter: blur(50px);
+  transform: rotate(-0.99deg);
 }
