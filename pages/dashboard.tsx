@@ -1,12 +1,16 @@
+import Footer from "../components/footer";
 import Navbar from "../components/navbar";
 
 // our-domain.com/dashboard
 function Dashboard() {
   return (
-    <div>
-      <Navbar></Navbar>
-      <p>Dashboard</p>
-    </div>
+    <>
+      <div className="min-h-screen">
+        <Navbar></Navbar>
+        <p>Dashboard</p>
+      </div>
+      <Footer></Footer>
+    </>
   );
 }
 

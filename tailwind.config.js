@@ -6,6 +6,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      flex: {
+        'embla': '0 0 100%'
+      },
       colors: {
         'qdark': '#040D16'
       }
