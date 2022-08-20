@@ -72,9 +72,10 @@ export default function Navbar() {
 
               {/* Connect Wallet Button */}
               <div className="absolute inset-y-0 right-0 flex items-center pr-2 pt-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-                <button className="relative inline-flex items-center justify-center p-0.5 mb-2 mr-2 text-sm font-medium rounded-lg group bg-gradient-to-r from-[#4FC0FF] via-[#6977EE] to-[#FF6098] group-hover:from-[#4FC0FF] group-hover:via-[#6977EE] group-hover:to-[#FF6098] hover:text-white dark:text-white focus:ring-4 focus:outline-none ">
-                  <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
-                    Connect Wallet
+                <button className="text-base relative inline-flex items-center justify-center p-0.5 mb-2 sm:mr-2 font-medium rounded-lg group bg-gradient-to-r from-[#4FC0FF] via-[#6977EE] to-[#FF6098] group-hover:from-[#4FC0FF] group-hover:via-[#6977EE] group-hover:to-[#FF6098] hover:text-white dark:text-white focus:ring-4 focus:outline-none ">
+                  <span className="sm:inline block relative sm:px-5 sm:py-2.5  px-2 py-2 text-sm sm:text-base rounded-md bg-white dark:bg-gray-900">
+                    Connect {""}
+                    <span className="sm:inline block relative rounded-md">Wallet</span>
                   </span>
                 </button>
               </div>

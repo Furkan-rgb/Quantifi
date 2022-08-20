@@ -43,12 +43,12 @@ function HomePage() {
         </main>
       </div>
       {/* 2 */}
-      <div className="">
+      <div className="mb-32">
         <Carousel></Carousel>
       </div>
       {/* 3 */}
-      <div className="min-h-screen flex justify-center items-center">
-        <div className="text-center mx-2 dark:text-gray-200 text-gray-900">
+      <div className="min-h-fit mb-32 flex justify-center items-start">
+        <div className="text-center mx-2 dark:text-gray-200 text-gray-900 my-20">
           <h1 className="text-4xl tracking-tight font-bold sm:text-5xl sm:tracking-tight md:text-6xl md:tracking-tight">
             <span className="block">Are you ready to join us?</span>
           </h1>
@@ -58,9 +58,8 @@ function HomePage() {
           {/* Glowing buttons, need to stay together */}
           <div className="flex justify-center items-center mt-5 max-h-16">
             <button className="btnAnimated rounded-2xl text-2xl w-8/12 h-14 font-lg text-center items-center">
-              Get started
+              <div className="z-10">Get started</div>
             </button>
-            <button className="btnAnimated2 rounded-2xl text-2xl w-6/12 h-12 items-center"></button>
           </div>
         </div>
       </div>

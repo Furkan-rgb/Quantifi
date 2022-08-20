@@ -11,6 +11,8 @@ module.exports = {
       },
       colors: {
         'qdark': '#040D16'
+      }, minHeight: {
+        '90vh': '90vh',
       }
     },
   },

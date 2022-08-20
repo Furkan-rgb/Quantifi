@@ -79,32 +79,42 @@
 }
 
 /* Glowing buttons on home page */
-.btnAnimated,
-.btnAnimated2 {
-  color: rgba(255, 255, 255, 0.9);
-  background: linear-gradient(-45deg, #ffa63d, #ff3d77, #338aff, #3cf0c5);
-  background-size: 600%;
-  animation: anime 16s linear infinite;
-}
-.btnAnimated2 {
-  position: absolute;
-  filter: blur(30px);
-  opacity: 0.8;
-  z-index: 1;
-}
-
 .btnAnimated {
-  z-index: 2;
+  /* reset */
+  -webkit-appearance: none;
+  border: 0;
+  outline: 0;
+  /* styles */
+  background: linear-gradient(
+    45deg,
+    #4fc0ff 10%,
+    #6977ee 30%,
+    #ff6098 50%,
+    #6977ee 70%,
+    #4fc0ff 90%
+  );
+  background-size: 200% 100%;
+  color: white;
+  transition: 1s;
+
+  animation: loop 8s infinite;
 }
 
-@keyframes anime {
+@keyframes loop {
   0% {
-    background-position: 0% 50%;
+    background-position: 0 0;
   }
+
   50% {
-    background-position: 100% 50%;
+    background-position: 100% 0;
   }
+
   100% {
-    background-position: 0% 50%;
+    background-position: 0 0;
   }
+}
+
+.btnAnimated a {
+  color: lighten(#222, 10%);
+  transition: 0.3s;
 }
