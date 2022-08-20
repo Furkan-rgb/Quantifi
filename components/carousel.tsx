@@ -1,10 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import useEmblaCarousel, {
-  EmblaCarouselType,
-  EmblaOptionsType,
-  EmblaPluginType,
-  EmblaEventType,
-} from "embla-carousel-react";
+import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
 import { DotButton } from "./emblaButtons";
 
@@ -86,8 +81,8 @@ function Carousel() {
                   <img className="h-full w-full bg-right-center object-cover" src={slide.img} />
                 </div>
                 {/* Text half */}
-                <div className="sm:w-1/2 w-full flex justify-center text-center items-center sm:items-start flex-col sm:text-left text-5xl px-2.5">
-                  <div className="max-w-md">
+                <div className="sm:w-1/2 w-full flex justify-center text-center items-center sm:items-start flex-col sm:text-left text-5xl">
+                  <div className="max-w-md px-5">
                     {/* Title */}
                     <div className="mb-4 md:mb-0">
                       {slide.header.keyword.first ? (
@@ -128,10 +123,6 @@ function Carousel() {
       </div>
     </>
   );
-}
-
-{
-  /* <button className="embla__dot opacity-50"></button> */
 }
 
 export default Carousel;

@@ -8,7 +8,7 @@
   }
   body {
     color: white;
-    background-color: qdark;
+    background: qdark;
     display: flex;
     flex-direction: column;
   }
@@ -21,7 +21,7 @@
   left: -41.74px;
   top: -81.43px;
 
-  background-image: conic-gradient(
+  background: conic-gradient(
     from 164.14deg at 61.44% 127.33%,
     #051523 -135.65deg,
     #081a29 144.52deg,

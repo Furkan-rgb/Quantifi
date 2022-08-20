@@ -2,6 +2,7 @@ import { Disclosure, Transition } from "@headlessui/react";
 import { MenuIcon, XIcon } from "@heroicons/react/outline";
 import { useRouter } from "next/router";
 import { Fragment } from "react";
+import WalletConnectButton from "./buttons/walletConnectButton";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
@@ -72,12 +73,7 @@ export default function Navbar() {
 
               {/* Connect Wallet Button */}
               <div className="absolute inset-y-0 right-0 flex items-center pr-2 pt-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-                <button className="text-base relative inline-flex items-center justify-center p-0.5 mb-2 sm:mr-2 font-medium rounded-lg group bg-gradient-to-r from-[#4FC0FF] via-[#6977EE] to-[#FF6098] group-hover:from-[#4FC0FF] group-hover:via-[#6977EE] group-hover:to-[#FF6098] hover:text-white dark:text-white focus:ring-4 focus:outline-none ">
-                  <span className="sm:inline block relative sm:px-5 sm:py-2.5  px-2 py-2 text-sm sm:text-base rounded-md bg-white dark:bg-gray-900">
-                    Connect {""}
-                    <span className="sm:inline block relative rounded-md">Wallet</span>
-                  </span>
-                </button>
+                <WalletConnectButton></WalletConnectButton>
               </div>
             </div>
           </div>
