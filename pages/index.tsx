@@ -47,12 +47,12 @@ function HomePage() {
       </div>
       {/* 3 */}
       <div className="min-h-screen flex justify-center items-center">
-        <div className="sm:text-center lg:text-center ">
+        <div className="text-center mx-2">
           <h1 className="text-4xl tracking-tight font-bold text-gray-200 sm:text-5xl sm:tracking-tight md:text-6xl md:tracking-tight">
             <span className="block">Are you ready to join us?</span>
           </h1>
-          <div className="mt-3 sm:mt-5 sm:text-lg text-center sm:max-w-xl sm:mx-auto md:mt-5 md:text-2xl lg:mx-0 text-gray-200">
-            <span>Find more information about QuantiFi.</span>
+          <div className="mt-3 sm:mt-5 sm:text-lg text-center sm:max-w-xl sm:mx-auto md:mt-5 md:text-2xl lg:mx-0 text-gray-200 mr-0">
+            <span className="mr-0">Find more information about QuantiFi.</span>
           </div>
           {/* Glowing buttons, need to stay together */}
           <div className="flex justify-center items-center mt-5 max-h-16">
