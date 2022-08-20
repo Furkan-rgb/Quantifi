@@ -7,12 +7,13 @@ function HomePage() {
   return (
     <>
       {/* 1 */}
-      <div className="min-h-screen ">
+      <div className="min-h-screen">
         <Navbar></Navbar>
-        {/* Background colour cone */}
-        <div className="cone max-w-full"></div>
 
-        <main className="mt-10 mx-auto max-w-7xl px-4 sm:mt-12 sm:px-6 md:mt-16 lg:mt-20 lg:px-8 xl:mt-28 h-full flex items-center absolute bottom-0 left-0">
+        {/* Background colour cone */}
+        <div className="cone max-w-full leading-none -z-10"></div>
+
+        <main className="mt-10 mx-auto max-w-7xl px-4 sm:mt-12 sm:px-6 md:mt-16 lg:mt-20 lg:px-8 xl:mt-28 h-full flex items-center">
           <div className="sm:text-center lg:text-left items-start">
             <h1 className="text-4xl tracking-tight font-bold text-gray-200 sm:text-5xl sm:tracking-tight md:text-6xl md:tracking-tight">
               <span className="block">The Decentralized world of</span>{" "}
@@ -47,11 +48,11 @@ function HomePage() {
       </div>
       {/* 3 */}
       <div className="min-h-screen flex justify-center items-center">
-        <div className="text-center mx-2">
-          <h1 className="text-4xl tracking-tight font-bold text-gray-200 sm:text-5xl sm:tracking-tight md:text-6xl md:tracking-tight">
+        <div className="text-center mx-2 dark:text-gray-200 text-gray-900">
+          <h1 className="text-4xl tracking-tight font-bold sm:text-5xl sm:tracking-tight md:text-6xl md:tracking-tight">
             <span className="block">Are you ready to join us?</span>
           </h1>
-          <div className="mt-3 sm:mt-5 sm:text-lg text-center sm:max-w-xl sm:mx-auto md:mt-5 md:text-2xl lg:mx-0 dark:text-gray-200 text-black mr-0">
+          <div className="mt-3 sm:mt-5 sm:text-lg text-center sm:max-w-xl sm:mx-auto md:mt-5 md:text-2xl lg:mx-0  mr-0">
             <span className="mr-0">Find more information about QuantiFi.</span>
           </div>
           {/* Glowing buttons, need to stay together */}

@@ -82,8 +82,8 @@ function Carousel() {
               // Slide
               <div key={slide.id} className="flex-embla flex flex-col-reverse sm:flex-row">
                 {/* Image half */}
-                <div className="embla__slide__img sm:w-1/2 w-full">
-                  <img className="h-full w-auto" src={slide.img} />
+                <div className="sm:w-1/2 h-full w-full bg-center-right justify-center items-center flex bg-cover bg-center bg-no-repeat">
+                  <img className="h-full w-full bg-right-center object-cover" src={slide.img} />
                 </div>
                 {/* Text half */}
                 <div className="sm:w-1/2 w-full flex justify-center text-center items-center sm:items-start flex-col sm:text-left text-5xl px-2.5">

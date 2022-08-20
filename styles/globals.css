@@ -8,20 +8,20 @@
   }
   body {
     color: white;
-    background: qdark;
+    background-color: qdark;
     display: flex;
     flex-direction: column;
   }
 }
 
 .cone {
-  z-index: -1;
+  position: absolute;
   width: 933.36px;
   height: 631.19px;
   left: -41.74px;
   top: -81.43px;
 
-  background: conic-gradient(
+  background-image: conic-gradient(
     from 164.14deg at 61.44% 127.33%,
     #051523 -135.65deg,
     #081a29 144.52deg,
