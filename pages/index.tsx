@@ -51,7 +51,7 @@ function HomePage() {
           <h1 className="text-4xl tracking-tight font-bold text-gray-200 sm:text-5xl sm:tracking-tight md:text-6xl md:tracking-tight">
             <span className="block">Are you ready to join us?</span>
           </h1>
-          <div className="mt-3 sm:mt-5 sm:text-lg text-center sm:max-w-xl sm:mx-auto md:mt-5 md:text-2xl lg:mx-0 text-gray-200 mr-0">
+          <div className="mt-3 sm:mt-5 sm:text-lg text-center sm:max-w-xl sm:mx-auto md:mt-5 md:text-2xl lg:mx-0 dark:text-gray-200 text-black mr-0">
             <span className="mr-0">Find more information about QuantiFi.</span>
           </div>
           {/* Glowing buttons, need to stay together */}

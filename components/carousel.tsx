@@ -86,7 +86,7 @@ function Carousel() {
                   <img className="h-full w-auto" src={slide.img} />
                 </div>
                 {/* Text half */}
-                <div className="sm:w-1/2 w-full flex justify-center text-center items-center sm:items-start flex-col sm:text-left text-5xl mx-2.5">
+                <div className="sm:w-1/2 w-full flex justify-center text-center items-center sm:items-start flex-col sm:text-left text-5xl px-2.5">
                   <div className="max-w-md">
                     {/* Title */}
                     <div className="mb-4 md:mb-0">
