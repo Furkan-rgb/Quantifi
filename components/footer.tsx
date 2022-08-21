@@ -3,7 +3,7 @@ import { IoMdSettings } from "react-icons/io";
 
 function Footer() {
   return (
-    <footer className="p-4 bg-white rounded-lg shadow md:flex md:items-center md:justify-between md:p-6 dark:bg-qdark mt-auto border-t border-indigo-500">
+    <footer className="p-4 rounded-lg shadow md:flex md:items-center md:justify-between md:p-6 bg-transparent mt-auto border-t border-indigo-500">
       <ul className="flex flex-wrap items-center mt-3 text-sm text-gray-500 dark:text-gray-400 sm:mt-0 justify-center">
         <li>
           <a href="#" className="ml-4 hover:underline md:mr-6 ">
