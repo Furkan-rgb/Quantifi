@@ -5,10 +5,10 @@
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;
+    background: qdark;
   }
   body {
     color: white;
-    background: qdark;
     display: flex;
     flex-direction: column;
   }

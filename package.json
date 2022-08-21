@@ -10,9 +10,11 @@
   },
   "dependencies": {
     "@coinbase/wallet-sdk": "^3.5.0",
+    "@ethersproject/address": "^5.7.0",
     "@headlessui/react": "^1.6.6",
     "@heroicons/react": "^1.0.6",
     "@usedapp/core": "^1.1.5",
+    "@walletconnect/web3-provider": "^1.8.0",
     "embla-carousel": "^7.0.0",
     "embla-carousel-autoplay": "^7.0.0",
     "embla-carousel-react": "^7.0.0",
