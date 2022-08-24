@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Web3Modal from "web3modal";
 import { ethers } from "ethers";
 import CoinbaseWalletSDK from "@coinbase/wallet-sdk";
 import WalletConnectProvider from "@walletconnect/web3-provider";
+import { toHex, truncateAddress } from "../utils";
+import { networkParams } from "../networks";
 
 // All the wallets for the modal
 const providerOptions = {
@@ -22,38 +24,107 @@ const providerOptions = {
   },
 };
 
+let web3Modal: Web3Modal;
+if (typeof window !== "undefined") {
+  web3Modal = new Web3Modal({
+    network: "mainnet",
+    cacheProvider: true,
+    providerOptions,
+  });
+}
+
 function WalletConnectButton() {
-  const [modal, setWeb3Modal] = useState<Web3Modal | null>(null);
-  const [library, setLibrary] = useState<ethers.providers.Web3Provider | null>(null);
-  // const [web3Signer, setWeb3Signer] = useState<ethers.providers.JsonRpcSigner | null>(null);
-  const [account, setAccount] = useState<string | null>(null);
-  const [network, setNetwork] = useState<ethers.providers.Network | null>(null);
+  // web3Modal = provider
+  const [provider, setProvider] = useState<Web3Modal>();
+  const [library, setLibrary] = useState<ethers.providers.Web3Provider>();
+  const [account, setAccount] = useState<string>();
+  const [network, setNetwork] = useState<ethers.providers.Network>();
+  const [signature, setSignature] = useState("");
+  const [error, setError] = useState("");
+  const [chainId, setChainId] = useState();
+  const [message, setMessage] = useState("");
+  const [signedMessage, setSignedMessage] = useState("");
+  const [verified, setVerified] = useState();
 
   async function connectWallet() {
     try {
-      const web3Modal = new Web3Modal({
-        network: "mainnet",
-        cacheProvider: true,
-        providerOptions,
-      });
-
       const provider = await web3Modal.connect();
-      const library = new ethers.providers.Web3Provider(provider as any);
+      const library = new ethers.providers.Web3Provider(provider);
       const accounts = await library.listAccounts();
       const network = await library.getNetwork();
-      setWeb3Modal(web3Modal);
+
+      setProvider(provider);
       setLibrary(library);
+
       if (accounts) {
         setAccount(accounts[0]);
         setNetwork(network);
       }
+
       console.log(library);
-      console.log(account); // This is the account
-      console.log(network.chainId); // This is the network
-    } catch (error) {
-      console.error(error);
+      console.log("account: " + account); // This is the account
+      console.log("chainId: " + network.chainId); // This is the network
+    } catch (error: any) {
+      setError(error.message);
     }
   }
+
+  useEffect(() => {
+    if (web3Modal.cachedProvider) {
+      connectWallet();
+    }
+  }, []);
+
+  // useEffect(() => {
+  //   if (provider?.on) {
+  //     const handleAccountsChanged = (accounts) => {
+  //       console.log("accountsChanged", accounts);
+  //       if (accounts) setAccount(accounts[0]);
+  //     };
+
+  //     const handleChainChanged = (_hexChainId) => {
+  //       setChainId(_hexChainId);
+  //     };
+
+  //     const handleDisconnect = () => {
+  //       console.log("disconnect", error);
+  //       disconnect();
+  //     };
+
+  //     provider.on("accountsChanged", handleAccountsChanged);
+  //     provider.on("chainChanged", handleChainChanged);
+  //     provider.on("disconnect", handleDisconnect);
+
+  //     return () => {
+  //       if (provider.removeListener) {
+  //         provider.removeListener("accountsChanged", handleAccountsChanged);
+  //         provider.removeListener("chainChanged", handleChainChanged);
+  //         provider.removeListener("disconnect", handleDisconnect);
+  //       }
+  //     };
+  //   }
+  // }, [provider]);
+
+  // const switchNetwork = async () => {
+  //   try {
+  //     await library?.provider.request!({
+  //       method: "wallet_switchEthereumChain",
+  //       params: [{ chainId: toHex(network?) }],
+  //     });
+  //   } catch (switchError: unknown ) {
+  //     if(switchError instanceof Error) return switchError.message
+  //     if (switchError!.code === 4902) {
+  //       try {
+  //         await library?.provider.request!({
+  //           method: "wallet_addEthereumChain",
+  //           params: [networkParams[toHex(network?)]],
+  //         });
+  //       } catch (error: string) {
+  //         setError(error);
+  //       }
+  //     }
+  //   }
+  // };
 
   return (
     // Button to connect wallet
@@ -62,15 +133,15 @@ function WalletConnectButton() {
       className="text-base relative inline-flex items-center justify-center p-0.5 mb-2 sm:mr-2 font-medium rounded-lg group bg-gradient-to-r from-[#4FC0FF] via-[#6977EE] to-[#FF6098] group-hover:from-[#4FC0FF] group-hover:via-[#6977EE] group-hover:to-[#FF6098] hover:text-white dark:text-white focus:ring-4 focus:outline-none "
     >
       {/* Inner button content */}
-      {library == null ? (
+      {!account ? (
         <span className="transition-all ease-in duration-100 sm:inline block relative sm:px-5 sm:py-2.5 px-2 py-2 text-sm sm:text-base rounded-md bg-white dark:bg-gray-900 group-hover:bg-opacity-0">
           Connect {""}
-          <span className="sm:inline block relative rounded-md">Wallet</span>
+          <span className="relative block rounded-md sm:inline">Wallet</span>
         </span>
       ) : (
         <span className="transition-all ease-in duration-100 sm:inline block relative sm:px-5 sm:py-2.5 px-2 py-2 text-sm sm:text-base rounded-md bg-white dark:bg-gray-900 group-hover:bg-opacity-0">
-          {account}
-          <span className="block">{"chainId: " + network?.chainId}</span>
+          {truncateAddress(account)}
+          {/* <span className="block">{"chainId: " + network?.chainId}</span> */}
         </span>
       )}
     </button>
