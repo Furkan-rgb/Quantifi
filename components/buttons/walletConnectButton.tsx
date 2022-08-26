@@ -64,8 +64,8 @@ function WalletConnectButton() {
       console.log(library);
       console.log("account: " + account); // This is the account
       console.log("chainId: " + network.chainId); // This is the network
-    } catch (error: any) {
-      setError(error.message);
+    } catch (connectError: any) {
+      setError(connectError.message);
     }
   }
 

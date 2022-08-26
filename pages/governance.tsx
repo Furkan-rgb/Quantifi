@@ -6,10 +6,8 @@ function GovernancePage() {
   return (
     <>
       <div className="min-h-screen">
-        <Navbar></Navbar>
         <p>Governance page</p>
       </div>
-      <Footer></Footer>{" "}
     </>
   );
 }

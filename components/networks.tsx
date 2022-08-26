@@ -1,5 +1,5 @@
 export interface Network {
-  networkParams: {
+  network: {
     chainId: string;
     rpcUrls: string[];
     chainName: string;

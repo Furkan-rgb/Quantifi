@@ -1,6 +1,4 @@
 import Carousel from "../components/carousel";
-import Footer from "../components/footer";
-import Navbar from "../components/navbar";
 
 // home page
 function HomePage() {
@@ -8,8 +6,6 @@ function HomePage() {
     <>
       {/* 1 */}
       <div className="min-h-screen">
-        <Navbar></Navbar>
-
         {/* Background colour cone */}
         <div className="max-w-full leading-none cone -z-10"></div>
 
@@ -63,7 +59,6 @@ function HomePage() {
           </div>
         </div>
       </div>
-      <Footer></Footer>
     </>
   );
 }

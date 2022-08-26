@@ -6,10 +6,8 @@ function Dashboard() {
   return (
     <>
       <div className="min-h-screen">
-        <Navbar></Navbar>
         <p>Dashboard</p>
       </div>
-      <Footer></Footer>
     </>
   );
 }
