@@ -37,11 +37,11 @@ function WalletConnectButton() {
   // web3Modal = provider
   const [provider, setProvider] = useState<Web3Modal>();
   const [library, setLibrary] = useState<ethers.providers.Web3Provider>();
-  const [account, setAccount] = useState<string>();
+  const [account, setAccount] = useState<string | null>();
   const [network, setNetwork] = useState<ethers.providers.Network>();
   const [signature, setSignature] = useState("");
   const [error, setError] = useState("");
-  const [chainId, setChainId] = useState();
+  const [chainId, setChainId] = useState<number | null>();
   const [message, setMessage] = useState("");
   const [signedMessage, setSignedMessage] = useState("");
   const [verified, setVerified] = useState();
@@ -75,14 +75,30 @@ function WalletConnectButton() {
     }
   }, []);
 
+  // Disconnect
+  const disconnect = async () => {
+    await web3Modal.clearCachedProvider();
+    refreshState();
+  };
+
+  // Refresh state
+  const refreshState = () => {
+    setAccount("");
+    setChainId(null);
+    setNetwork(undefined);
+    setMessage("");
+    setSignature("");
+    setVerified(undefined);
+  };
+
   // useEffect(() => {
   //   if (provider?.on) {
-  //     const handleAccountsChanged = (accounts) => {
+  //     const handleAccountsChanged = (accounts: string[]) => {
   //       console.log("accountsChanged", accounts);
   //       if (accounts) setAccount(accounts[0]);
   //     };
 
-  //     const handleChainChanged = (_hexChainId) => {
+  //     const handleChainChanged = (_hexChainId: number) => {
   //       setChainId(_hexChainId);
   //     };
 
@@ -96,7 +112,7 @@ function WalletConnectButton() {
   //     provider.on("disconnect", handleDisconnect);
 
   //     return () => {
-  //       if (provider.removeListener) {
+  //       if (provider) {
   //         provider.removeListener("accountsChanged", handleAccountsChanged);
   //         provider.removeListener("chainChanged", handleChainChanged);
   //         provider.removeListener("disconnect", handleDisconnect);
@@ -109,15 +125,15 @@ function WalletConnectButton() {
   //   try {
   //     await library?.provider.request!({
   //       method: "wallet_switchEthereumChain",
-  //       params: [{ chainId: toHex(network?) }],
+  //       params: [{ chainId: toHex(network!) }],
   //     });
-  //   } catch (switchError: unknown ) {
-  //     if(switchError instanceof Error) return switchError.message
+  //   } catch (switchError: any) {
+  //     if (switchError) return switchError.message;
   //     if (switchError!.code === 4902) {
   //       try {
   //         await library?.provider.request!({
   //           method: "wallet_addEthereumChain",
-  //           params: [networkParams[toHex(network?)]],
+  //           params: [networkParams[toHex(network!)]],
   //         });
   //       } catch (error: string) {
   //         setError(error);
@@ -125,6 +141,42 @@ function WalletConnectButton() {
   //     }
   //   }
   // };
+
+  // if (!account) {
+  //   return (
+  //     <button
+  //       onClick={connectWallet}
+  //       className="text-base relative inline-flex items-center justify-center p-0.5 mb-2 sm:mr-2 font-medium rounded-lg group bg-gradient-to-r from-[#4FC0FF] via-[#6977EE] to-[#FF6098] group-hover:from-[#4FC0FF] group-hover:via-[#6977EE] group-hover:to-[#FF6098] hover:text-white dark:text-white focus:ring-4 focus:outline-none "
+  //     >
+  //       <span className="transition-all ease-in duration-100 sm:inline block relative sm:px-5 sm:py-2.5 px-2 py-2 text-sm sm:text-base rounded-md bg-white dark:bg-gray-900 group-hover:bg-opacity-0">
+  //         Connect {""}
+  //         <span className="relative block rounded-md sm:inline">Wallet</span>
+  //       </span>
+  //     </button>
+  //   );
+  // } else if ((account && network?.name == "bnbt") || "bnb") {
+  //   return (
+  //     <button
+  //       onClick={connectWallet}
+  //       className="text-base relative inline-flex items-center justify-center p-0.5 mb-2 sm:mr-2 font-medium rounded-lg group bg-gradient-to-r from-[#4FC0FF] via-[#6977EE] to-[#FF6098] group-hover:from-[#4FC0FF] group-hover:via-[#6977EE] group-hover:to-[#FF6098] hover:text-white dark:text-white focus:ring-4 focus:outline-none "
+  //     >
+  //       <span className="transition-all ease-in duration-100 sm:inline block relative sm:px-5 sm:py-2.5 px-2 py-2 text-sm sm:text-base rounded-md bg-white dark:bg-gray-900 group-hover:bg-opacity-0">
+  //         {truncateAddress(account)}
+  //         {/* <span className="block">{"chainId: " + network?.chainId}</span> */}
+  //         <span className="block">{"Network " + network?.name}</span>
+  //       </span>
+  //     </button>
+  //   );
+  // } else {
+  //   <button
+  //     onClick={connectWallet}
+  //     className="text-base relative inline-flex items-center justify-center p-0.5 mb-2 sm:mr-2 font-medium rounded-lg group bg-gradient-to-r from-[#4FC0FF] via-[#6977EE] to-[#FF6098] group-hover:from-[#4FC0FF] group-hover:via-[#6977EE] group-hover:to-[#FF6098] hover:text-white dark:text-white focus:ring-4 focus:outline-none "
+  //   >
+  //     <span className="transition-all ease-in duration-100 sm:inline block relative sm:px-5 sm:py-2.5 px-2 py-2 text-sm sm:text-base rounded-md bg-white dark:bg-gray-900 group-hover:bg-opacity-0">
+  //       Switch network
+  //     </span>
+  //   </button>;
+  // }
 
   return (
     // Button to connect wallet
@@ -142,6 +194,7 @@ function WalletConnectButton() {
         <span className="transition-all ease-in duration-100 sm:inline block relative sm:px-5 sm:py-2.5 px-2 py-2 text-sm sm:text-base rounded-md bg-white dark:bg-gray-900 group-hover:bg-opacity-0">
           {truncateAddress(account)}
           {/* <span className="block">{"chainId: " + network?.chainId}</span> */}
+          <span className="block">{"Network " + network?.name}</span>
         </span>
       )}
     </button>

@@ -7,7 +7,7 @@ export const truncateAddress = (address: string) => {
   return `${match[1]}…${match[2]}`;
 };
 
-export const toHex = (num: number) => {
+export const toHex = (num: ethers.providers.Network) => {
   const val = Number(num);
   return "0x" + val.toString(16);
 };
