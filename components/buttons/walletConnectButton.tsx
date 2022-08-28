@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
-import Web3Modal from "web3modal";
+import React, { useContext, useEffect, useState } from "react";
+import Web3Modal, { providers } from "web3modal";
 import { ethers } from "ethers";
 import CoinbaseWalletSDK from "@coinbase/wallet-sdk";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { toHex, truncateAddress } from "../utils";
 import { networkParams } from "../networks";
+import SelectWalletModal from "../Modal";
 
 // All the wallets for the modal
 const providerOptions = {
@@ -19,8 +20,11 @@ const providerOptions = {
   walletconnect: {
     package: WalletConnectProvider,
     options: {
-      infuraId: process.env.WALLETCONNECT_INFURA_ID,
+      infuraId: "9401913c15a04b33adea88667cf79f6b",
     },
+  },
+  binancechainwallet: {
+    package: true,
   },
 };
 
@@ -34,6 +38,16 @@ if (typeof window !== "undefined") {
 }
 
 function WalletConnectButton() {
+  const [modalOpen, setModalOpen] = useState(false);
+
+  function toggleModal() {
+    if (modalOpen) {
+      setModalOpen(false);
+    } else {
+      setModalOpen(true);
+    }
+  }
+
   // web3Modal = provider
   const [provider, setProvider] = useState<Web3Modal>();
   const [library, setLibrary] = useState<ethers.providers.Web3Provider>();
@@ -61,9 +75,9 @@ function WalletConnectButton() {
         setNetwork(network);
       }
 
-      console.log(library);
-      console.log("account: " + account); // This is the account
-      console.log("chainId: " + network.chainId); // This is the network
+      // console.log(library);
+      // console.log("account: " + account); // This is the account
+      // console.log("chainId: " + network.chainId); // This is the network
     } catch (connectError: any) {
       setError(connectError.message);
     }
@@ -73,7 +87,7 @@ function WalletConnectButton() {
     if (web3Modal.cachedProvider) {
       connectWallet();
     }
-  }, []);
+  }, [library]);
 
   // Disconnect
   const disconnect = async () => {
@@ -179,25 +193,42 @@ function WalletConnectButton() {
   // }
 
   return (
-    // Button to connect wallet
-    <button
-      onClick={connectWallet}
-      className="text-base relative inline-flex items-center justify-center p-0.5 mb-2 sm:mr-2 font-medium rounded-lg group bg-gradient-to-r from-[#4FC0FF] via-[#6977EE] to-[#FF6098] group-hover:from-[#4FC0FF] group-hover:via-[#6977EE] group-hover:to-[#FF6098] hover:text-white dark:text-white focus:ring-4 focus:outline-none "
-    >
-      {/* Inner button content */}
-      {!account ? (
-        <span className="transition-all ease-in duration-100 sm:inline block relative sm:px-5 sm:py-2.5 px-2 py-2 text-sm sm:text-base rounded-md bg-white dark:bg-gray-900 group-hover:bg-opacity-0">
-          Connect {""}
-          <span className="relative block rounded-md sm:inline">Wallet</span>
-        </span>
+    <>
+      <button
+        onClick={() => {
+          // connectWallet(),
+          toggleModal();
+        }}
+        className="text-base relative inline-flex items-center justify-center p-0.5 mb-2 sm:mr-2 font-medium rounded-lg group bg-gradient-to-r from-[#4FC0FF] via-[#6977EE] to-[#FF6098] group-hover:from-[#4FC0FF] group-hover:via-[#6977EE] group-hover:to-[#FF6098] hover:text-white dark:text-white focus:ring-4 focus:outline-none "
+      >
+        {/* Inner button content */}
+        {!account ? (
+          <span className="transition-all ease-in duration-100 sm:inline block relative sm:px-5 sm:py-2.5 px-2 py-2 text-sm sm:text-base rounded-md bg-white dark:bg-gray-900 group-hover:bg-opacity-0">
+            Connect {""}
+            <span className="relative block rounded-md sm:inline">Wallet</span>
+          </span>
+        ) : (
+          <span className="transition-all ease-in duration-100 sm:inline block relative sm:px-5 sm:py-2.5 px-2 py-2 text-sm sm:text-base rounded-md bg-white dark:bg-gray-900 group-hover:bg-opacity-0">
+            {truncateAddress(account)}
+            {/* <span className="block">{"chainId: " + network?.chainId}</span> */}
+            <span className="block">{"Network " + network?.name}</span>
+          </span>
+        )}
+      </button>
+      {/* {web3Modal?.cachedProvider ? (
+        <button
+          className="text-base relative inline-flex items-center justify-center p-0.5 mb-2 sm:mr-2 font-medium rounded-lg group bg-gradient-to-r from-[#4FC0FF] via-[#6977EE] to-[#FF6098] group-hover:from-[#4FC0FF] group-hover:via-[#6977EE] group-hover:to-[#FF6098] hover:text-white dark:text-white focus:ring-4 focus:outline-none "
+          onClick={disconnect}
+        >
+          <span className="transition-all ease-in duration-100 sm:inline block relative sm:px-5 sm:py-2.5 px-2 py-2 text-sm sm:text-base rounded-md bg-white dark:bg-gray-900 group-hover:bg-opacity-0">
+            <span className="block">Disconnect</span>
+          </span>
+        </button>
       ) : (
-        <span className="transition-all ease-in duration-100 sm:inline block relative sm:px-5 sm:py-2.5 px-2 py-2 text-sm sm:text-base rounded-md bg-white dark:bg-gray-900 group-hover:bg-opacity-0">
-          {truncateAddress(account)}
-          {/* <span className="block">{"chainId: " + network?.chainId}</span> */}
-          <span className="block">{"Network " + network?.name}</span>
-        </span>
-      )}
-    </button>
+        ""
+      )} */}
+      <SelectWalletModal modalOpen={modalOpen} toggleModal={toggleModal} />
+    </>
   );
 }
 

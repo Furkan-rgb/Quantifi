@@ -1,18 +1,23 @@
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
+import myPageAbi from "../components/abi/myPageAbi.json";
+import { useWeb3React } from "@web3-react/core";
 
 function MyPage() {
   const [currentTab, setCurrentTab] = useState<string>("withdrawal");
+
+  const { account, library } = useWeb3React();
 
   function classNames(...classes: string[]) {
     return classes.filter(Boolean).join(" ");
   }
 
-  function changeTab(tab: string) {
-    setCurrentTab(tab);
+  function showLib() {
+    console.log(library);
   }
 
   return (
     <>
+      <button onClick={showLib}>Console</button>
       {/* Exchange */}
       <div className="min-h-screen">
         {/* Stats */}
