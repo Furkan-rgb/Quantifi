@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useState } from "react";
-import Web3Modal, { providers } from "web3modal";
 import { ethers } from "ethers";
 import CoinbaseWalletSDK from "@coinbase/wallet-sdk";
 import WalletConnectProvider from "@walletconnect/web3-provider";
@@ -28,14 +27,14 @@ const providerOptions = {
   },
 };
 
-let web3Modal: Web3Modal;
-if (typeof window !== "undefined") {
-  web3Modal = new Web3Modal({
-    network: "mainnet",
-    cacheProvider: true,
-    providerOptions,
-  });
-}
+// let web3Modal: Web3Modal;
+// if (typeof window !== "undefined") {
+//   web3Modal = new Web3Modal({
+//     network: "mainnet",
+//     cacheProvider: true,
+//     providerOptions,
+//   });
+// }
 
 function WalletConnectButton() {
   const [modalOpen, setModalOpen] = useState(false);
@@ -49,7 +48,7 @@ function WalletConnectButton() {
   }
 
   // web3Modal = provider
-  const [provider, setProvider] = useState<Web3Modal>();
+  // const [provider, setProvider] = useState<Web3Modal>();
   const [library, setLibrary] = useState<ethers.providers.Web3Provider>();
   const [account, setAccount] = useState<string | null>();
   const [network, setNetwork] = useState<ethers.providers.Network>();
@@ -60,40 +59,40 @@ function WalletConnectButton() {
   const [signedMessage, setSignedMessage] = useState("");
   const [verified, setVerified] = useState();
 
-  async function connectWallet() {
-    try {
-      const provider = await web3Modal.connect();
-      const library = new ethers.providers.Web3Provider(provider);
-      const accounts = await library.listAccounts();
-      const network = await library.getNetwork();
+  // async function connectWallet() {
+  //   try {
+  //     const provider = await web3Modal.connect();
+  //     const library = new ethers.providers.Web3Provider(provider);
+  //     const accounts = await library.listAccounts();
+  //     const network = await library.getNetwork();
 
-      setProvider(provider);
-      setLibrary(library);
+  //     setProvider(provider);
+  //     setLibrary(library);
 
-      if (accounts) {
-        setAccount(accounts[0]);
-        setNetwork(network);
-      }
+  //     if (accounts) {
+  //       setAccount(accounts[0]);
+  //       setNetwork(network);
+  //     }
 
-      // console.log(library);
-      // console.log("account: " + account); // This is the account
-      // console.log("chainId: " + network.chainId); // This is the network
-    } catch (connectError: any) {
-      setError(connectError.message);
-    }
-  }
+  //     // console.log(library);
+  //     // console.log("account: " + account); // This is the account
+  //     // console.log("chainId: " + network.chainId); // This is the network
+  //   } catch (connectError: any) {
+  //     setError(connectError.message);
+  //   }
+  // }
 
-  useEffect(() => {
-    if (web3Modal.cachedProvider) {
-      connectWallet();
-    }
-  }, [library]);
+  // useEffect(() => {
+  //   if (web3Modal.cachedProvider) {
+  //     connectWallet();
+  //   }
+  // }, [library]);
 
   // Disconnect
-  const disconnect = async () => {
-    await web3Modal.clearCachedProvider();
-    refreshState();
-  };
+  // const disconnect = async () => {
+  //   await web3Modal.clearCachedProvider();
+  //   refreshState();
+  // };
 
   // Refresh state
   const refreshState = () => {

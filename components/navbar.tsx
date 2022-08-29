@@ -1,5 +1,5 @@
 import { Disclosure, Transition } from "@headlessui/react";
-import { MenuIcon, XIcon } from "@heroicons/react/outline";
+import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useRouter } from "next/router";
 import { Fragment } from "react";
 import WalletConnectButton from "./buttons/walletConnectButton";
@@ -29,24 +29,24 @@ export default function Navbar() {
     <Disclosure as="nav" className="bg-transparent">
       {({ open }) => (
         <>
-          <div className="mx-auto px-2 sm:px-10 lg:px-12">
+          <div className="px-2 mx-auto sm:px-10 lg:px-12">
             <div className="relative flex items-center justify-between h-20">
               <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
                 {/* Mobile menu button*/}
-                <Disclosure.Button className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
+                <Disclosure.Button className="inline-flex items-center justify-center p-2 text-gray-400 rounded-md hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
                   <span className="sr-only">Open main menu</span>
                   {open ? (
-                    <XIcon className="block h-6 w-6" aria-hidden="true" />
+                    <XMarkIcon className="block w-6 h-6" aria-hidden="true" />
                   ) : (
-                    <MenuIcon className="block h-6 w-6" aria-hidden="true" />
+                    <Bars3Icon className="block w-6 h-6" aria-hidden="true" />
                   )}
                 </Disclosure.Button>
               </div>
 
-              <div className="flex-1 flex items-center justify-center sm:items-stretch sm:justify-start">
-                <div className="flex-shrink-0 flex items-center">
-                  <img className="block lg:hidden h-8 w-auto" src="/logo.svg" alt="QuantifiLogo" />
-                  <img className="hidden lg:block h-8 w-auto" src="/logo.svg" alt="QuantifiLogo" />
+              <div className="flex items-center justify-center flex-1 sm:items-stretch sm:justify-start">
+                <div className="flex items-center flex-shrink-0">
+                  <img className="block w-auto h-8 lg:hidden" src="/logo.svg" alt="QuantifiLogo" />
+                  <img className="hidden w-auto h-8 lg:block" src="/logo.svg" alt="QuantifiLogo" />
                 </div>
 
                 {/* Map through nav items */}
@@ -72,7 +72,7 @@ export default function Navbar() {
               </div>
 
               {/* Connect Wallet Button */}
-              <div className="absolute inset-y-0 right-0 flex items-center pr-2 pt-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+              <div className="absolute inset-y-0 right-0 flex items-center pt-2 pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
                 <WalletConnectButton></WalletConnectButton>
               </div>
             </div>
@@ -87,8 +87,8 @@ export default function Navbar() {
             leaveFrom="opacity-100 scale-100"
             leaveTo="opacity-0 scale-95"
           >
-            <Disclosure.Panel className="absolute z-10 top-14 inset-x-0 p-2 transition transform origin-top-right md:hidden">
-              <div className="px-2 pt-2 pb-3 space-y-1 rounded-lg shadow-md bg-white dark:bg-gray-900 ring-1 ring-black ring-opacity-5 overflow-hidden">
+            <Disclosure.Panel className="absolute inset-x-0 z-10 p-2 transition origin-top-right transform top-14 md:hidden">
+              <div className="px-2 pt-2 pb-3 space-y-1 overflow-hidden bg-white rounded-lg shadow-md dark:bg-gray-900 ring-1 ring-black ring-opacity-5">
                 {navigation.map((item) => (
                   <Disclosure.Button
                     key={item.name}
