@@ -2,9 +2,11 @@ import { InjectedConnector } from "@web3-react/injected-connector";
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
 import { WalletLinkConnector } from "@web3-react/walletlink-connector";
 
-const injected = new InjectedConnector({ supportedChainIds: [1, 3, 4, 5, 42] });
+const injected = new InjectedConnector({
+  supportedChainIds: [1, 3, 4, 5, 42, 97, 56],
+});
 
-const CoinbaseWallet = new WalletConnectConnector({
+const walletconnect = new WalletConnectConnector({
   rpc: `https://mainnet.infura.io/v3/${process.env.INFURA_KEY}`,
   bridge: "https://bridge.walletconnect.org",
   qrcode: true,
@@ -12,11 +14,11 @@ const CoinbaseWallet = new WalletConnectConnector({
 
 const walletlink = new WalletLinkConnector({
   url: `https://mainnet.infura.io/v3/${process.env.INFURA_KEY}`,
-  appName: "QuantiFi",
+  appName: "quantifi",
 });
 
 export const connectors = {
   injected: injected,
-  walletConnect: walletlink,
-  coinbaseWallet: WalletConnectConnector,
+  walletConnect: walletconnect,
+  coinbaseWallet: walletlink,
 };

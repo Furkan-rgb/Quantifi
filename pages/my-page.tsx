@@ -5,7 +5,7 @@ import { useWeb3React } from "@web3-react/core";
 function MyPage() {
   const [currentTab, setCurrentTab] = useState<string>("withdrawal");
 
-  const { account, library } = useWeb3React();
+  const { library, chainId, account, activate, deactivate, active } = useWeb3React();
 
   function classNames(...classes: string[]) {
     return classes.filter(Boolean).join(" ");
@@ -17,7 +17,10 @@ function MyPage() {
 
   return (
     <>
-      <button onClick={showLib}>Console</button>
+      <span>Account: {account}</span>
+      <br />
+      <span>Network ID: {chainId}</span>
+
       {/* Exchange */}
       <div className="min-h-screen">
         {/* Stats */}
