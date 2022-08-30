@@ -1,15 +1,14 @@
 import React, { useContext, useEffect, useState } from "react";
 import { ethers } from "ethers";
-import CoinbaseWalletSDK from "@coinbase/wallet-sdk";
-import WalletConnectProvider from "@walletconnect/web3-provider";
 import { toHex, truncateAddress } from "../utils";
 import { networkParams } from "../networks";
 import SelectWalletModal from "../Modal";
 import { useWeb3React } from "@web3-react/core";
+import { connectors } from "../utils/connectors";
 
 function WalletConnectButton() {
   const [modalOpen, setModalOpen] = useState(false);
-  const { active, account } = useWeb3React();
+  const { active, account, activate, deactivate } = useWeb3React();
 
   function toggleModal() {
     if (modalOpen) {
@@ -18,6 +17,29 @@ function WalletConnectButton() {
       setModalOpen(true);
     }
   }
+
+  async function disconnect() {
+    try {
+      deactivate();
+      localStorage.removeItem("provider");
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  useEffect(() => {
+    const connectWalletOnPageLoad = async () => {
+      if (localStorage?.getItem("provider") !== null) {
+        try {
+          await activate(connectors.injected);
+          localStorage.setItem("provider", "injected");
+        } catch (ex) {
+          console.log(ex);
+        }
+      }
+    };
+    connectWalletOnPageLoad();
+  }, []);
 
   return (
     <>

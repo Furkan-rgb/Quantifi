@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import myPageAbi from "../components/abi/myPageAbi.json";
 import { useWeb3React } from "@web3-react/core";
+import { ethers } from "ethers";
 
 function MyPage() {
   const [currentTab, setCurrentTab] = useState<string>("withdrawal");
@@ -11,13 +12,26 @@ function MyPage() {
     return classes.filter(Boolean).join(" ");
   }
 
-  function showLib() {
-    console.log(library);
+  console.log(library);
+  async function readContract() {
+    const erc20 = new ethers.Contract(
+      "0x4C4470D0B9c0dD92B25Be1D2fB5181cdA7e6E3f7",
+      myPageAbi,
+      library
+    );
+    const tokenName = await erc20.name();
+    console.log(tokenName);
   }
 
   return (
     <>
-      <span>Account: {account}</span>
+      <span
+        onClick={() => {
+          readContract();
+        }}
+      >
+        Account: {account}
+      </span>
       <br />
       <span>Network ID: {chainId}</span>
 
