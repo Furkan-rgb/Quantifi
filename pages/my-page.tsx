@@ -1,37 +1,68 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import myPageAbi from "../components/abi/myPageAbi.json";
 import { useWeb3React } from "@web3-react/core";
 import { ethers } from "ethers";
 
 function MyPage() {
   const [currentTab, setCurrentTab] = useState<string>("withdrawal");
+  const [inputValue, setInputValue] = useState<string>();
+  const [outputValue, setOutputValue] = useState<string>();
+  const fromValue = useRef(0);
+  const [contractInfo, setContractInfo] = useState<{
+    address: ethers.Contract["address"];
+    tokenName: string;
+    qitbalance: number;
+  }>({
+    address: "-",
+    tokenName: "-",
+    qitbalance: 0,
+  });
 
-  const { library, chainId, account, activate, deactivate, active } = useWeb3React();
+  const { library, chainId, account, active } = useWeb3React();
+  const erc20 = new ethers.Contract(
+    "0x4C4470D0B9c0dD92B25Be1D2fB5181cdA7e6E3f7",
+    myPageAbi,
+    library
+  );
 
   function classNames(...classes: string[]) {
     return classes.filter(Boolean).join(" ");
   }
 
-  console.log(library);
-  async function readContract() {
-    const erc20 = new ethers.Contract(
-      "0x4C4470D0B9c0dD92B25Be1D2fB5181cdA7e6E3f7",
-      myPageAbi,
-      library
-    );
-    const tokenName = await erc20.name();
-    console.log(tokenName);
+  async function getDepositValue(value: string) {
+    const number = parseInt(value, 10);
+    if (number > 1000) {
+      const deposit = await erc20.getDepositReturn(ethers.utils.parseEther(value));
+      console.log(ethers.utils.formatUnits(deposit, 6));
+    }
   }
+
+  async function initiateContract() {
+    setContractInfo({
+      address: erc20.address,
+      tokenName: await erc20.name(),
+      qitbalance: await erc20.balanceOf(account),
+    });
+    console.log(erc20);
+  }
+
+  useEffect(() => {
+    if (active && contractInfo.address === "-") {
+      initiateContract();
+    }
+  }, [active]);
+
+  useEffect(() => {
+    if (contractInfo.address !== "-") {
+      erc20.on("Transfer", (from, to, amount, event) => {
+        console.log(from, to, amount, event);
+      });
+    }
+  }, [contractInfo.address]);
 
   return (
     <>
-      <span
-        onClick={() => {
-          readContract();
-        }}
-      >
-        Account: {account}
-      </span>
+      <span>Account: {account}</span>
       <br />
       <span>Network ID: {chainId}</span>
 
@@ -49,7 +80,7 @@ function MyPage() {
                 <span className="block py-1 mb-2 mr-2 text-base font-semibold text-gray-700 rounded-full">
                   Tokens
                 </span>
-                <span className="text-right">QIT</span>
+                <span className="text-right">{contractInfo.qitbalance.toString()} QIT</span>
               </div>
 
               <div className="flex justify-between">
@@ -132,6 +163,9 @@ function MyPage() {
               <form>
                 <div className="relative z-0 flex w-full mb-6 group">
                   <input
+                    onChange={(e) => {
+                      setInputValue(e.target.value), getDepositValue(e.target.value);
+                    }}
                     type="number"
                     name="floating_email"
                     id="floating_email"
@@ -143,10 +177,10 @@ function MyPage() {
                     htmlFor="floating_email"
                     className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
                   >
-                    From
+                    From {inputValue}
                   </label>
                   <span className="inline-flex items-center px-3 text-sm text-gray-900 border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
-                    {currentTab == "withdrawal" ? "QIT" : "USDT"}
+                    {currentTab == "withdrawal" ? contractInfo?.tokenName : "USDT"}
                   </span>
                 </div>
                 <div className="relative z-0 flex w-full mb-6 group">
@@ -163,9 +197,10 @@ function MyPage() {
                     className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
                   >
                     To
+                    {/* {outputValue} */}
                   </label>
                   <span className="inline-flex items-center px-3 text-sm text-gray-900 border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
-                    {currentTab == "deposit" ? "QIT" : "USDT"}
+                    {currentTab == "deposit" ? contractInfo?.tokenName : "USDT"}
                   </span>
                 </div>
 
