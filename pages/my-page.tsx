@@ -16,7 +16,7 @@ function MyPage() {
     allowance:ethers.BigNumber;
   }>({
     address: "-",
-    tokenName: "-",
+    tokenName: "QIT",
     qitbalance: BigNumber.from(0),
     allowance:BigNumber.from(0),
   });
@@ -28,13 +28,11 @@ function MyPage() {
     myPageAbi,
     library
   );
-
   const ERC20 = new ethers.Contract(
     "0xEcAD8721BA48dBdc0eac431D68A0b140F07c0801",
     erc20ABI,
     library
   );
-
   function classNames(...classes: string[]) {
     return classes.filter(Boolean).join(" ");
   }
@@ -51,10 +49,16 @@ function MyPage() {
   }
 
   async function swapOrApprove() {
-    if(contractInfo.allowance < ethers.utils.parseEther(inputValue)){
-      console.log("Provide Approval");
+    if(currentTab=='deposit'){
+      if(contractInfo.allowance<ethers.utils.parseEther(inputValue)){
+        const ERC20connect = ERC20.connect(library.getSigner());
+        await ERC20connect.approve(QIT.address,ethers.utils.parseEther(inputValue),{gasLimit:100000});
+        // update after completion
+      } else {
+        console.log("Execute Swap")
+      }
     } else {
-      console.log("Execute Swap");
+      console.log("Execute Withdrawal");
     }
 
   }
@@ -62,7 +66,16 @@ function MyPage() {
   async function initiateContract() {
     setContractInfo({
       address: QIT.address,
-      tokenName: await QIT.name(),
+      tokenName: QIT.tokenName,
+      qitbalance: await QIT.balanceOf(account),
+      allowance: await ERC20.allowance(account,QIT.address),
+    });
+  }
+
+  async function basicUpdate(){
+    setContractInfo({
+      address: contractInfo.address,
+      tokenName: contractInfo.tokenName,
       qitbalance: await QIT.balanceOf(account),
       allowance: await ERC20.allowance(account,QIT.address),
     });
@@ -230,7 +243,7 @@ function MyPage() {
                   type="button"
                   className="text-white  bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 "
                 >
-                  {contractInfo.allowance < ethers.utils.parseEther(inputValue) ? (currentTab == "withdrawal" ? "Give permission to withdraw QIT" : "Give permission to deposit USDT"):"Execute Swap"}
+                  {currentTab=="deposit"?(contractInfo.allowance<ethers.utils.parseEther(inputValue)?"Give permission to deposit USDT":"Execute Swap"):"Execute Swap"}
                 </button>
               </form>
             </div>
