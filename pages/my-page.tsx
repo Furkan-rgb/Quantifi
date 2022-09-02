@@ -1,27 +1,37 @@
 import React, { useEffect, useState, useRef } from "react";
-import myPageAbi from "../components/abi/myPageAbi.json";
+import myPageAbi from "../components/abi/QIT.json";
+import erc20ABI from "../components/abi/erc20.json"
 import { useWeb3React } from "@web3-react/core";
-import { ethers } from "ethers";
+import { BigNumber, ethers } from "ethers";
 
 function MyPage() {
-  const [currentTab, setCurrentTab] = useState<string>("withdrawal");
-  const [inputValue, setInputValue] = useState<string>();
+  const [currentTab, setCurrentTab] = useState<string>("deposit");
+  const [inputValue, setInputValue] = useState<string>("0");
   const [outputValue, setOutputValue] = useState<string>();
   const fromValue = useRef(0);
   const [contractInfo, setContractInfo] = useState<{
     address: ethers.Contract["address"];
     tokenName: string;
-    qitbalance: number;
+    qitbalance: ethers.BigNumber;
+    allowance:ethers.BigNumber;
   }>({
     address: "-",
     tokenName: "-",
-    qitbalance: 0,
+    qitbalance: BigNumber.from(0),
+    allowance:BigNumber.from(0),
   });
+  const minDeposit = 1000; // this will be updated to actual value in initiateContract()
 
   const { library, chainId, account, active } = useWeb3React();
-  const erc20 = new ethers.Contract(
+  const QIT = new ethers.Contract(
     "0x4C4470D0B9c0dD92B25Be1D2fB5181cdA7e6E3f7",
     myPageAbi,
+    library
+  );
+
+  const ERC20 = new ethers.Contract(
+    "0xEcAD8721BA48dBdc0eac431D68A0b140F07c0801",
+    erc20ABI,
     library
   );
 
@@ -31,19 +41,31 @@ function MyPage() {
 
   async function getDepositValue(value: string) {
     const number = parseInt(value, 10);
-    if (number > 1000) {
-      const deposit = await erc20.getDepositReturn(ethers.utils.parseEther(value));
-      console.log(ethers.utils.formatUnits(deposit, 6));
+    if (number >= minDeposit) {
+      var n = ethers.utils.parseEther(value);
+      const deposit = await QIT.getDepositReturn(ethers.utils.parseEther(value));
+      setOutputValue(ethers.utils.formatUnits(deposit, 6));
+      } else {
+        //TODO: Change to red and show Min Deposit = $x
+      }     
+  }
+
+  async function swapOrApprove() {
+    if(contractInfo.allowance < ethers.utils.parseEther(inputValue)){
+      console.log("Provide Approval");
+    } else {
+      console.log("Execute Swap");
     }
+
   }
 
   async function initiateContract() {
     setContractInfo({
-      address: erc20.address,
-      tokenName: await erc20.name(),
-      qitbalance: await erc20.balanceOf(account),
+      address: QIT.address,
+      tokenName: await QIT.name(),
+      qitbalance: await QIT.balanceOf(account),
+      allowance: await ERC20.allowance(account,QIT.address),
     });
-    console.log(erc20);
   }
 
   useEffect(() => {
@@ -54,7 +76,7 @@ function MyPage() {
 
   useEffect(() => {
     if (contractInfo.address !== "-") {
-      erc20.on("Transfer", (from, to, amount, event) => {
+      QIT.on("Transfer", (from, to, amount, event) => {
         console.log(from, to, amount, event);
       });
     }
@@ -80,7 +102,7 @@ function MyPage() {
                 <span className="block py-1 mb-2 mr-2 text-base font-semibold text-gray-700 rounded-full">
                   Tokens
                 </span>
-                <span className="text-right">{contractInfo.qitbalance.toString()} QIT</span>
+                <span className="text-right">{ethers.utils.formatUnits(contractInfo.qitbalance,6)} QIT</span>
               </div>
 
               <div className="flex justify-between">
@@ -177,7 +199,7 @@ function MyPage() {
                     htmlFor="floating_email"
                     className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
                   >
-                    From {inputValue}
+                    From
                   </label>
                   <span className="inline-flex items-center px-3 text-sm text-gray-900 border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
                     {currentTab == "withdrawal" ? contractInfo?.tokenName : "USDT"}
@@ -190,14 +212,13 @@ function MyPage() {
                     id="floating_password"
                     className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                     placeholder=" "
-                    required
+                    disabled
                   />
                   <label
                     htmlFor="floating_password"
                     className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
                   >
-                    To
-                    {/* {outputValue} */}
+                   To {outputValue}
                   </label>
                   <span className="inline-flex items-center px-3 text-sm text-gray-900 border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
                     {currentTab == "deposit" ? contractInfo?.tokenName : "USDT"}
@@ -205,10 +226,11 @@ function MyPage() {
                 </div>
 
                 <button
-                  type="submit"
+                  onClick={()=>{swapOrApprove()}}
+                  type="button"
                   className="text-white  bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 "
                 >
-                  Swap
+                  {contractInfo.allowance < ethers.utils.parseEther(inputValue) ? (currentTab == "withdrawal" ? "Give permission to withdraw QIT" : "Give permission to deposit USDT"):"Execute Swap"}
                 </button>
               </form>
             </div>
