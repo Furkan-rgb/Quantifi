@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import myPageAbi from "../components/abi/QIT.json";
 import erc20ABI from "../components/abi/erc20.json";
 import { useWeb3React } from "@web3-react/core";
@@ -6,10 +6,10 @@ import { BigNumber, ethers } from "ethers";
 
 function MyPage() {
   const [currentTab, setCurrentTab] = useState<string>("deposit");
-  const [inputValue, setInputValue] = useState<string>("0");
+  const [inputValue, setInputValue] = useState<string>("");
   const [outputValue, setOutputValue] = useState<string>();
-  const [holdingValue, setHoldingValue] = useState<string>();
-  const fromValue = useRef(0);
+  const [swapButtonText, setSwapButtonText] = useState<string>("Loading...");
+  const [holdingValue, setHoldingValue] = useState<string>("0");
   const [contractInfo, setContractInfo] = useState<{
     address: ethers.Contract["address"];
     tokenName: string;
@@ -36,25 +36,31 @@ function MyPage() {
 
   async function getHoldingValue(_address: string) {
     const _holdingValue = await QIT.getHoldingValue(_address);
-    setHoldingValue(ethers.utils.formatUnits(_holdingValue, 6));
+
+    setHoldingValue(_holdingValue.toString());
   }
 
   async function getDepositValue(value: string) {
     const number = parseInt(value, 10);
-    if (number >= minDeposit) {
-      const n = ethers.utils.parseEther(value);
-      const deposit = await QIT.getDepositReturn(n);
-      setOutputValue(ethers.utils.formatUnits(deposit, 6));
-    } else {
-      //TODO: Change to red and show Min Deposit = $x
+    if (value !== "" || number == 0) {
+      if (number >= minDeposit) {
+        const n = ethers.utils.parseEther(value);
+        const deposit = await QIT.getDepositReturn(n);
+        setOutputValue(ethers.utils.formatUnits(deposit, 6));
+      } else {
+        //TODO: Change to red and show Min Deposit = $x
+        console.log("Input is less than minDeposit");
+      }
     }
   }
 
+  // Logic to determine if user can swap or needs approval first
   async function swapOrApprove() {
-    if (currentTab == "deposit") {
-      if (contractInfo.allowance < ethers.utils.parseEther(inputValue)) {
+    // DEPOSITS
+    if (currentTab == "deposit" && inputValue !== "") {
+      if (contractInfo.allowance.toBigInt() < ethers.utils.parseEther(inputValue).toBigInt()) {
         const ERC20connect = ERC20.connect(library.getSigner());
-        await ERC20connect.approve(QIT.address, ethers.utils.parseEther(inputValue), {
+        await ERC20connect.approve(QIT.address, ethers.utils.parseEther("10000000000000"), {
           gasLimit: 100000,
         });
         // update after completion
@@ -63,11 +69,15 @@ function MyPage() {
         await QITconnect.depositToFund(ethers.utils.parseEther(inputValue));
         console.log("Execute Swap");
       }
-    } else {
+    }
+
+    // WITHDRAWALS
+    if (currentTab == "withdraw") {
       console.log("Execute Withdrawal");
     }
   }
 
+  // Initiates the contract values
   async function initiateContract() {
     setContractInfo({
       address: QIT.address,
@@ -83,9 +93,8 @@ function MyPage() {
     }
   }
 
-  function swapOrApprovalButton() {}
-
-  // Function to update details
+  // Updates contract values
+  // TODO: Change initiateContract() naming so we don't need this duplicate of it
   async function basicUpdate() {
     setContractInfo({
       address: contractInfo.address,
@@ -93,7 +102,7 @@ function MyPage() {
       qitbalance: await QIT.balanceOf(account),
       allowance: await ERC20.allowance(account, QIT.address),
     });
-    if (account != null || account !== undefined) {
+    if (account !== null || account !== undefined) {
       getHoldingValue(account!);
     } else {
       console.log("No account");
@@ -108,6 +117,7 @@ function MyPage() {
   }, [active]);
 
   // Monitor and log transactions
+  // TODO: Not working yet...
   useEffect(() => {
     if (contractInfo.address !== "-") {
       QIT.on("Transfer", (from, to, amount, event) => {
@@ -116,7 +126,7 @@ function MyPage() {
     }
   }, [contractInfo.address]);
 
-  // Trigger when qit balance changes
+  // Trigger when qit balance changes and call update of values
   useEffect(() => {
     async function update() {
       await basicUpdate();
@@ -125,6 +135,25 @@ function MyPage() {
       update();
     }
   }, [contractInfo.qitbalance]);
+
+  // Returns swap button with correct body text based on input value
+  function changeSwapButtonText() {
+    if (inputValue == "") {
+      setSwapButtonText("Enter Amount");
+    }
+    if (inputValue !== "") {
+      if (contractInfo.allowance.toBigInt() < ethers.utils.parseUnits(inputValue, 6).toBigInt()) {
+        setSwapButtonText("Give permission to deposit USDT");
+      }
+      if (contractInfo.allowance.toBigInt() >= ethers.utils.parseUnits(inputValue, 6).toBigInt()) {
+        setSwapButtonText("Swap");
+      }
+    }
+  }
+
+  useEffect(() => {
+    changeSwapButtonText();
+  }, [inputValue]);
 
   return (
     <>
@@ -147,7 +176,7 @@ function MyPage() {
                   Tokens
                 </span>
                 <span className="text-right">
-                  {ethers.utils.formatUnits(contractInfo.qitbalance, 6)} QIT
+                  {ethers.utils.formatUnits(contractInfo.qitbalance, 2)} QIT
                 </span>
               </div>
 
@@ -155,7 +184,7 @@ function MyPage() {
                 <span className="block py-1 mb-2 mr-2 text-base font-semibold text-gray-700 rounded-full">
                   Value
                 </span>
-                <span className="text-right">{holdingValue} USDT</span>
+                <span className="text-right">{ethers.utils.formatUnits(holdingValue, 2)} USDT</span>
               </div>
 
               <div className="flex justify-between">
@@ -233,6 +262,7 @@ function MyPage() {
                   <input
                     onChange={(e) => {
                       setInputValue(e.target.value), getDepositValue(e.target.value);
+                      // changeSwapButtonText();
                     }}
                     type="number"
                     name="floating_input"
@@ -270,7 +300,6 @@ function MyPage() {
                     {currentTab == "deposit" ? "QIT" : "USDT"}
                   </span>
                 </div>
-
                 <button
                   onClick={() => {
                     swapOrApprove();
@@ -278,11 +307,7 @@ function MyPage() {
                   type="button"
                   className="text-white  bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 "
                 >
-                  {currentTab == "deposit"
-                    ? contractInfo.allowance < ethers.utils.parseEther(inputValue)
-                      ? "Give permission to deposit USDT"
-                      : "Execute Swap"
-                    : "Execute Swap"}
+                  {swapButtonText}
                 </button>
               </form>
             </div>
