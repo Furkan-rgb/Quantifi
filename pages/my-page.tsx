@@ -25,7 +25,8 @@ function MyPage() {
     lockupEnds: 0,
     pendingWithdrawals: BigNumber.from(0),
   });
-  const minDeposit = 1000; // this will be updated to actual value in initiateContract()
+  const minDeposit = 1000; // this will be updated to actual value
+  const BNBChain = 97;
 
   const { library, chainId, account, active } = useWeb3React();
   const QIT = new ethers.Contract("0x4C4470D0B9c0dD92B25Be1D2fB5181cdA7e6E3f7", myPageAbi, library);
@@ -64,12 +65,19 @@ function MyPage() {
     if (currentTab == "deposit" && inputValue !== "") {
       if (contractInfo.allowance.toBigInt() < ethers.utils.parseEther(inputValue).toBigInt()) {
         const ERC20connect = ERC20.connect(library.getSigner());
-        await ERC20connect.approve(QIT.address, ethers.utils.parseEther("10000000000000")).then(initiateContract());
+        try{
+        await ERC20connect.approve(QIT.address, ethers.utils.parseEther("10000000000000"));
+        } catch(error){
+          console.log("Wallet transaction did not complete");
+        }
         // update after completion
       } else {
         const QITconnect = QIT.connect(library.getSigner());
+        try{
         await QITconnect.depositToFund(ethers.utils.parseEther(inputValue));
-        console.log("Execute Swap");
+        } catch(error){
+          console.log("Unable to complete Deposit")
+        }
       }
     }
 
@@ -88,7 +96,7 @@ function MyPage() {
   // Initiates the contract values
   async function initiateContract() {
     setContractInfo({
-      address: "0x4C4470D0B9c0dD92B25Be1D2fB5181cdA7e6E3f7",
+      address: QIT.address,
       tokenName: "QIT",
       qitbalance: await QIT.balanceOf(account),
       allowance: await ERC20.allowance(account, QIT.address),
@@ -97,19 +105,49 @@ function MyPage() {
     });
     if (account != null || account !== undefined) {
       await getHoldingValue(account!);
-      console.log(contractInfo.address);
     } else {
       console.log("No account");
     }
   }
 
-  // removed basic update for now and swapped to just calling initiateContract()
-
+  async function setCorrectChain() {
+    {
+      await library.provider.request({
+        method: 'wallet_addEthereumChain',
+        params: [
+            {
+                chainId: "0x61",
+                chainName: "BNB Smart Chain Testnet",
+                rpcUrls: ["https://data-seed-prebsc-1-s3.binance.org:8545"],
+                nativeCurrency: "BNB",
+                blockExplorerUrls: ["https://testnet.bscscan.com"],
+            },
+        ],
+    })
+      try {
+        await library.provider.request({
+          method: 'wallet_switchEthereumChain',
+            params: [{ chainId: "0x61"}],
+          });
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    console.log("Hello");
+  }
+  useEffect(() => {
+    if(chainId!=BNBChain && active){
+      // ASSUME METAMASK --> change later to be more robust
+      console.log("Not on correct blockchain");
+      setCorrectChain();
+    } else if (active){
+      initiateContract();
+    }
+  },[chainId]);
   // If there is a provider, but no account then initiateContract(). Keeps track of 'active' value changes
   useEffect(() => {
-    if (active && contractInfo.address === "-") {
+    if (active && contractInfo.address === "-" && chainId===BNBChain) {
       initiateContract();
-      console.log(contractInfo.address);
     }
   }, [active]);
 
@@ -127,10 +165,7 @@ function MyPage() {
   useEffect(() => {
     async function update() {
       await initiateContract();
-    }
-    if (contractInfo.address !== "-") {
-      update();
-    }
+      }
   }, [contractInfo.qitbalance]);
 
   // Returns swap button with correct body text based on input value
@@ -150,7 +185,7 @@ function MyPage() {
 
   useEffect(() => {
     changeSwapButtonText();
-  }, [inputValue]);
+  }, [inputValue,contractInfo.allowance]);
 
   return (
     <>
