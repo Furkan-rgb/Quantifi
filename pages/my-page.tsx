@@ -45,13 +45,21 @@ function MyPage() {
     setHoldingValue(_holdingValue.toString());
   }
 
+  async function getWithdrawalValue(value:string){
+    const number = parseInt(value,10);
+    if (value !== "" || number == 0) {
+      const n = ethers.utils.parseUnits(value,6);
+      const wd = await QIT.getWithdrawalReturn(n);
+      setOutputValue((+ethers.utils.formatUnits(wd, 18)).toFixed(2));
+    }
+  }
   async function getDepositValue(value: string) {
     const number = parseInt(value, 10);
     if (value !== "" || number == 0) {
       if (number >= minDeposit) {
         const n = ethers.utils.parseEther(value);
         const deposit = await QIT.getDepositReturn(n);
-        setOutputValue(ethers.utils.formatUnits(deposit, 6));
+        setOutputValue((+ethers.utils.formatUnits(deposit, 6)).toFixed(2));
       } else {
         //TODO: Change to red and show Min Deposit = $x
         //console.log("Input is less than minDeposit");
@@ -82,11 +90,17 @@ function MyPage() {
     }
 
     // WITHDRAWALS
-    if (currentTab == "withdraw") {
-      if (contractInfo.qitbalance>BigNumber.from(0) && inputValue !== "" && Date.now()>contractInfo.lockupEnds){
+    if (currentTab == "withdrawal") {
+      if (contractInfo.qitbalance>BigNumber.from(0) && inputValue !== "" && Date.now()/1000>contractInfo.lockupEnds){
         if (ethers.utils.parseEther(inputValue).toBigInt()>0)
         {
-
+          const QITconnect = QIT.connect(library.getSigner());
+          try {
+            await QITconnect.requestWithdrawal(ethers.utils.parseUnits(inputValue,6));
+          } catch(error)
+          {
+            console.log("Withdrawal Failed");
+          }
         }
       }
       
@@ -135,21 +149,17 @@ function MyPage() {
     }
     console.log("Hello");
   }
+  // If there is a provider, but no account then initiateContract(). Tracking chainid changes not active per se
   useEffect(() => {
     if(chainId!=BNBChain && active){
       // ASSUME METAMASK --> change later to be more robust
       console.log("Not on correct blockchain");
       setCorrectChain();
     } else if (active){
+      console.log(chainId);
       initiateContract();
     }
   },[chainId]);
-  // If there is a provider, but no account then initiateContract(). Keeps track of 'active' value changes
-  useEffect(() => {
-    if (active && contractInfo.address === "-" && chainId===BNBChain) {
-      initiateContract();
-    }
-  }, [active]);
 
   // Monitor and log transactions
   // TODO: Not working yet...
@@ -161,11 +171,18 @@ function MyPage() {
     }
   }, [contractInfo.address]);
 
+  useEffect(() => {
+    if (active && chainId==BNBChain) {
+      initiateContract();
+    }
+  }, [active]);
+
   // Trigger when qit balance changes and call update of values
   useEffect(() => {
     async function update() {
       await initiateContract();
       }
+      update();
   }, [contractInfo.qitbalance]);
 
   // Returns swap button with correct body text based on input value
@@ -174,11 +191,14 @@ function MyPage() {
       setSwapButtonText("Enter Amount");
     }
     if (inputValue !== "") {
-      if (contractInfo.allowance.toBigInt() < ethers.utils.parseUnits(inputValue, 6).toBigInt() && currentTab==="deposit") {
+      if (currentTab==="withdrawal"){
+        setSwapButtonText("Swap QIT for USDT")
+      }
+      else if (contractInfo.allowance.toBigInt() < ethers.utils.parseUnits(inputValue, 6).toBigInt() && currentTab==="deposit") {
         setSwapButtonText("Give permission to deposit USDT");
       }
-      if (contractInfo.allowance.toBigInt() >= ethers.utils.parseUnits(inputValue, 6).toBigInt()) {
-        setSwapButtonText("Swap");
+      else if (contractInfo.allowance.toBigInt() >= ethers.utils.parseUnits(inputValue, 6).toBigInt()) {
+        setSwapButtonText("Swap USDT for QIT");
       }
     }
   }
@@ -258,7 +278,7 @@ function MyPage() {
                 <li className="mr-2 ">
                   <button
                     onClick={() => {
-                      setCurrentTab("withdrawal");
+                      setCurrentTab("withdrawal") ,currentTab!="withdrawal"?setOutputValue(""):null;
                     }}
                     className={classNames(
                       currentTab == "withdrawal"
@@ -272,7 +292,7 @@ function MyPage() {
                 <li className="mr-2 ">
                   <button
                     onClick={() => {
-                      setCurrentTab("deposit");
+                      setCurrentTab("deposit"), currentTab!="deposit"?setOutputValue(""):null;
                     }}
                     className={classNames(
                       currentTab == "deposit"
@@ -293,7 +313,7 @@ function MyPage() {
                 <div className="relative z-0 flex w-full mb-6 group">
                   <input
                     onChange={(e) => {
-                      setInputValue(e.target.value), getDepositValue(e.target.value);
+                      setInputValue(e.target.value), currentTab==="deposit" ? getDepositValue(e.target.value) : getWithdrawalValue(e.target.value);
                       // changeSwapButtonText();
                     }}
                     type="number"
