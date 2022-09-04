@@ -70,18 +70,19 @@ function Carousel() {
 
   return (
     <>
-      <div className="embla overflow-hidden h-full" ref={emblaRef}>
+      <div className="h-full overflow-hidden embla" ref={emblaRef}>
         <div className="flex">
           {slides.map((slide) => {
             return (
               // Slide
-              <div key={slide.id} className="flex-embla flex flex-col-reverse sm:flex-row">
+              <div key={slide.id} className="flex flex-col-reverse flex-embla sm:flex-row">
                 {/* Image half */}
-                <div className="sm:w-1/2 h-full w-full bg-center-right justify-center items-center flex bg-cover bg-center bg-no-repeat">
-                  <img className="h-full w-full bg-right-center object-cover" src={slide.img} />
+                <div className="flex items-center justify-center w-full h-full bg-center bg-no-repeat bg-cover sm:w-1/2 bg-center-right">
+                  <div className="absolute w-1/2 h-full bg-gradient-to-r from-transparent via-transparent to-qdark bg-right-center"></div>
+                  <img className="object-cover w-full h-full" src={slide.img} />
                 </div>
                 {/* Text half */}
-                <div className="sm:w-1/2 w-full flex justify-center text-center items-center sm:items-start flex-col sm:text-left text-5xl">
+                <div className="flex flex-col items-center justify-center w-full text-5xl text-center sm:w-1/2 sm:items-center sm:text-left">
                   <div className="max-w-md px-5">
                     {/* Title */}
                     <div className="mb-4 md:mb-0">
@@ -102,7 +103,7 @@ function Carousel() {
                       )}
                     </div>
                     {/* Description */}
-                    <p className="font-sans mt-2 sm:mt-6 text-xl mb-3 md:mb-0">{slide.desc}</p>
+                    <p className="mt-2 mb-3 font-sans text-xl sm:mt-6 md:mb-0">{slide.desc}</p>
                   </div>
                 </div>
               </div>
