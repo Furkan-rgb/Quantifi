@@ -53,7 +53,7 @@ function MyPage() {
         setOutputValue(ethers.utils.formatUnits(deposit, 6));
       } else {
         //TODO: Change to red and show Min Deposit = $x
-        console.log("Input is less than minDeposit");
+        //console.log("Input is less than minDeposit");
       }
     }
   }
@@ -64,9 +64,7 @@ function MyPage() {
     if (currentTab == "deposit" && inputValue !== "") {
       if (contractInfo.allowance.toBigInt() < ethers.utils.parseEther(inputValue).toBigInt()) {
         const ERC20connect = ERC20.connect(library.getSigner());
-        await ERC20connect.approve(QIT.address, ethers.utils.parseEther("10000000000000"), {
-          gasLimit: 100000,
-        });
+        await ERC20connect.approve(QIT.address, ethers.utils.parseEther("10000000000000")).then(initiateContract());
         // update after completion
       } else {
         const QITconnect = QIT.connect(library.getSigner());
@@ -77,14 +75,20 @@ function MyPage() {
 
     // WITHDRAWALS
     if (currentTab == "withdraw") {
-      console.log("Execute Withdrawal");
+      if (contractInfo.qitbalance>BigNumber.from(0) && inputValue !== "" && Date.now()>contractInfo.lockupEnds){
+        if (ethers.utils.parseEther(inputValue).toBigInt()>0)
+        {
+
+        }
+      }
+      
     }
   }
 
   // Initiates the contract values
   async function initiateContract() {
     setContractInfo({
-      address: QIT.address,
+      address: "0x4C4470D0B9c0dD92B25Be1D2fB5181cdA7e6E3f7",
       tokenName: "QIT",
       qitbalance: await QIT.balanceOf(account),
       allowance: await ERC20.allowance(account, QIT.address),
@@ -93,33 +97,19 @@ function MyPage() {
     });
     if (account != null || account !== undefined) {
       await getHoldingValue(account!);
-      console.log(account);
+      console.log(contractInfo.address);
     } else {
       console.log("No account");
     }
   }
 
-  // Updates contract values
-  // TODO: Change initiateContract() naming so we don't need this duplicate of it
-  async function basicUpdate() {
-    setContractInfo({
-      address: contractInfo.address,
-      tokenName: contractInfo.tokenName,
-      qitbalance: await QIT.balanceOf(account),
-      allowance: await ERC20.allowance(account, QIT.address),
-      lockupEnds: await QIT.withdrawalLockTime(account),
-    });
-    if (account !== null || account !== undefined) {
-      getHoldingValue(account!);
-    } else {
-      console.log("No account");
-    }
-  }
+  // removed basic update for now and swapped to just calling initiateContract()
 
   // If there is a provider, but no account then initiateContract(). Keeps track of 'active' value changes
   useEffect(() => {
     if (active && contractInfo.address === "-") {
       initiateContract();
+      console.log(contractInfo.address);
     }
   }, [active]);
 
@@ -136,7 +126,7 @@ function MyPage() {
   // Trigger when qit balance changes and call update of values
   useEffect(() => {
     async function update() {
-      await basicUpdate();
+      await initiateContract();
     }
     if (contractInfo.address !== "-") {
       update();
@@ -149,7 +139,7 @@ function MyPage() {
       setSwapButtonText("Enter Amount");
     }
     if (inputValue !== "") {
-      if (contractInfo.allowance.toBigInt() < ethers.utils.parseUnits(inputValue, 6).toBigInt()) {
+      if (contractInfo.allowance.toBigInt() < ethers.utils.parseUnits(inputValue, 6).toBigInt() && currentTab==="deposit") {
         setSwapButtonText("Give permission to deposit USDT");
       }
       if (contractInfo.allowance.toBigInt() >= ethers.utils.parseUnits(inputValue, 6).toBigInt()) {
@@ -219,7 +209,7 @@ function MyPage() {
                 <span className="block py-1 mb-2 mr-2 text-base font-semibold text-gray-700 rounded-full">
                   Pending Withdrawals
                 </span>
-                <span className="text-right">0 QIT</span>
+                <span className="text-right">{(+ethers.utils.formatUnits(contractInfo.pendingWithdrawals,6)).toFixed(2)} QIT</span>
               </div>
             </div>
           </div>
