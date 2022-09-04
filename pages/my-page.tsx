@@ -15,13 +15,18 @@ function MyPage() {
     tokenName: string;
     qitbalance: ethers.BigNumber;
     allowance: ethers.BigNumber;
+    lockupEnds: number;
+    pendingWithdrawals: ethers.BigNumber;
   }>({
     address: "-",
     tokenName: "QIT",
     qitbalance: BigNumber.from(0),
     allowance: BigNumber.from(0),
+    lockupEnds: 0,
+    pendingWithdrawals: BigNumber.from(0),
   });
-  const minDeposit = 1000; // this will be updated to actual value in initiateContract()
+  const minDeposit = 1000; // this will be updated to actual value
+  const BNBChain = 97;
 
   const { library, chainId, account, active } = useWeb3React();
   const QIT = new ethers.Contract("0x4C4470D0B9c0dD92B25Be1D2fB5181cdA7e6E3f7", myPageAbi, library);
@@ -40,16 +45,24 @@ function MyPage() {
     setHoldingValue(_holdingValue.toString());
   }
 
+  async function getWithdrawalValue(value:string){
+    const number = parseInt(value,10);
+    if (value !== "" || number == 0) {
+      const n = ethers.utils.parseUnits(value,6);
+      const wd = await QIT.getWithdrawalReturn(n);
+      setOutputValue((+ethers.utils.formatUnits(wd, 18)).toFixed(2));
+    }
+  }
   async function getDepositValue(value: string) {
     const number = parseInt(value, 10);
     if (value !== "" || number == 0) {
       if (number >= minDeposit) {
         const n = ethers.utils.parseEther(value);
         const deposit = await QIT.getDepositReturn(n);
-        setOutputValue(ethers.utils.formatUnits(deposit, 6));
+        setOutputValue((+ethers.utils.formatUnits(deposit, 6)).toFixed(2));
       } else {
         //TODO: Change to red and show Min Deposit = $x
-        console.log("Input is less than minDeposit");
+        //console.log("Input is less than minDeposit");
       }
     }
   }
@@ -60,20 +73,37 @@ function MyPage() {
     if (currentTab == "deposit" && inputValue !== "") {
       if (contractInfo.allowance.toBigInt() < ethers.utils.parseEther(inputValue).toBigInt()) {
         const ERC20connect = ERC20.connect(library.getSigner());
-        await ERC20connect.approve(QIT.address, ethers.utils.parseEther("10000000000000"), {
-          gasLimit: 100000,
-        });
+        try{
+        await ERC20connect.approve(QIT.address, ethers.utils.parseEther("10000000000000"));
+        } catch(error){
+          console.log("Wallet transaction did not complete");
+        }
         // update after completion
       } else {
         const QITconnect = QIT.connect(library.getSigner());
+        try{
         await QITconnect.depositToFund(ethers.utils.parseEther(inputValue));
-        console.log("Execute Swap");
+        } catch(error){
+          console.log("Unable to complete Deposit")
+        }
       }
     }
 
     // WITHDRAWALS
-    if (currentTab == "withdraw") {
-      console.log("Execute Withdrawal");
+    if (currentTab == "withdrawal") {
+      if (contractInfo.qitbalance>BigNumber.from(0) && inputValue !== "" && Date.now()/1000>contractInfo.lockupEnds){
+        if (ethers.utils.parseEther(inputValue).toBigInt()>0)
+        {
+          const QITconnect = QIT.connect(library.getSigner());
+          try {
+            await QITconnect.requestWithdrawal(ethers.utils.parseUnits(inputValue,6));
+          } catch(error)
+          {
+            console.log("Withdrawal Failed");
+          }
+        }
+      }
+      
     }
   }
 
@@ -81,40 +111,55 @@ function MyPage() {
   async function initiateContract() {
     setContractInfo({
       address: QIT.address,
-      tokenName: await QIT.name(),
+      tokenName: "QIT",
       qitbalance: await QIT.balanceOf(account),
       allowance: await ERC20.allowance(account, QIT.address),
+      lockupEnds: await QIT.withdrawalLockTime(account),
+      pendingWithdrawals: await QIT.pendingWithdrawals(account),
     });
     if (account != null || account !== undefined) {
       await getHoldingValue(account!);
-      console.log(account);
     } else {
       console.log("No account");
     }
   }
 
-  // Updates contract values
-  // TODO: Change initiateContract() naming so we don't need this duplicate of it
-  async function basicUpdate() {
-    setContractInfo({
-      address: contractInfo.address,
-      tokenName: contractInfo.tokenName,
-      qitbalance: await QIT.balanceOf(account),
-      allowance: await ERC20.allowance(account, QIT.address),
-    });
-    if (account !== null || account !== undefined) {
-      getHoldingValue(account!);
-    } else {
-      console.log("No account");
+  async function setCorrectChain() {
+    {
+      await library.provider.request({
+        method: 'wallet_addEthereumChain',
+        params: [
+            {
+                chainId: "0x61",
+                chainName: "BNB Smart Chain Testnet",
+                rpcUrls: ["https://data-seed-prebsc-1-s3.binance.org:8545"],
+                nativeCurrency: "BNB",
+                blockExplorerUrls: ["https://testnet.bscscan.com"],
+            },
+        ],
+    })
+      try {
+        await library.provider.request({
+          method: 'wallet_switchEthereumChain',
+            params: [{ chainId: "0x61"}],
+          });
+      } catch (error) {
+        console.log(error)
+      }
     }
+    console.log("Hello");
   }
-
-  // If there is a provider, but no account then initiateContract(). Keeps track of 'active' value changes
+  // If there is a provider, but no account then initiateContract(). Tracking chainid changes not active per se
   useEffect(() => {
-    if (active && contractInfo.address === "-") {
+    if(chainId!=BNBChain && active){
+      // ASSUME METAMASK --> change later to be more robust
+      console.log("Not on correct blockchain");
+      setCorrectChain();
+    } else if (active){
+      console.log(chainId);
       initiateContract();
     }
-  }, [active]);
+  },[chainId]);
 
   // Monitor and log transactions
   // TODO: Not working yet...
@@ -126,14 +171,20 @@ function MyPage() {
     }
   }, [contractInfo.address]);
 
+  useEffect(() => {
+    if (active && chainId==BNBChain) {
+      initiateContract();
+    }
+  }, [active]);
+
   // Trigger when qit balance changes and call update of values
   useEffect(() => {
     async function update() {
-      await basicUpdate();
-    }
-    if (contractInfo.address !== "-") {
+      await initiateContract();
+      }
+      if(chainId===BNBChain){
       update();
-    }
+      }
   }, [contractInfo.qitbalance]);
 
   // Returns swap button with correct body text based on input value
@@ -142,18 +193,21 @@ function MyPage() {
       setSwapButtonText("Enter Amount");
     }
     if (inputValue !== "") {
-      if (contractInfo.allowance.toBigInt() < ethers.utils.parseUnits(inputValue, 6).toBigInt()) {
+      if (currentTab==="withdrawal"){
+        setSwapButtonText("Swap QIT for USDT")
+      }
+      else if (contractInfo.allowance.toBigInt() < ethers.utils.parseUnits(inputValue, 6).toBigInt() && currentTab==="deposit") {
         setSwapButtonText("Give permission to deposit USDT");
       }
-      if (contractInfo.allowance.toBigInt() >= ethers.utils.parseUnits(inputValue, 6).toBigInt()) {
-        setSwapButtonText("Swap");
+      else if (contractInfo.allowance.toBigInt() >= ethers.utils.parseUnits(inputValue, 6).toBigInt()) {
+        setSwapButtonText("Swap USDT for QIT");
       }
     }
   }
 
   useEffect(() => {
     changeSwapButtonText();
-  }, [inputValue]);
+  }, [inputValue,contractInfo.allowance]);
 
   return (
     <>
@@ -176,7 +230,7 @@ function MyPage() {
                   Tokens
                 </span>
                 <span className="text-right">
-                  {ethers.utils.formatUnits(contractInfo.qitbalance, 2)} QIT
+                  {(+ethers.utils.formatUnits(contractInfo.qitbalance, 6)).toFixed(2)} QIT
                 </span>
               </div>
 
@@ -184,7 +238,7 @@ function MyPage() {
                 <span className="block py-1 mb-2 mr-2 text-base font-semibold text-gray-700 rounded-full">
                   Value
                 </span>
-                <span className="text-right">{ethers.utils.formatUnits(holdingValue, 2)} USDT</span>
+                <span className="text-right">{(+ethers.utils.formatEther(holdingValue)).toFixed(2)} USDT</span>
               </div>
 
               <div className="flex justify-between">
@@ -205,14 +259,14 @@ function MyPage() {
                 <span className="block py-1 mb-2 mr-2 text-base font-semibold text-gray-700 rounded-full">
                   Withdrawal Lockup Ends
                 </span>
-                <span className="text-right">21 May 2022 11:48 AM</span>
+                <span className="text-right">{new Date(contractInfo.lockupEnds*1000).toLocaleString()}</span>
               </div>
 
               <div className="flex justify-between">
                 <span className="block py-1 mb-2 mr-2 text-base font-semibold text-gray-700 rounded-full">
                   Pending Withdrawals
                 </span>
-                <span className="text-right">0 QIT</span>
+                <span className="text-right">{(+ethers.utils.formatUnits(contractInfo.pendingWithdrawals,6)).toFixed(2)} QIT</span>
               </div>
             </div>
           </div>
@@ -226,7 +280,7 @@ function MyPage() {
                 <li className="mr-2 ">
                   <button
                     onClick={() => {
-                      setCurrentTab("withdrawal");
+                      setCurrentTab("withdrawal") ,currentTab!="withdrawal"?setOutputValue(""):null;
                     }}
                     className={classNames(
                       currentTab == "withdrawal"
@@ -240,7 +294,7 @@ function MyPage() {
                 <li className="mr-2 ">
                   <button
                     onClick={() => {
-                      setCurrentTab("deposit");
+                      setCurrentTab("deposit"), currentTab!="deposit"?setOutputValue(""):null;
                     }}
                     className={classNames(
                       currentTab == "deposit"
@@ -261,7 +315,7 @@ function MyPage() {
                 <div className="relative z-0 flex w-full mb-6 group">
                   <input
                     onChange={(e) => {
-                      setInputValue(e.target.value), getDepositValue(e.target.value);
+                      setInputValue(e.target.value), currentTab==="deposit" ? getDepositValue(e.target.value) : getWithdrawalValue(e.target.value);
                       // changeSwapButtonText();
                     }}
                     type="number"
