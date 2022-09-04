@@ -15,11 +15,15 @@ function MyPage() {
     tokenName: string;
     qitbalance: ethers.BigNumber;
     allowance: ethers.BigNumber;
+    lockupEnds: number;
+    pendingWithdrawals: ethers.BigNumber;
   }>({
     address: "-",
     tokenName: "QIT",
     qitbalance: BigNumber.from(0),
     allowance: BigNumber.from(0),
+    lockupEnds: 0,
+    pendingWithdrawals: BigNumber.from(0),
   });
   const minDeposit = 1000; // this will be updated to actual value in initiateContract()
 
@@ -81,9 +85,11 @@ function MyPage() {
   async function initiateContract() {
     setContractInfo({
       address: QIT.address,
-      tokenName: await QIT.name(),
+      tokenName: "QIT",
       qitbalance: await QIT.balanceOf(account),
       allowance: await ERC20.allowance(account, QIT.address),
+      lockupEnds: await QIT.withdrawalLockTime(account),
+      pendingWithdrawals: await QIT.pendingWithdrawals(account),
     });
     if (account != null || account !== undefined) {
       await getHoldingValue(account!);
@@ -101,6 +107,7 @@ function MyPage() {
       tokenName: contractInfo.tokenName,
       qitbalance: await QIT.balanceOf(account),
       allowance: await ERC20.allowance(account, QIT.address),
+      lockupEnds: await QIT.withdrawalLockTime(account),
     });
     if (account !== null || account !== undefined) {
       getHoldingValue(account!);
@@ -176,7 +183,7 @@ function MyPage() {
                   Tokens
                 </span>
                 <span className="text-right">
-                  {ethers.utils.formatUnits(contractInfo.qitbalance, 2)} QIT
+                  {(+ethers.utils.formatUnits(contractInfo.qitbalance, 6)).toFixed(2)} QIT
                 </span>
               </div>
 
@@ -184,7 +191,7 @@ function MyPage() {
                 <span className="block py-1 mb-2 mr-2 text-base font-semibold text-gray-700 rounded-full">
                   Value
                 </span>
-                <span className="text-right">{ethers.utils.formatUnits(holdingValue, 2)} USDT</span>
+                <span className="text-right">{(+ethers.utils.formatEther(holdingValue)).toFixed(2)} USDT</span>
               </div>
 
               <div className="flex justify-between">
@@ -205,7 +212,7 @@ function MyPage() {
                 <span className="block py-1 mb-2 mr-2 text-base font-semibold text-gray-700 rounded-full">
                   Withdrawal Lockup Ends
                 </span>
-                <span className="text-right">21 May 2022 11:48 AM</span>
+                <span className="text-right">{new Date(contractInfo.lockupEnds*1000).toLocaleString()}</span>
               </div>
 
               <div className="flex justify-between">
