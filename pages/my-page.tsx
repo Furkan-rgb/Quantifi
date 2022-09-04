@@ -182,7 +182,9 @@ function MyPage() {
     async function update() {
       await initiateContract();
       }
+      if(chainId===BNBChain){
       update();
+      }
   }, [contractInfo.qitbalance]);
 
   // Returns swap button with correct body text based on input value
