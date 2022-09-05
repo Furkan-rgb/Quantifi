@@ -4,12 +4,12 @@ import Carousel from "../components/carousel";
 function HomePage() {
   return (
     <>
-      {/* Background colour cone */}
-      <div className="max-w-full cone animate-wiggle -z-10"></div>
-
       {/* 1 */}
-      <div className="min-h-screen">
-        <main className="flex items-center h-full px-4 mx-auto mt-10 sm:mt-12 sm:px-6 md:mt-16 lg:mt-20 lg:px-8 xl:mt-28">
+      <div className="relative z-10 min-h-screen">
+        {/* Cone */}
+        <div className="absolute z-10 max-w-full cone"></div>
+
+        <main className="relative z-20 flex items-center h-full px-4 mx-auto mt-10 sm:mt-12 sm:px-6 md:mt-16 lg:mt-20 lg:px-8 xl:mt-28">
           {/* Text part */}
           <div className="items-start w-full sm:text-center lg:text-left">
             <h1 className="text-4xl font-bold tracking-tight text-gray-200 sm:text-5xl sm:tracking-tight md:text-6xl md:tracking-tight">
@@ -37,15 +37,10 @@ function HomePage() {
               </div>
             </div>
           </div>
-          {/* <div className="w-1/2">
-            <video className="w-full h-full " autoPlay loop>
-              <source src="/logo_vid.mp4" />
-            </video>
-          </div> */}
         </main>
       </div>
       {/* 2 */}
-      <div className="mb-32 ">
+      <div className="z-20 mb-32">
         <Carousel />
       </div>
       {/* 3 */}

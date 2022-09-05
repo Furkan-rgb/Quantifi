@@ -3,8 +3,8 @@ import { IoMdSettings } from "react-icons/io";
 
 function Footer() {
   return (
-    <footer className="p-4 rounded-lg shadow md:flex md:items-center md:justify-between md:p-6 bg-transparent mt-auto border-t border-indigo-500">
-      <ul className="flex flex-wrap items-center mt-3 text-sm text-gray-500 dark:text-gray-400 sm:mt-0 justify-center">
+    <footer className="p-4 mt-auto bg-transparent bg-black border-t border-indigo-500 rounded-lg shadow md:flex md:items-center md:justify-between md:p-6">
+      <ul className="flex flex-wrap items-center justify-center mt-3 text-sm text-gray-500 dark:text-gray-400 sm:mt-0">
         <li>
           <a href="#" className="ml-4 hover:underline md:mr-6 ">
             Contact
@@ -21,12 +21,12 @@ function Footer() {
           </a>
         </li>
         <li>
-          <a href="#" className="hover:underline ml-4 md:mr-6">
+          <a href="#" className="ml-4 hover:underline md:mr-6">
             Forum
           </a>
         </li>
       </ul>
-      <div className="flex mt-4 space-x-6 justify-center md:mt-0">
+      <div className="flex justify-center mt-4 space-x-6 md:mt-0">
         <a
           href="https://discord.com/"
           className="text-gray-400 hover:text-gray-900 dark:hover:text-white"

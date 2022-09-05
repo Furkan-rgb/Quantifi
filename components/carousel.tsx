@@ -83,7 +83,7 @@ function Carousel() {
                 </div>
                 {/* Text half */}
                 <div className="flex flex-col items-center sm:justify-center w-full py-6 text-5xl text-center bg-black sm:w-1/2 sm:items-center sm:text-left sm:h-full h-[49vh] z-20 max-h-fit overflow-visible justify-start">
-                  <div className="max-w-md px-5 overflow-visible bg-gradient-to-t from-transparent to-black sm:bg-transparent">
+                  <div className="max-w-lg px-5 overflow-visible bg-gradient-to-t from-transparent to-black sm:bg-transparent">
                     {/* Title */}
                     <div className="mb-4 md:mb-0">
                       {slide.header.keyword.first ? (

@@ -26,7 +26,7 @@ export default function Navbar() {
     },
   ];
   return (
-    <Disclosure as="nav" className="bg-transparent">
+    <Disclosure as="nav" className="bg-black border-b border-indigo-500 rounded-lg">
       {({ open }) => (
         <>
           <div className="px-2 mx-auto sm:px-10 lg:px-12 ">
