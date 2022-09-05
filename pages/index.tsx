@@ -5,11 +5,11 @@ function HomePage() {
   return (
     <>
       {/* 1 */}
-      <div className="relative z-10 min-h-screen">
+      <div className="relative z-10 min-h-screen ">
         {/* Cone */}
         <div className="absolute z-10 max-w-full cone"></div>
 
-        <main className="relative z-20 flex items-center h-full px-4 mx-auto mt-10 sm:mt-12 sm:px-6 md:mt-16 lg:mt-20 lg:px-8 xl:mt-28">
+        <main className="relative z-20 flex items-center h-full px-4 pt-10 mx-auto sm:pt-12 sm:px-6 md:pt-16 lg:pt-20 lg:px-8 xl:pt-28">
           {/* Text part */}
           <div className="items-start w-full sm:text-center lg:text-left">
             <h1 className="text-4xl font-bold tracking-tight text-gray-200 sm:text-5xl sm:tracking-tight md:text-6xl md:tracking-tight">
@@ -40,12 +40,12 @@ function HomePage() {
         </main>
       </div>
       {/* 2 */}
-      <div className="z-20 mb-32">
+      <div className="z-20 pb-4 bg-black">
         <Carousel />
       </div>
       {/* 3 */}
-      <div className="flex items-start justify-center mb-32 min-h-fit">
-        <div className="mx-2 my-20 text-center text-gray-900 dark:text-gray-200">
+      <div className="flex items-start justify-center py-32 min-h-fit bg-slate-50">
+        <div className="mx-2 text-center text-gray-900 dark:text-gray-900">
           <h1 className="text-4xl font-bold tracking-tight sm:text-5xl sm:tracking-tight md:text-6xl md:tracking-tight">
             <span className="block">Are you ready to join us?</span>
           </h1>
