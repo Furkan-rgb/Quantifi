@@ -70,24 +70,24 @@ function Carousel() {
 
   return (
     <>
-      <div className="h-full overflow-hidden embla" ref={emblaRef}>
+      <div className="h-full overflow-hidden md:h-screen embla" ref={emblaRef}>
         <div className="flex">
           {slides.map((slide) => {
             return (
               // Slide
               <div key={slide.id} className="flex flex-col-reverse flex-embla sm:flex-row">
                 {/* Image half */}
-                <div className="flex items-center justify-center w-full h-full bg-center bg-no-repeat bg-cover sm:w-1/2 bg-center-right">
-                  <div className="absolute w-1/2 h-full bg-gradient-to-r from-transparent via-transparent to-qdark bg-right-center"></div>
+                <div className="flex items-center justify-center w-full bg-center bg-no-repeat bg-cover h-[48vh] sm:h-full sm:w-1/2 bg-center-right">
+                  <div className="absolute w-full h-[49vh] sm:h-full sm:w-1/2 bg-gradient-to-t sm:bg-gradient-to-r from-transparent via-transparent to-black bg-right-center"></div>
                   <img className="object-cover w-full h-full" src={slide.img} />
                 </div>
                 {/* Text half */}
-                <div className="flex flex-col items-center justify-center w-full text-5xl text-center sm:w-1/2 sm:items-center sm:text-left">
-                  <div className="max-w-md px-5">
+                <div className="flex flex-col items-center sm:justify-center w-full py-6 text-5xl text-center bg-black sm:w-1/2 sm:items-center sm:text-left sm:h-full h-[49vh] z-20 max-h-fit overflow-visible justify-start">
+                  <div className="max-w-md px-5 overflow-visible bg-gradient-to-t from-transparent to-black sm:bg-transparent">
                     {/* Title */}
                     <div className="mb-4 md:mb-0">
                       {slide.header.keyword.first ? (
-                        <p className="font-sans font-light">
+                        <p className="font-sans font-light ">
                           <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#4FC0FF] via-[#6977EE] to-[#FF6098]">
                             {slide.header.keyword.content}
                           </span>{" "}
@@ -103,7 +103,9 @@ function Carousel() {
                       )}
                     </div>
                     {/* Description */}
-                    <p className="mt-2 mb-3 font-sans text-xl sm:mt-6 md:mb-0">{slide.desc}</p>
+                    <p className="mt-2 mb-3 overflow-visible font-sans text-xl sm:mt-6 md:mb-0">
+                      {slide.desc}
+                    </p>
                   </div>
                 </div>
               </div>

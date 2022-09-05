@@ -26,7 +26,8 @@ module.exports = {
         'qdark': '#040D16'
       }, minHeight: {
         '90vh': '90vh',
-      }
+        '50vh': '50vh',
+      },
     },
   },
   plugins: [
