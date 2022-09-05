@@ -5,7 +5,7 @@ function HomePage() {
   return (
     <>
       {/* 1 */}
-      <div className="relative z-10  h-[calc(100vh_-_5rem)]">
+      <div className="relative z-10 min-h-screen">
         {/* Cone */}
         <div className="absolute z-10 max-w-full cone animate-wiggle"></div>
         <main className="relative z-20 flex items-center h-full px-4 pt-10 mx-auto sm:pt-12 sm:px-6 md:pt-16 lg:pt-20 lg:px-8 xl:pt-28">
