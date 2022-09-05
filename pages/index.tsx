@@ -5,10 +5,9 @@ function HomePage() {
   return (
     <>
       {/* 1 */}
-      <div className="relative z-10 min-h-screen ">
+      <div className="relative z-10 min-h-screen">
         {/* Cone */}
-        <div className="absolute z-10 max-w-full cone"></div>
-
+        <div className="absolute z-10 max-w-full cone animate-wiggle"></div>
         <main className="relative z-20 flex items-center h-full px-4 pt-10 mx-auto sm:pt-12 sm:px-6 md:pt-16 lg:pt-20 lg:px-8 xl:pt-28">
           {/* Text part */}
           <div className="items-start w-full sm:text-center lg:text-left">
@@ -38,6 +37,9 @@ function HomePage() {
             </div>
           </div>
         </main>
+        <div className="relative z-20 pt-16 text-center lg:text-right">
+          <img className="inline-block w-auto h-24" src="/logo.svg" alt="QuantifiLogo" />
+        </div>
       </div>
       {/* 2 */}
       <div className="z-20 pb-4 bg-black">
