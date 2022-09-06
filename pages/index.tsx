@@ -3,12 +3,12 @@ import Carousel from "../components/carousel";
 // home page
 function HomePage() {
   return (
-    <>
+    <div className="snap-y">
       {/* 1 */}
-      <div className="relative z-10  min-h-[calc(100vh_-_5rem)]">
+      <div className="relative min-h-[calc(100vh_-_5rem)] bg-white snap-start">
         {/* Cone */}
-        <div className="absolute z-10 max-w-full cone animate-wiggle"></div>
-        <main className="relative z-20 flex items-center h-full px-4 pt-10 mx-auto sm:pt-12 sm:px-6 md:pt-16 lg:pt-20 lg:px-8 xl:pt-28">
+        <div className="absolute max-w-full cone animate-wiggle"></div>
+        <main className="relative flex items-center h-full px-4 pt-10 mx-auto sm:pt-12 sm:px-6 md:pt-16 lg:pt-20 lg:px-8 xl:pt-28">
           {/* Text part */}
           <div className="items-start w-full sm:text-center lg:text-left">
             <h1 className="text-4xl font-bold tracking-tight text-gray-200 sm:text-5xl sm:tracking-tight md:text-6xl md:tracking-tight">
@@ -38,15 +38,17 @@ function HomePage() {
           </div>
         </main>
         <div className="relative z-20 pt-8 text-center lg:text-right">
-          <img className="inline-block w-auto h-24" src="/logo.svg" alt="QuantifiLogo" />
+          <img className="inline-block w-auto p-4 md:h-96" src="/logo.svg" alt="QuantifiLogo" />
         </div>
       </div>
+
       {/* 2 */}
-      <div className="z-20 pb-4 bg-black">
+      <div className="z-20 pb-4 bg-black snap-start">
         <Carousel />
       </div>
+
       {/* 3 */}
-      <div className="flex items-start justify-center py-32 min-h-fit bg-slate-50">
+      <div className="flex items-start justify-center py-32 min-h-fit bg-slate-50 snap-start">
         <div className="mx-2 text-center text-gray-900 dark:text-gray-900">
           <h1 className="text-4xl font-bold tracking-tight sm:text-5xl sm:tracking-tight md:text-6xl md:tracking-tight">
             <span className="block">Are you ready to join us?</span>
@@ -62,7 +64,7 @@ function HomePage() {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }
 

@@ -29,7 +29,7 @@ export default function Navbar() {
     <Disclosure as="nav" className="bg-black border-b border-indigo-500 rounded-lg">
       {({ open }) => (
         <>
-          <div className="px-2 mx-auto sm:px-10 lg:px-12 ">
+          <div className="px-2 mx-auto sm:px-10 lg:px-12">
             <div className="relative flex items-center justify-between h-20">
               <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
                 {/* Mobile menu button*/}
@@ -57,9 +57,7 @@ export default function Navbar() {
                         key={item.name}
                         href={item.href}
                         className={classNames(
-                          item.current
-                            ? " text-white"
-                            : "text-gray-300 bg-gradient-to-r hover:text-white ",
+                          item.current ? " text-white" : "text-gray-300  hover:text-white ",
                           "px-3 py-2 rounded-md text-sm font-medium"
                         )}
                         aria-current={item.current ? "page" : undefined}
@@ -69,7 +67,7 @@ export default function Navbar() {
                     ))}
                     <a
                       href="Https://joel-lowe.gitbook.io/quantifi"
-                      className="px-3 py-2 text-sm font-medium text-gray-300 rounded-md bg-gradient-to-r hover:text-white"
+                      className="px-3 py-2 text-sm font-medium text-gray-300 rounded-md hover:text-white"
                       rel="noopener noreferrer"
                       target="_blank"
                     >

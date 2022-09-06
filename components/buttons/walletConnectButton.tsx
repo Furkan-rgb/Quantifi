@@ -8,7 +8,7 @@ import { connectors } from "../utils/connectors";
 
 function WalletConnectButton() {
   const [modalOpen, setModalOpen] = useState(false);
-  const { active, account, activate, deactivate } = useWeb3React();
+  const { library, active, account, activate, deactivate, chainId } = useWeb3React();
 
   function toggleModal() {
     if (modalOpen) {

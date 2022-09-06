@@ -45,10 +45,10 @@ function MyPage() {
     setHoldingValue(_holdingValue.toString());
   }
 
-  async function getWithdrawalValue(value:string){
-    const number = parseInt(value,10);
+  async function getWithdrawalValue(value: string) {
+    const number = parseInt(value, 10);
     if (value !== "" || number == 0) {
-      const n = ethers.utils.parseUnits(value,6);
+      const n = ethers.utils.parseUnits(value, 6);
       const wd = await QIT.getWithdrawalReturn(n);
       setOutputValue((+ethers.utils.formatUnits(wd, 18)).toFixed(2));
     }
@@ -73,37 +73,38 @@ function MyPage() {
     if (currentTab == "deposit" && inputValue !== "") {
       if (contractInfo.allowance.toBigInt() < ethers.utils.parseEther(inputValue).toBigInt()) {
         const ERC20connect = ERC20.connect(library.getSigner());
-        try{
-        await ERC20connect.approve(QIT.address, ethers.utils.parseEther("10000000000000"));
-        } catch(error){
+        try {
+          await ERC20connect.approve(QIT.address, ethers.utils.parseEther("10000000000000"));
+        } catch (error) {
           console.log("Wallet transaction did not complete");
         }
         // update after completion
       } else {
         const QITconnect = QIT.connect(library.getSigner());
-        try{
-        await QITconnect.depositToFund(ethers.utils.parseEther(inputValue));
-        } catch(error){
-          console.log("Unable to complete Deposit")
+        try {
+          await QITconnect.depositToFund(ethers.utils.parseEther(inputValue));
+        } catch (error) {
+          console.log("Unable to complete Deposit");
         }
       }
     }
 
     // WITHDRAWALS
     if (currentTab == "withdrawal") {
-      if (contractInfo.qitbalance>BigNumber.from(0) && inputValue !== "" && Date.now()/1000>contractInfo.lockupEnds){
-        if (ethers.utils.parseEther(inputValue).toBigInt()>0)
-        {
+      if (
+        contractInfo.qitbalance > BigNumber.from(0) &&
+        inputValue !== "" &&
+        Date.now() / 1000 > contractInfo.lockupEnds
+      ) {
+        if (ethers.utils.parseEther(inputValue).toBigInt() > 0) {
           const QITconnect = QIT.connect(library.getSigner());
           try {
-            await QITconnect.requestWithdrawal(ethers.utils.parseUnits(inputValue,6));
-          } catch(error)
-          {
+            await QITconnect.requestWithdrawal(ethers.utils.parseUnits(inputValue, 6));
+          } catch (error) {
             console.log("Withdrawal Failed");
           }
         }
       }
-      
     }
   }
 
@@ -124,42 +125,97 @@ function MyPage() {
     }
   }
 
-  async function setCorrectChain() {
-    {
+  const switchNetwork = async () => {
+    // 1, 56, 97
+
+    // if (chainId !== 97 || chainId == undefined) {
+    try {
       await library.provider.request({
-        method: 'wallet_addEthereumChain',
-        params: [
-            {
-                chainId: "0x61",
-                chainName: "BNB Smart Chain Testnet",
-                rpcUrls: ["https://data-seed-prebsc-1-s3.binance.org:8545"],
-                nativeCurrency: "BNB",
+        method: "wallet_switchEthereumChain",
+        params: [{ chainId: `0x${Number(BNBChain).toString(16)}` }],
+      });
+    } catch (switchError: any) {
+      // 4902 error code indicates the chain is missing on the wallet
+      if (switchError.code === 4902) {
+        try {
+          await library.provider.request({
+            method: "wallet_addEthereumChain",
+            params: [
+              {
+                chainId: `0x${Number(BNBChain).toString(16)}`,
+                rpcUrls: [
+                  "https://data-seed-prebsc-1-s1.binance.org:8545",
+                  "https://data-seed-prebsc-1-s2.binance.org:8545",
+                  "https://data-seed-prebsc-1-s3.binance.org:8545",
+                ],
+                chainName: "Smart Chain - Testnet",
+                nativeCurrency: {
+                  name: "Binance Chain Native Token",
+                  decimals: 18,
+                  symbol: "tBNB",
+                },
                 blockExplorerUrls: ["https://testnet.bscscan.com"],
-            },
-        ],
-    })
-      try {
-        await library.provider.request({
-          method: 'wallet_switchEthereumChain',
-            params: [{ chainId: "0x61"}],
+                iconUrls: ["https://harmonynews.one/wp-content/uploads/2019/11/slfdjs.png"],
+              },
+            ],
           });
-      } catch (error) {
-        console.log(error)
+        } catch (error) {
+          console.error(error);
+        }
       }
     }
-    console.log("Hello");
-  }
-  // If there is a provider, but no account then initiateContract(). Tracking chainid changes not active per se
+    // }
+  };
+
+  // "As with any method that causes a confirmation to appear,
+  // wallet_switchEthereumChain should only be called as a result of direct user action,
+  // such as the click of a button."
+  // https://docs.metamask.io/guide/rpc-api.html#wallet-switchethereumchain
+
   useEffect(() => {
-    if(chainId!=BNBChain && active){
-      // ASSUME METAMASK --> change later to be more robust
-      console.log("Not on correct blockchain");
-      setCorrectChain();
-    } else if (active){
-      console.log(chainId);
-      initiateContract();
+    if (chainId !== 97 || chainId == undefined) {
+      switchNetwork();
+      console.log("this chain id is " + chainId);
     }
-  },[chainId]);
+  }, [chainId]);
+
+  // async function setCorrectChain() {
+  //   {
+  //     await library.provider.request({
+  //       method: 'wallet_addEthereumChain',
+  //       params: [
+  //           {
+  //               chainId: "0x61",
+  //               chainName: "BNB Smart Chain Testnet",
+  //               rpcUrls: ["https://data-seed-prebsc-1-s3.binance.org:8545"],
+  //               nativeCurrency: "BNB",
+  //               blockExplorerUrls: ["https://testnet.bscscan.com"],
+  //           },
+  //       ],
+  //   })
+  //     try {
+  //       await library.provider.request({
+  //         method: 'wallet_switchEthereumChain',
+  //           params: [{ chainId: "0x61"}],
+  //         });
+  //     } catch (error) {
+  //       console.log(error)
+  //     }
+  //   }
+  //   console.log("Hello");
+  // }
+
+  // If there is a provider, but no account then initiateContract(). Tracking chainid changes not active per se
+  // useEffect(() => {
+  //   if(chainId!=BNBChain && active){
+  //     // ASSUME METAMASK --> change later to be more robust
+  //     console.log("Not on correct blockchain");
+  //     setCorrectChain();
+  //   } else if (active){
+  //     console.log(chainId);
+  //     initiateContract();
+  //   }
+  // },[chainId]);
 
   // Monitor and log transactions
   // TODO: Not working yet...
@@ -172,7 +228,7 @@ function MyPage() {
   }, [contractInfo.address]);
 
   useEffect(() => {
-    if (active && chainId==BNBChain) {
+    if (active && chainId == BNBChain) {
       initiateContract();
     }
   }, [active]);
@@ -181,10 +237,10 @@ function MyPage() {
   useEffect(() => {
     async function update() {
       await initiateContract();
-      }
-      if(chainId===BNBChain){
+    }
+    if (chainId === BNBChain) {
       update();
-      }
+    }
   }, [contractInfo.qitbalance]);
 
   // Returns swap button with correct body text based on input value
@@ -193,13 +249,16 @@ function MyPage() {
       setSwapButtonText("Enter Amount");
     }
     if (inputValue !== "") {
-      if (currentTab==="withdrawal"){
-        setSwapButtonText("Swap QIT for USDT")
-      }
-      else if (contractInfo.allowance.toBigInt() < ethers.utils.parseUnits(inputValue, 6).toBigInt() && currentTab==="deposit") {
+      if (currentTab === "withdrawal") {
+        setSwapButtonText("Swap QIT for USDT");
+      } else if (
+        contractInfo.allowance.toBigInt() < ethers.utils.parseUnits(inputValue, 6).toBigInt() &&
+        currentTab === "deposit"
+      ) {
         setSwapButtonText("Give permission to deposit USDT");
-      }
-      else if (contractInfo.allowance.toBigInt() >= ethers.utils.parseUnits(inputValue, 6).toBigInt()) {
+      } else if (
+        contractInfo.allowance.toBigInt() >= ethers.utils.parseUnits(inputValue, 6).toBigInt()
+      ) {
         setSwapButtonText("Swap USDT for QIT");
       }
     }
@@ -207,10 +266,12 @@ function MyPage() {
 
   useEffect(() => {
     changeSwapButtonText();
-  }, [inputValue,contractInfo.allowance]);
+  }, [inputValue, contractInfo.allowance]);
 
   return (
     <>
+      <button onClick={switchNetwork}>Switch Network</button>
+      <br />
       <span>Account: {account}</span>
       <br />
       <span>Network ID: {chainId}</span>
@@ -238,7 +299,9 @@ function MyPage() {
                 <span className="block py-1 mb-2 mr-2 text-base font-semibold text-gray-700 rounded-full">
                   Value
                 </span>
-                <span className="text-right">{(+ethers.utils.formatEther(holdingValue)).toFixed(2)} USDT</span>
+                <span className="text-right">
+                  {(+ethers.utils.formatEther(holdingValue)).toFixed(2)} USDT
+                </span>
               </div>
 
               <div className="flex justify-between">
@@ -259,14 +322,18 @@ function MyPage() {
                 <span className="block py-1 mb-2 mr-2 text-base font-semibold text-gray-700 rounded-full">
                   Withdrawal Lockup Ends
                 </span>
-                <span className="text-right">{new Date(contractInfo.lockupEnds*1000).toLocaleString()}</span>
+                <span className="text-right">
+                  {new Date(contractInfo.lockupEnds * 1000).toLocaleString()}
+                </span>
               </div>
 
               <div className="flex justify-between">
                 <span className="block py-1 mb-2 mr-2 text-base font-semibold text-gray-700 rounded-full">
                   Pending Withdrawals
                 </span>
-                <span className="text-right">{(+ethers.utils.formatUnits(contractInfo.pendingWithdrawals,6)).toFixed(2)} QIT</span>
+                <span className="text-right">
+                  {(+ethers.utils.formatUnits(contractInfo.pendingWithdrawals, 6)).toFixed(2)} QIT
+                </span>
               </div>
             </div>
           </div>
@@ -280,7 +347,8 @@ function MyPage() {
                 <li className="mr-2 ">
                   <button
                     onClick={() => {
-                      setCurrentTab("withdrawal") ,currentTab!="withdrawal"?setOutputValue(""):null;
+                      setCurrentTab("withdrawal"),
+                        currentTab != "withdrawal" ? setOutputValue("") : null;
                     }}
                     className={classNames(
                       currentTab == "withdrawal"
@@ -294,7 +362,7 @@ function MyPage() {
                 <li className="mr-2 ">
                   <button
                     onClick={() => {
-                      setCurrentTab("deposit"), currentTab!="deposit"?setOutputValue(""):null;
+                      setCurrentTab("deposit"), currentTab != "deposit" ? setOutputValue("") : null;
                     }}
                     className={classNames(
                       currentTab == "deposit"
@@ -315,7 +383,10 @@ function MyPage() {
                 <div className="relative z-0 flex w-full mb-6 group">
                   <input
                     onChange={(e) => {
-                      setInputValue(e.target.value), currentTab==="deposit" ? getDepositValue(e.target.value) : getWithdrawalValue(e.target.value);
+                      setInputValue(e.target.value),
+                        currentTab === "deposit"
+                          ? getDepositValue(e.target.value)
+                          : getWithdrawalValue(e.target.value);
                       // changeSwapButtonText();
                     }}
                     type="number"
