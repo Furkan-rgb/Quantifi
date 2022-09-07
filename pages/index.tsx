@@ -5,7 +5,7 @@ function HomePage() {
   return (
     <div className="snap-y">
       {/* 1 */}
-      <div className="relative min-h-[calc(100vh_-_5rem)] bg-white snap-start">
+      <div className="relative min-h-[calc(100vh_-_5rem)] bg-black snap-start">
         {/* Cone */}
         <div className="absolute max-w-full cone animate-wiggle"></div>
         <main className="relative flex items-center h-full px-4 pt-10 mx-auto sm:pt-12 sm:px-6 md:pt-16 lg:pt-20 lg:px-8 xl:pt-28">
