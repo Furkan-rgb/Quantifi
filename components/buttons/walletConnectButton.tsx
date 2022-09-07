@@ -1,14 +1,57 @@
 import React, { useContext, useEffect, useState } from "react";
+import ErrorMessage from "../ErrorMessage";
 import { ethers } from "ethers";
 import { toHex, truncateAddress } from "../utils";
-import { networkParams } from "../networks";
+import { networkParams } from "../utils/networks";
 import SelectWalletModal from "../Modal";
 import { useWeb3React } from "@web3-react/core";
 import { connectors } from "../utils/connectors";
 
 function WalletConnectButton() {
   const [modalOpen, setModalOpen] = useState(false);
+  const [error, setError] = useState<string | undefined>();
+
   const { library, active, account, activate, deactivate, chainId } = useWeb3React();
+
+  const changeNetwork = async ({
+    networkName,
+    setError,
+  }: {
+    networkName: string;
+    setError: React.Dispatch<React.SetStateAction<string | undefined>>;
+  }) => {
+    try {
+      if (!library.provider) throw new Error("No crypto wallet found");
+      await library.provider.request({
+        method: "wallet_addEthereumChain",
+        params: [
+          {
+            ...networkParams[networkName],
+          },
+        ],
+      });
+    } catch (err: any) {
+      setError(err.message);
+    }
+  };
+
+  const handleNetworkSwitch = async (networkName: string) => {
+    setError(undefined);
+    await changeNetwork({ networkName, setError });
+  };
+
+  const networkChanged = (chainId: number) => {
+    console.log({ chainId });
+  };
+
+  useEffect(() => {
+    if (!library) return;
+    library.provider.on("chainChanged", networkChanged);
+
+    return () => {
+      library.provider.removeListener("chainChanged", networkChanged);
+    };
+  }, []);
 
   function toggleModal() {
     if (modalOpen) {
@@ -27,6 +70,7 @@ function WalletConnectButton() {
     }
   }
 
+  // When reloading the page, connect to the last used wallet
   useEffect(() => {
     const connectWalletOnPageLoad = async () => {
       if (localStorage?.getItem("provider") !== null) {
@@ -63,6 +107,13 @@ function WalletConnectButton() {
         )}
       </button>
       <SelectWalletModal modalOpen={modalOpen} toggleModal={toggleModal} />
+      <button
+        onClick={() => {
+          handleNetworkSwitch("polygon");
+        }}
+      >
+        Polygon
+      </button>
     </>
   );
 }

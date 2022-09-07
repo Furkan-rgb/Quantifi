@@ -3,6 +3,8 @@ import myPageAbi from "../components/abi/QIT.json";
 import erc20ABI from "../components/abi/erc20.json";
 import { useWeb3React } from "@web3-react/core";
 import { BigNumber, ethers } from "ethers";
+import { networkParams } from "../components/utils/networks";
+import { UnsupportedChainIdError } from "@web3-react/core";
 
 function MyPage() {
   const [currentTab, setCurrentTab] = useState<string>("deposit");
@@ -28,7 +30,9 @@ function MyPage() {
   const minDeposit = 1000; // this will be updated to actual value
   const BNBChain = 97;
 
-  const { library, chainId, account, active } = useWeb3React();
+  const { library, chainId, account, active, error, setError, connector } = useWeb3React();
+  const isUnsupportedChainIdError = error instanceof UnsupportedChainIdError;
+
   const QIT = new ethers.Contract("0x4C4470D0B9c0dD92B25Be1D2fB5181cdA7e6E3f7", myPageAbi, library);
   const ERC20 = new ethers.Contract(
     "0xEcAD8721BA48dBdc0eac431D68A0b140F07c0801",
@@ -125,124 +129,6 @@ function MyPage() {
     }
   }
 
-  const switchNetwork = async () => {
-    // 1, 56, 97
-
-    // if (chainId !== 97 || chainId == undefined) {
-    try {
-      await library.provider.request({
-        method: "wallet_switchEthereumChain",
-        params: [{ chainId: `0x${Number(BNBChain).toString(16)}` }],
-      });
-    } catch (switchError: any) {
-      // 4902 error code indicates the chain is missing on the wallet
-      if (switchError.code === 4902) {
-        try {
-          await library.provider.request({
-            method: "wallet_addEthereumChain",
-            params: [
-              {
-                chainId: `0x${Number(BNBChain).toString(16)}`,
-                rpcUrls: [
-                  "https://data-seed-prebsc-1-s1.binance.org:8545",
-                  "https://data-seed-prebsc-1-s2.binance.org:8545",
-                  "https://data-seed-prebsc-1-s3.binance.org:8545",
-                ],
-                chainName: "Smart Chain - Testnet",
-                nativeCurrency: {
-                  name: "Binance Chain Native Token",
-                  decimals: 18,
-                  symbol: "tBNB",
-                },
-                blockExplorerUrls: ["https://testnet.bscscan.com"],
-                iconUrls: ["https://harmonynews.one/wp-content/uploads/2019/11/slfdjs.png"],
-              },
-            ],
-          });
-        } catch (error) {
-          console.error(error);
-        }
-      }
-    }
-    // }
-  };
-
-  // "As with any method that causes a confirmation to appear,
-  // wallet_switchEthereumChain should only be called as a result of direct user action,
-  // such as the click of a button."
-  // https://docs.metamask.io/guide/rpc-api.html#wallet-switchethereumchain
-
-  useEffect(() => {
-    if (chainId !== 97 || chainId == undefined) {
-      switchNetwork();
-      console.log("this chain id is " + chainId);
-    }
-  }, [chainId]);
-
-  // async function setCorrectChain() {
-  //   {
-  //     await library.provider.request({
-  //       method: 'wallet_addEthereumChain',
-  //       params: [
-  //           {
-  //               chainId: "0x61",
-  //               chainName: "BNB Smart Chain Testnet",
-  //               rpcUrls: ["https://data-seed-prebsc-1-s3.binance.org:8545"],
-  //               nativeCurrency: "BNB",
-  //               blockExplorerUrls: ["https://testnet.bscscan.com"],
-  //           },
-  //       ],
-  //   })
-  //     try {
-  //       await library.provider.request({
-  //         method: 'wallet_switchEthereumChain',
-  //           params: [{ chainId: "0x61"}],
-  //         });
-  //     } catch (error) {
-  //       console.log(error)
-  //     }
-  //   }
-  //   console.log("Hello");
-  // }
-
-  // If there is a provider, but no account then initiateContract(). Tracking chainid changes not active per se
-  // useEffect(() => {
-  //   if(chainId!=BNBChain && active){
-  //     // ASSUME METAMASK --> change later to be more robust
-  //     console.log("Not on correct blockchain");
-  //     setCorrectChain();
-  //   } else if (active){
-  //     console.log(chainId);
-  //     initiateContract();
-  //   }
-  // },[chainId]);
-
-  // Monitor and log transactions
-  // TODO: Not working yet...
-  useEffect(() => {
-    if (contractInfo.address !== "-") {
-      QIT.on("Transfer", (from, to, amount, event) => {
-        console.log(from, to, amount, event);
-      });
-    }
-  }, [contractInfo.address]);
-
-  useEffect(() => {
-    if (active && chainId == BNBChain) {
-      initiateContract();
-    }
-  }, [active]);
-
-  // Trigger when qit balance changes and call update of values
-  useEffect(() => {
-    async function update() {
-      await initiateContract();
-    }
-    if (chainId === BNBChain) {
-      update();
-    }
-  }, [contractInfo.qitbalance]);
-
   // Returns swap button with correct body text based on input value
   function changeSwapButtonText() {
     if (inputValue == "") {
@@ -263,14 +149,74 @@ function MyPage() {
       }
     }
   }
-
+  // Keeps track of input value to update swap button text
   useEffect(() => {
     changeSwapButtonText();
   }, [inputValue, contractInfo.allowance]);
 
+  const changeNetwork = async ({
+    networkName,
+    setError,
+  }: {
+    networkName: string;
+    setError: React.Dispatch<React.SetStateAction<string | undefined>>;
+  }) => {
+    try {
+      if (!library.provider) throw new Error("No crypto wallet found");
+      await library.provider.request({
+        method: "wallet_addEthereumChain",
+        params: [
+          {
+            ...networkParams[networkName],
+          },
+        ],
+      });
+    } catch (err: any) {
+      setError(err.message);
+    }
+  };
+
+  const handleNetworkSwitch = async (networkName: string) => {
+    setError(error);
+    await changeNetwork({ networkName, setError });
+    const _error = await error;
+    console.log(_error);
+  };
+
+  const networkChanged = (chainId: number) => {
+    console.log("Changed chain id:" + { chainId });
+  };
+
+  // When metamask chain is changed
+  useEffect(() => {
+    if (!library) return;
+    library.provider.on("chainChanged", networkChanged);
+
+    return () => {
+      library.provider.removeListener("chainChanged", networkChanged);
+    };
+  }, []);
+
   return (
     <>
-      <button onClick={switchNetwork}>Switch Network</button>
+      <button
+        onClick={() => {
+          handleNetworkSwitch("bsc");
+        }}
+      >
+        Connect to BSC chain
+      </button>
+      <br />
+      <span>
+        {connector?.supportedChainIds?.map((chainid) => (
+          <span>
+            {chainid}
+            <br />
+          </span>
+        ))}
+      </span>
+      <br />
+      <span>{error?.toString()}</span>
       <br />
       <span>Account: {account}</span>
       <br />

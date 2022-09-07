@@ -14,7 +14,7 @@ export default function SelectWalletModal(props: any) {
     <Transition.Root show={props.modalOpen} as={Fragment}>
       <Dialog
         as="div"
-        className="relative z-10"
+        className="relative z-20"
         onClose={() => {
           props.toggleModal();
         }}

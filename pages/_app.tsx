@@ -13,7 +13,7 @@ const getLibrary = (provider: ethers.providers.ExternalProvider) => {
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <Web3ReactProvider getLibrary={getLibrary}>
-      <div className="min-h-screen dark:bg-qdark">
+      <div className="min-h-screen bg-qdark">
         <Navbar></Navbar>
 
         <Component {...pageProps} />
