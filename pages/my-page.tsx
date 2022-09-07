@@ -28,7 +28,7 @@ function MyPage() {
     pendingWithdrawals: BigNumber.from(0),
   });
   const minDeposit = 1000; // this will be updated to actual value
-  const BNBChain = 97;
+  const tBNBChain = 97;
 
   const { library, chainId, account, active, error, setError, connector } = useWeb3React();
   const isUnsupportedChainIdError = error instanceof UnsupportedChainIdError;
@@ -112,8 +112,9 @@ function MyPage() {
     }
   }
 
-  // Initiates the contract values
-  async function initiateContract() {
+  // Sets the contract values
+  // TODO: Put this in the useEffect directly?
+  async function _setContractInfo() {
     setContractInfo({
       address: QIT.address,
       tokenName: "QIT",
@@ -128,6 +129,11 @@ function MyPage() {
       console.log("No account");
     }
   }
+  useEffect(() => {
+    if (active) {
+      _setContractInfo();
+    }
+  }, [active]);
 
   // Returns swap button with correct body text based on input value
   function changeSwapButtonText() {
@@ -177,7 +183,7 @@ function MyPage() {
   };
 
   const handleNetworkSwitch = async (networkName: string) => {
-    setError(error);
+    setError(error!);
     await changeNetwork({ networkName, setError });
     const _error = await error;
     console.log(_error);
@@ -189,7 +195,10 @@ function MyPage() {
 
   // When metamask chain is changed
   useEffect(() => {
-    if (!library) return;
+    if (!library) {
+      return;
+    }
+
     library.provider.on("chainChanged", networkChanged);
 
     return () => {
@@ -201,7 +210,7 @@ function MyPage() {
     <>
       <button
         onClick={() => {
-          handleNetworkSwitch("bsc");
+          handleNetworkSwitch("tbsc");
         }}
       >
         Connect to BSC chain
