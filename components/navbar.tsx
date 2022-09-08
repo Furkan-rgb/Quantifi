@@ -18,7 +18,7 @@ export default function Navbar() {
       href: "/dashboard",
       current: router.pathname == "/dashboard" ? true : false,
     },
-    { name: "My Page", href: "/my-page", current: router.pathname == "/my-page" ? true : false },
+    { name: "QIT Fund", href: "/qit-fund", current: router.pathname == "/qit-fund" ? true : false },
     {
       name: "Governance",
       href: "/governance",

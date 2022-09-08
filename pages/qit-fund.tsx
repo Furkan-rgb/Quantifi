@@ -5,6 +5,7 @@ import { useWeb3React } from "@web3-react/core";
 import { BigNumber, ethers } from "ethers";
 import { networkParams } from "../components/utils/networks";
 import { UnsupportedChainIdError } from "@web3-react/core";
+import { ChevronDownIcon } from "@heroicons/react/24/outline";
 
 function MyPage() {
   const [currentTab, setCurrentTab] = useState<string>("deposit");
@@ -28,7 +29,9 @@ function MyPage() {
     pendingWithdrawals: BigNumber.from(0),
   });
   const minDeposit = 1000; // this will be updated to actual value
+  const minTopup = 500; // this will be updated to actual value
   const tBNBChain = 97;
+  const [loading, setLoading] = useState<boolean>(false); // loading state for button
 
   const { library, chainId, account, active, error, setError, connector } = useWeb3React();
   const isUnsupportedChainIdError = error instanceof UnsupportedChainIdError;
@@ -44,26 +47,37 @@ function MyPage() {
   }
 
   async function getHoldingValue(_address: string) {
-    const _holdingValue = await QIT.getHoldingValue(_address);
-
-    setHoldingValue(_holdingValue.toString());
+    try {
+      const _holdingValue = await QIT.getHoldingValue(_address);
+      setHoldingValue(_holdingValue.toString());
+    } catch (error) {
+      console.error("Couldn't get holdingValue" + error);
+    }
   }
 
   async function getWithdrawalValue(value: string) {
     const number = parseInt(value, 10);
     if (value !== "" || number == 0) {
-      const n = ethers.utils.parseUnits(value, 6);
-      const wd = await QIT.getWithdrawalReturn(n);
-      setOutputValue((+ethers.utils.formatUnits(wd, 18)).toFixed(2));
+      try {
+        const n = ethers.utils.parseUnits(value, 6);
+        const wd = await QIT.getWithdrawalReturn(n);
+        setOutputValue((+ethers.utils.formatUnits(wd, 18)).toFixed(2));
+      } catch (error) {
+        console.log(error);
+      }
     }
   }
   async function getDepositValue(value: string) {
     const number = parseInt(value, 10);
     if (value !== "" || number == 0) {
       if (number >= minDeposit) {
-        const n = ethers.utils.parseEther(value);
-        const deposit = await QIT.getDepositReturn(n);
-        setOutputValue((+ethers.utils.formatUnits(deposit, 6)).toFixed(2));
+        try {
+          const n = ethers.utils.parseEther(value);
+          const deposit = await QIT.getDepositReturn(n);
+          setOutputValue((+ethers.utils.formatUnits(deposit, 6)).toFixed(2));
+        } catch (error) {
+          console.log(error);
+        }
       } else {
         //TODO: Change to red and show Min Deposit = $x
         //console.log("Input is less than minDeposit");
@@ -113,27 +127,36 @@ function MyPage() {
   }
 
   // Sets the contract values
-  // TODO: Put this in the useEffect directly?
+  // TODO: Is it possible to put this in the useEffect directly?
   async function _setContractInfo() {
-    setContractInfo({
-      address: QIT.address,
-      tokenName: "QIT",
-      qitbalance: await QIT.balanceOf(account),
-      allowance: await ERC20.allowance(account, QIT.address),
-      lockupEnds: await QIT.withdrawalLockTime(account),
-      pendingWithdrawals: await QIT.pendingWithdrawals(account),
-    });
-    if (account != null || account !== undefined) {
+    setLoading(true);
+    try {
+      setContractInfo({
+        address: QIT.address,
+        tokenName: "QIT",
+        qitbalance: await QIT.balanceOf(account),
+        allowance: await ERC20.allowance(account, QIT.address),
+        lockupEnds: await QIT.withdrawalLockTime(account),
+        pendingWithdrawals: await QIT.pendingWithdrawals(account),
+      });
+    } catch (error) {
+      console.error("Couldn't set contract info: " + error);
+    } finally {
+      setLoading(false);
+    }
+
+    if (account !== null || account !== undefined) {
       await getHoldingValue(account!);
     } else {
       console.log("No account");
     }
   }
+  // account change -> contract info update
   useEffect(() => {
-    if (active) {
+    if (account) {
       _setContractInfo();
     }
-  }, [active]);
+  }, [account]);
 
   // Returns swap button with correct body text based on input value
   function changeSwapButtonText() {
@@ -186,11 +209,13 @@ function MyPage() {
     setError(error!);
     await changeNetwork({ networkName, setError });
     const _error = await error;
-    console.log(_error);
+    console.error(_error);
+    window.location.reload();
   };
 
   const networkChanged = (chainId: number) => {
     console.log("Changed chain id:" + { chainId });
+    window.location.reload();
   };
 
   // When metamask chain is changed
@@ -199,16 +224,27 @@ function MyPage() {
       return;
     }
 
-    library.provider.on("chainChanged", networkChanged);
+    if (chainId == tBNBChain) {
+      _setContractInfo()
+        .then(() => {
+          console.log("Contract Info Set");
+        })
+        .catch((error) => {
+          console.log("Contract Info Not Set " + error);
+        });
+    }
 
+    // networkChanged needs to call chainid from metamask method
+    // https://docs.metamask.io/guide/ethereum-provider.html#using-the-provider
+    library.provider.on("chainChanged", networkChanged, setContractInfo);
     return () => {
       library.provider.removeListener("chainChanged", networkChanged);
     };
-  }, []);
+  }, [chainId]);
 
   return (
     <>
-      <button
+      {/* <button
         onClick={() => {
           handleNetworkSwitch("tbsc");
         }}
@@ -229,12 +265,22 @@ function MyPage() {
       <br />
       <span>Account: {account}</span>
       <br />
-      <span>Network ID: {chainId}</span>
+
+      <span>Network ID: {chainId}</span> */}
 
       {/* Exchange */}
       <div className="min-h-screen">
+        <div className="md:flex md:items-center md:justify-between">
+          <div className="px-4 pt-4 mx-auto max-w-7xl sm:px-6 lg:flex lg:justify-between lg:px-8">
+            <div className="flex-1 min-w-0">
+              <h2 className="text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
+                Quantifi Investor Fund
+              </h2>
+            </div>
+          </div>
+        </div>
         {/* Stats */}
-        <div className="flex flex-col items-center justify-center w-full px-4 my-10 sm:flex-row">
+        <div className="flex flex-col items-stretch justify-center w-full px-4 my-10 sm:flex-row">
           {/* Holdings */}
           <div className="w-full max-w-lg min-h-full px-6 py-4 my-3 overflow-hidden text-gray-900 rounded-lg shadow-lg mx-7 bg-neutral-100 ">
             {/* Title */}
@@ -246,7 +292,31 @@ function MyPage() {
                   Tokens
                 </span>
                 <span className="text-right">
-                  {(+ethers.utils.formatUnits(contractInfo.qitbalance, 6)).toFixed(2)} QIT
+                  {!loading ? (
+                    (+ethers.utils.formatUnits(contractInfo.qitbalance, 6)).toFixed(2)
+                  ) : (
+                    <svg
+                      className="inline w-4 h-4 mr-1 -ml-1 text-black animate-spin"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      ></path>
+                    </svg>
+                  )}{" "}
+                  QIT
                 </span>
               </div>
 
@@ -255,7 +325,31 @@ function MyPage() {
                   Value
                 </span>
                 <span className="text-right">
-                  {(+ethers.utils.formatEther(holdingValue)).toFixed(2)} USDT
+                  {!loading ? (
+                    (+ethers.utils.formatEther(holdingValue)).toFixed(2)
+                  ) : (
+                    <svg
+                      className="inline w-4 h-4 mr-1 -ml-1 text-black animate-spin"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      ></path>
+                    </svg>
+                  )}
+                  USDT
                 </span>
               </div>
 
@@ -267,11 +361,10 @@ function MyPage() {
               </div>
             </div>
           </div>
-          {/* Withdrawals */}
-          <div className="w-full max-w-lg min-h-full px-6 py-4 my-3 overflow-hidden text-gray-900 rounded-lg shadow-lg mx-7 bg-neutral-100 ">
+          {/* My Withdrawals */}
+          <div className="w-full h-full max-w-lg px-6 py-4 my-3 overflow-hidden text-gray-900 rounded-lg shadow-lg mx-7 bg-neutral-100 ">
             {/* Title */}
             <div className="mb-2 text-xl font-bold">My Withdrawals</div>
-
             <div>
               <div className="flex justify-between">
                 <span className="block py-1 mb-2 mr-2 text-base font-semibold text-gray-700 rounded-full">
@@ -290,6 +383,47 @@ function MyPage() {
                   {(+ethers.utils.formatUnits(contractInfo.pendingWithdrawals, 6)).toFixed(2)} QIT
                 </span>
               </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Information text */}
+        <div className="bg-gray-800">
+          <div className="px-4 py-16 mx-auto max-w-7xl sm:py-24 sm:px-6 lg:flex lg:justify-between lg:px-8">
+            <div className="max-w-2xl">
+              <h1 className="text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl">
+                About the Fund
+              </h1>
+              <p className="mt-5 text-xl text-gray-400">
+                The Quantifi Investor Fund offers managed exposure to a wide array of
+                cryptocurrencies on the BNB Blockchain. The fund prioritizes low drawdown and is
+                directed by a sophisticated quantitative investment model (see{" "}
+                <a
+                  href="Https://joel-lowe.gitbook.io/quantifi"
+                  className="text-gray-300 hover:text-white"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  Docs
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="inline-block w-4 h-4 pl-1"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"
+                    />
+                  </svg>
+                </a>
+                ). Please note: Investment in the fund requires a minimum deposit of ${minDeposit},
+                or minimum top up of ${minTopup}. All deposits are subject to a 30 day lockup and
+                incur a 2% deposit fee.
+              </p>
             </div>
           </div>
         </div>
