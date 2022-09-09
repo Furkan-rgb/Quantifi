@@ -18,32 +18,30 @@ function WalletConnectButton() {
   const { library, active, account, activate, deactivate, chainId, connector, error, setError } =
     useWeb3React();
 
-  async function changeNetwork(){
-    if(library){
-    try {
-      await library.provider.request({
-        method: "wallet_addEthereumChain",
-        params: [
-          {
-            ...networkParams["tbsc"],
-          },
-        ],
-      });
-    } catch (err: any) {
-      console.log(err);
-      setError(err.message);
-    }
+  async function changeNetwork() {
+    if (library) {
+      try {
+        await library.provider.request({
+          method: "wallet_addEthereumChain",
+          params: [
+            {
+              ...networkParams["tbsc"],
+            },
+          ],
+        });
+      } catch (err: any) {
+        console.log(err);
+        setError(err.message);
+      }
     }
     setWrongChain(false);
-  };
-
+  }
 
   function handleNetworkSwitch() {
-    if (chainId!==97){
-        setWrongChain(true);
+    if (chainId !== 97) {
+      setWrongChain(true);
     }
-  };
-
+  }
 
   function toggleModal() {
     if (modalOpen) {
@@ -89,7 +87,7 @@ function WalletConnectButton() {
       }
     }
 
-    if (wrongChain) {   
+    if (wrongChain) {
       return <span className="block">Wrong Network</span>;
     }
 
@@ -101,12 +99,11 @@ function WalletConnectButton() {
       return;
     }
     handleNetworkSwitch();
-    ConnectButtonContent();}, 
-    [account, chainId]);
+    ConnectButtonContent();
+  }, [account, chainId]);
 
   return (
     <>
-      <span>Chainid {chainId}</span>
       <button
         onClick={() => {
           toggleModal();

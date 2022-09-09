@@ -1,13 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import myPageAbi from "../components/abi/QIT.json";
 import erc20ABI from "../components/abi/erc20.json";
 import { useWeb3React } from "@web3-react/core";
 import { BigNumber, ethers } from "ethers";
 import { networkParams } from "../components/utils/networks";
 import { UnsupportedChainIdError } from "@web3-react/core";
-import { ChevronDownIcon } from "@heroicons/react/24/outline";
+import { ChevronDownIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { Transition } from "@headlessui/react";
 
 function MyPage() {
+  const [show, setShow] = useState(false);
   const [currentTab, setCurrentTab] = useState<string>("deposit");
   const [inputValue, setInputValue] = useState<string>("");
   const [outputValue, setOutputValue] = useState<string>();
@@ -117,9 +119,35 @@ function MyPage() {
         if (ethers.utils.parseEther(inputValue).toBigInt() > 0) {
           const QITconnect = QIT.connect(library.getSigner());
           try {
-            await QITconnect.requestWithdrawal(ethers.utils.parseUnits(inputValue, 6));
-          } catch (error) {
-            console.log("Withdrawal Failed");
+            const transaction = await QITconnect.requestWithdrawal(
+              ethers.utils.parseUnits(inputValue, 6)
+            );
+            setShow(true);
+            const receipt = await transaction.wait();
+            setShow(false);
+            console.log(receipt);
+            // .then((tx: any) => {
+            //   //action prior to transaction being mined
+            //   console.log("Transaction pending");
+            //   console.log(tx);
+            //   library.provider
+            //     .waitForTransaction(tx.hash)
+            //     .then(() => {
+            //       //action after transaction is mined
+            //       console.log("Transaction mined");
+            //     })
+            //     .catch(() => {
+            //       //action if transaction fails
+            //       console.log("Transaction failed");
+            //     });
+            // })
+            // .catch(() => {
+            //   //action to perform when user clicks "reject"
+            //   console.log("Transaction rejected");
+            // });
+          } catch (error: any) {
+            setShow(true);
+            console.log("User rejected transaction");
           }
         }
       }
@@ -231,7 +259,13 @@ function MyPage() {
 
     // networkChanged needs to call chainid from metamask method
     // https://docs.metamask.io/guide/ethereum-provider.html#using-the-provider
-    library.provider.on("chainChanged", networkChanged, setContractInfo);
+    library.provider.on(
+      "chainChanged",
+      networkChanged,
+      setContractInfo,
+      console.log("Chain Changed")
+    );
+
     return () => {
       library.provider.removeListener("chainChanged", networkChanged);
     };
@@ -250,13 +284,12 @@ function MyPage() {
             </div>
           </div>
         </div>
-        {/* Stats */}
-        <div className="flex flex-col items-center justify-center w-full px-4 my-10 sm:flex-row">
+        {/* Cards */}
+        <div className="flex flex-col items-center justify-center px-4 my-10 sm:items-start max-w-fit sm:flex-row ">
           {/* Holdings */}
           <div className="w-full max-w-lg min-h-full px-6 py-4 my-3 overflow-hidden text-gray-900 rounded-lg shadow-lg mx-7 bg-neutral-100 ">
             {/* Title */}
             <div className="mb-2 text-xl font-bold">My Holdings</div>
-
             <div>
               <div className="flex justify-between">
                 <span className="block py-1 mb-2 mr-2 text-base font-semibold text-gray-700 rounded-full">
@@ -291,7 +324,7 @@ function MyPage() {
                 </span>
               </div>
 
-              <div className="flex justify-between">
+              <div className="flex justify-between h-full">
                 <span className="block py-1 mb-2 mr-2 text-base font-semibold text-gray-700 rounded-full">
                   Value
                 </span>
@@ -319,7 +352,7 @@ function MyPage() {
                         d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                       ></path>
                     </svg>
-                  )}
+                  )}{" "}
                   USDT
                 </span>
               </div>
@@ -401,10 +434,11 @@ function MyPage() {
 
         {/* Swap */}
         <div className="flex justify-center">
-          <div className="flex flex-col items-center justify-start w-full max-w-md px-4 mt-10 text-black min-h-90vh">
+          <div className="flex flex-col items-center justify-start w-full max-w-md px-4 my-10 text-black ">
+            {/* Tab section */}
             <div className="text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:text-gray-400 dark:border-gray-700">
               <ul className="flex flex-wrap -mb-px">
-                <li className="mr-2 ">
+                <li>
                   <button
                     onClick={() => {
                       setCurrentTab("withdrawal"),
@@ -412,14 +446,14 @@ function MyPage() {
                     }}
                     className={classNames(
                       currentTab == "withdrawal"
-                        ? "text-gray-100 border-gray-100 inline-block p-4  border-b-2  rounded-t-lg active"
+                        ? "text-gray-100 items-stretch border-gray-100 inline-block p-4  border-b-2  rounded-t-lg active"
                         : "inline-block p-4 rounded-t-lg active transition-all ease-in duration-100"
                     )}
                   >
                     Withdrawal
                   </button>
                 </li>
-                <li className="mr-2 ">
+                <li>
                   <button
                     onClick={() => {
                       setCurrentTab("deposit"), currentTab != "deposit" ? setOutputValue("") : null;
@@ -438,7 +472,7 @@ function MyPage() {
             </div>
 
             {/* Input */}
-            <div className="w-full mt-5">
+            <div className="w-full my-5">
               <form>
                 <div className="relative z-0 flex w-full mb-6 group">
                   <input
@@ -447,7 +481,6 @@ function MyPage() {
                         currentTab === "deposit"
                           ? getDepositValue(e.target.value)
                           : getWithdrawalValue(e.target.value);
-                      // changeSwapButtonText();
                     }}
                     type="number"
                     name="floating_input"
@@ -466,6 +499,10 @@ function MyPage() {
                     {currentTab == "withdrawal" ? contractInfo?.tokenName : "USDT"}
                   </span>
                 </div>
+
+                <ChevronDownIcon className="w-5 h-5 text-gray-400" />
+
+                {/* Output */}
                 <div className="relative z-0 flex w-full mb-6 group">
                   <input
                     type="number"
@@ -497,6 +534,70 @@ function MyPage() {
               </form>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Notification */}
+      <div
+        aria-live="assertive"
+        className="fixed inset-0 flex items-end px-4 py-6 pointer-events-none sm:items-start sm:p-6"
+      >
+        <div className="flex flex-col items-center w-full space-y-4 sm:items-end">
+          {/* Notification panel, dynamically insert this into the live region when it needs to be displayed */}
+          <Transition
+            show={show}
+            as={Fragment}
+            enter="transform ease-out duration-300 transition"
+            enterFrom="translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2"
+            enterTo="translate-y-0 opacity-100 sm:translate-x-0"
+            leave="transition ease-in duration-100"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <div className="w-full max-w-sm overflow-hidden bg-white rounded-lg shadow-lg pointer-events-auto ring-1 ring-black ring-opacity-5">
+              <div className="p-4">
+                <div className="flex items-center">
+                  <div className="flex justify-between flex-1 w-0">
+                    <p className="flex-1 w-0 text-sm font-medium text-gray-900">
+                      <svg
+                        className="inline w-4 h-4 mr-1 -ml-1 text-black animate-spin"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        ></circle>
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        ></path>
+                      </svg>
+                      Transaction is in progress...
+                    </p>
+                  </div>
+                  <div className="flex flex-shrink-0 ml-4">
+                    <button
+                      type="button"
+                      className="inline-flex text-gray-400 bg-white rounded-md hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                      onClick={() => {
+                        setShow(false);
+                      }}
+                    >
+                      <span className="sr-only">Close</span>
+                      <XMarkIcon className="w-5 h-5" aria-hidden="true" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Transition>
         </div>
       </div>
     </>
