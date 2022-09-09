@@ -13,53 +13,36 @@ import { XMarkIcon, ExclamationTriangleIcon } from "@heroicons/react/24/outline"
 function WalletConnectButton() {
   const [modalOpen, setModalOpen] = useState(false);
   const [open, setOpen] = useState(true);
+  const [wrongChain, setWrongChain] = useState(false);
 
   const { library, active, account, activate, deactivate, chainId, connector, error, setError } =
     useWeb3React();
-  const isUnsupportedChainIdError = error instanceof UnsupportedChainIdError;
 
-  const changeNetwork = async ({ networkName }: { networkName: string }) => {
+  async function changeNetwork(){
+    if(library){
     try {
-      if (!library.provider) {
-        console.error("No provider available");
-      }
-
       await library.provider.request({
         method: "wallet_addEthereumChain",
         params: [
           {
-            ...networkParams[networkName],
+            ...networkParams["tbsc"],
           },
         ],
       });
     } catch (err: any) {
+      console.log(err);
       setError(err.message);
     }
-  };
-
-  const handleNetworkSwitch = async (networkName: string) => {
-    setError(error!);
-    await changeNetwork({ networkName });
-    const _error = await error;
-    console.error("Network switch error " + _error);
-    // window.location.reload();
-  };
-
-  const networkChanged = (chainId: number) => {
-    console.log({ chainId });
-  };
-
-  useEffect(() => {
-    if (!library) {
-      return;
     }
+    setWrongChain(false);
+  };
 
-    library.provider.on("chainChanged", networkChanged);
+  function handleNetworkSwitch() {
+    if (chainId!=97){
+        setWrongChain(true);
+    }
+  };
 
-    return () => {
-      library.provider.removeListener("chainChanged", networkChanged);
-    };
-  }, []);
 
   function toggleModal() {
     if (modalOpen) {
@@ -105,7 +88,7 @@ function WalletConnectButton() {
       }
     }
 
-    if (isUnsupportedChainIdError) {
+    if (wrongChain) {   
       return <span className="block">Wrong Network</span>;
     }
 
@@ -113,10 +96,12 @@ function WalletConnectButton() {
   }
   useEffect(() => {
     if (!library) {
+      console.log("can't find library");
       return;
     }
-    library.provider.on("chainChanged", networkChanged, ConnectButtonContent());
-  }, [account, chainId]);
+    handleNetworkSwitch();
+    ConnectButtonContent();}, 
+    [account, chainId]);
 
   return (
     <>
@@ -134,7 +119,7 @@ function WalletConnectButton() {
       </button>
       <SelectWalletModal modalOpen={modalOpen} toggleModal={toggleModal} />
       {/* Modal for unsupported chain id */}
-      <Transition.Root show={isUnsupportedChainIdError} as={Fragment}>
+      <Transition.Root show={wrongChain}>
         <Dialog as="div" className="absolute z-20" onClose={setOpen}>
           <Transition.Child
             as={Fragment}
@@ -196,7 +181,7 @@ function WalletConnectButton() {
                   <button
                     type="button"
                     className="inline-flex justify-center w-full px-4 py-2 pt-2 text-base font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:text-sm"
-                    onClick={() => handleNetworkSwitch("tbsc")}
+                    onClick={() => changeNetwork()}
                   >
                     Switch network
                   </button>
