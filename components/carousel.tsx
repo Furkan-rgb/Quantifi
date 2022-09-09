@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
-import { DotButton } from "./EmblaButtons";
+import { DotButton } from "./emblaButtons";
 
 function Carousel() {
   // Autoplay
