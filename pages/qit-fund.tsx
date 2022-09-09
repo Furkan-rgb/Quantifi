@@ -207,12 +207,10 @@ function MyPage() {
     await changeNetwork({ networkName });
     const _error = await error;
     console.error(_error);
-    window.location.reload();
   };
 
   const networkChanged = (chainId: number) => {
     console.log("Changed chain id:" + { chainId });
-    window.location.reload();
   };
 
   // When metamask chain is changed
@@ -253,7 +251,7 @@ function MyPage() {
           </div>
         </div>
         {/* Stats */}
-        <div className="flex flex-col items-stretch justify-center w-full px-4 my-10 sm:flex-row">
+        <div className="flex flex-col items-center justify-center w-full px-4 my-10 sm:flex-row">
           {/* Holdings */}
           <div className="w-full max-w-lg min-h-full px-6 py-4 my-3 overflow-hidden text-gray-900 rounded-lg shadow-lg mx-7 bg-neutral-100 ">
             {/* Title */}

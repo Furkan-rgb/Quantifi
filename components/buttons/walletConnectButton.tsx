@@ -37,8 +37,9 @@ function WalletConnectButton() {
     setWrongChain(false);
   };
 
+
   function handleNetworkSwitch() {
-    if (chainId!=97){
+    if (chainId!==97){
         setWrongChain(true);
     }
   };
