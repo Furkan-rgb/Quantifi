@@ -244,30 +244,6 @@ function MyPage() {
 
   return (
     <>
-      {/* <button
-        onClick={() => {
-          handleNetworkSwitch("tbsc");
-        }}
-      >
-        Connect to BSC chain
-      </button>
-      <br />
-      <span>
-        {connector?.supportedChainIds?.map((chainid) => (
-          <span>
-            {chainid}
-            <br />
-          </span>
-        ))}
-      </span>
-      <br />
-      <span>{error?.toString()}</span>
-      <br />
-      <span>Account: {account}</span>
-      <br />
-
-      <span>Network ID: {chainId}</span> */}
-
       {/* Exchange */}
       <div className="min-h-screen">
         <div className="md:flex md:items-center md:justify-between">

@@ -1,4 +1,5 @@
 import React, { Fragment, useContext, useEffect, useState } from "react";
+import { Web3Provider } from "@ethersproject/providers";
 import ErrorMessage from "../ErrorMessage";
 import { ethers } from "ethers";
 import { toHex, truncateAddress } from "../utils";
@@ -25,9 +26,9 @@ function WalletConnectButton() {
     setError: React.Dispatch<React.SetStateAction<string | undefined>>;
   }) => {
     try {
-      if (!library.provider) throw new Error("No crypto wallet found");
+      if (await !connector?.getProvider()) throw new Error("No crypto wallet found");
       await library.provider.request({
-        method: "wallet_switchEthereumChain",
+        method: "wallet_addEthereumChain",
         params: [
           {
             ...networkParams[networkName],
@@ -40,10 +41,10 @@ function WalletConnectButton() {
   };
 
   const handleNetworkSwitch = async (networkName: string) => {
-    setError(error!);
+    setError(undefined);
     await changeNetwork({ networkName, setError });
     const _error = await error;
-    console.error(_error);
+    console.error("Network switch error " + _error);
     // window.location.reload();
   };
 
@@ -94,21 +95,23 @@ function WalletConnectButton() {
   // When reloading the page, connect to the last used wallet
   useEffect(() => {
     connectWalletOnPageLoad();
-  }, [library]);
+  }, [active]);
 
   function ConnectButtonContent() {
     if (!active) {
       return <span className="relative block rounded-md sm:inline">Connect Wallet</span>;
     }
 
-    if (active && chainId) {
-      if (connector?.supportedChainIds?.includes(chainId) == true) {
+    if (typeof chainId !== undefined) {
+      if (connector?.supportedChainIds?.includes(chainId!) == true) {
         return <span className="block">{truncateAddress(account)}</span>;
       }
-      if (connector?.supportedChainIds?.includes(chainId) == false) {
-        return <span className="block">Wrong Network</span>;
-      }
     }
+
+    if (isUnsupportedChainIdError) {
+      return <span className="block">Wrong Network</span>;
+    }
+
     return <span className="block">Temp</span>;
   }
   useEffect(() => {
@@ -120,6 +123,7 @@ function WalletConnectButton() {
 
   return (
     <>
+      <span>Chainid {chainId}</span>
       <button
         onClick={() => {
           toggleModal();
@@ -186,9 +190,7 @@ function WalletConnectButton() {
                         {/* Please switch to continue section  */}
                         <div className="ml-3">
                           <div className="text-sm text-yellow-700 ">
-                            <p>
-                              Please switch your network to continue. Current network id: {chainId}
-                            </p>
+                            <p>Please switch your network to continue.</p>
                           </div>
                         </div>
                       </div>
