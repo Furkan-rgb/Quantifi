@@ -183,15 +183,12 @@ function MyPage() {
     changeSwapButtonText();
   }, [inputValue, contractInfo.allowance]);
 
-  const changeNetwork = async ({
-    networkName,
-    setError,
-  }: {
-    networkName: string;
-    setError: React.Dispatch<React.SetStateAction<string | undefined>>;
-  }) => {
+  const changeNetwork = async ({ networkName }: { networkName: string }) => {
     try {
-      if (!library.provider) throw new Error("No crypto wallet found");
+      if (!library.provider) {
+        console.error("No provider available");
+        return;
+      }
       await library.provider.request({
         method: "wallet_addEthereumChain",
         params: [
@@ -207,7 +204,7 @@ function MyPage() {
 
   const handleNetworkSwitch = async (networkName: string) => {
     setError(error!);
-    await changeNetwork({ networkName, setError });
+    await changeNetwork({ networkName });
     const _error = await error;
     console.error(_error);
     window.location.reload();

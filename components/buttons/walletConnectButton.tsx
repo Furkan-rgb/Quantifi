@@ -18,15 +18,12 @@ function WalletConnectButton() {
     useWeb3React();
   const isUnsupportedChainIdError = error instanceof UnsupportedChainIdError;
 
-  const changeNetwork = async ({
-    networkName,
-    setError,
-  }: {
-    networkName: string;
-    setError: React.Dispatch<React.SetStateAction<string | undefined>>;
-  }) => {
+  const changeNetwork = async ({ networkName }: { networkName: string }) => {
     try {
-      if (await !connector?.getProvider()) throw new Error("No crypto wallet found");
+      if (!library.provider) {
+        console.error("No provider available");
+      }
+
       await library.provider.request({
         method: "wallet_addEthereumChain",
         params: [
@@ -41,8 +38,8 @@ function WalletConnectButton() {
   };
 
   const handleNetworkSwitch = async (networkName: string) => {
-    setError(undefined);
-    await changeNetwork({ networkName, setError });
+    setError(error!);
+    await changeNetwork({ networkName });
     const _error = await error;
     console.error("Network switch error " + _error);
     // window.location.reload();
