@@ -20,10 +20,9 @@ function WalletConnectButton() {
 
   const changeNetwork = async ({ networkName }: { networkName: string }) => {
     try {
-      if (!library.provider) {
+      if (typeof library.provider == null) {
         console.error("No provider available");
       }
-
       await library.provider.request({
         method: "wallet_addEthereumChain",
         params: [
@@ -42,7 +41,6 @@ function WalletConnectButton() {
     await changeNetwork({ networkName });
     const _error = await error;
     console.error("Network switch error " + _error);
-    // window.location.reload();
   };
 
   const networkChanged = (chainId: number) => {
