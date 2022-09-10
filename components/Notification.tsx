@@ -30,7 +30,7 @@ export default function Notification(props: NotificationContent) {
     } else if (props.status === "loading") {
       return (
         <svg
-          className="inline w-6 h-6 mr-1 -ml-1 text-black animate-spin"
+          className="inline w-5 h-5 mr-1 -ml-1 text-black animate-spin"
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
           viewBox="0 0 24 24"

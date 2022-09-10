@@ -246,65 +246,7 @@ function MyPage() {
     changeSwapButtonText();
   }, [inputValue, contractInfo.allowance]);
 
-  const changeNetwork = async ({ networkName }: { networkName: string }) => {
-    try {
-      if (!library.provider) {
-        console.error("No provider available");
-        return;
-      }
-      await library.provider.request({
-        method: "wallet_addEthereumChain",
-        params: [
-          {
-            ...networkParams[networkName],
-          },
-        ],
-      });
-    } catch (err: any) {
-      setError(err.message);
-    }
-  };
-
-  const handleNetworkSwitch = async (networkName: string) => {
-    setError(error!);
-    await changeNetwork({ networkName });
-    const _error = await error;
-    console.error(_error);
-  };
-
-  const networkChanged = (chainId: number) => {
-    console.log("Changed chain id:" + { chainId });
-  };
-
-  // When metamask chain is changed
-  useEffect(() => {
-    if (!library) {
-      return;
-    }
-
-    if (chainId == tBNBChain) {
-      _setContractInfo()
-        .then(() => {
-          console.log("Contract Info Set");
-        })
-        .catch((error) => {
-          console.log("Contract Info Not Set " + error);
-        });
-    }
-
-    // networkChanged needs to call chainid from metamask method
-    // https://docs.metamask.io/guide/ethereum-provider.html#using-the-provider
-    library.provider.on(
-      "chainChanged",
-      networkChanged,
-      setContractInfo,
-      console.log("Chain Changed")
-    );
-
-    return () => {
-      library.provider.removeListener("chainChanged", networkChanged);
-    };
-  }, [chainId]);
+  // Update balances
 
   return (
     <>
@@ -320,7 +262,7 @@ function MyPage() {
           </div>
         </div>
         {/* Cards */}
-        <div className="flex flex-col items-center justify-center px-4 my-10 sm:items-start max-w-fit sm:flex-row ">
+        <div className="flex flex-col items-center justify-center w-full px-4 my-10 sm:items-start sm:flex-row ">
           {/* Holdings */}
           <div className="w-full max-w-lg min-h-full px-6 py-4 my-3 overflow-hidden text-gray-900 rounded-lg shadow-lg mx-7 bg-neutral-100 ">
             {/* Title */}
