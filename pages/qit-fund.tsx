@@ -5,11 +5,12 @@ import { useWeb3React } from "@web3-react/core";
 import { BigNumber, ethers } from "ethers";
 import { networkParams } from "../components/utils/networks";
 import { UnsupportedChainIdError } from "@web3-react/core";
-import { ChevronDownIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { ArrowDownIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { Transition } from "@headlessui/react";
+import Notification, { NotificationContent } from "../components/Notification";
 
 function MyPage() {
-  const [show, setShow] = useState(false);
+  const [showNotification, setNotificationShow] = useState(false);
   const [currentTab, setCurrentTab] = useState<string>("deposit");
   const [inputValue, setInputValue] = useState<string>("");
   const [outputValue, setOutputValue] = useState<string>();
@@ -30,6 +31,12 @@ function MyPage() {
     lockupEnds: 0,
     pendingWithdrawals: BigNumber.from(0),
   });
+
+  const [notificationStatus, setNotificationStatus] =
+    useState<NotificationContent["status"]>("info");
+  const [notificationMessage, setNotificationMessage] = useState<string>("");
+  const [notificationTitle, setNotificationTitle] = useState<string>("");
+
   const minDeposit = 1000; // this will be updated to actual value
   const minTopup = 500; // this will be updated to actual value
   const tBNBChain = 97;
@@ -87,6 +94,16 @@ function MyPage() {
     }
   }
 
+  function changeNotificationContent(
+    title: NotificationContent["title"],
+    message: NotificationContent["message"],
+    status: NotificationContent["status"]
+  ) {
+    setNotificationTitle(title);
+    setNotificationMessage(message);
+    setNotificationStatus(status);
+  }
+
   // Logic to determine if user can swap or needs approval first
   async function swapOrApprove() {
     // DEPOSITS
@@ -94,19 +111,50 @@ function MyPage() {
       if (contractInfo.allowance.toBigInt() < ethers.utils.parseEther(inputValue).toBigInt()) {
         const ERC20connect = ERC20.connect(library.getSigner());
         try {
-          await ERC20connect.approve(QIT.address, ethers.utils.parseEther("10000000000000"));
+          // Approving
+          const transaction = await ERC20connect.approve(
+            QIT.address,
+            ethers.utils.parseEther("10000000000000")
+          );
+          changeNotificationContent("In progress", "Approval Requested", "loading");
+          setNotificationShow(true);
+          const receipt = await transaction.wait();
+
+          changeNotificationContent("Complete", "Approval was successful", "success");
+          console.log(receipt);
+
+          await timeout(2000);
+          setNotificationShow(false);
         } catch (error) {
+          changeNotificationContent("Failed", "Approval was rejected", "error");
+          setNotificationShow(true);
+
           console.log("Wallet transaction did not complete");
         }
         // update after completion
       } else {
         const QITconnect = QIT.connect(library.getSigner());
         try {
-          await QITconnect.depositToFund(ethers.utils.parseEther(inputValue));
+          // Depositing
+          const transaction = await QITconnect.depositToFund(ethers.utils.parseEther(inputValue));
+          changeNotificationContent("In progress", "Deposit Requested", "loading");
+          setNotificationShow(true);
+          const receipt = await transaction.wait();
+
+          changeNotificationContent("Complete", "Deposit was successful", "success");
+          console.log(receipt);
+
+          await timeout(2000);
+          setNotificationShow(false);
         } catch (error) {
+          changeNotificationContent("Failed", "Deposit was rejected", "error");
+          setNotificationShow(true);
           console.log("Unable to complete Deposit");
         }
       }
+    }
+    function timeout(delay: number) {
+      return new Promise((res) => setTimeout(res, delay));
     }
 
     // WITHDRAWALS
@@ -122,31 +170,18 @@ function MyPage() {
             const transaction = await QITconnect.requestWithdrawal(
               ethers.utils.parseUnits(inputValue, 6)
             );
-            setShow(true);
+            changeNotificationContent("In progress", "Withdrawal Requested", "loading");
+            setNotificationShow(true);
             const receipt = await transaction.wait();
-            setShow(false);
+
+            changeNotificationContent("Complete", "Withdrawal was successful", "success");
             console.log(receipt);
-            // .then((tx: any) => {
-            //   //action prior to transaction being mined
-            //   console.log("Transaction pending");
-            //   console.log(tx);
-            //   library.provider
-            //     .waitForTransaction(tx.hash)
-            //     .then(() => {
-            //       //action after transaction is mined
-            //       console.log("Transaction mined");
-            //     })
-            //     .catch(() => {
-            //       //action if transaction fails
-            //       console.log("Transaction failed");
-            //     });
-            // })
-            // .catch(() => {
-            //   //action to perform when user clicks "reject"
-            //   console.log("Transaction rejected");
-            // });
+
+            await timeout(2000);
+            setNotificationShow(false);
           } catch (error: any) {
-            setShow(true);
+            changeNotificationContent("Failed", "Withdrawal was rejected", "error");
+            setNotificationShow(true);
             console.log("User rejected transaction");
           }
         }
@@ -398,7 +433,7 @@ function MyPage() {
               <h1 className="text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl">
                 About the Fund
               </h1>
-              <p className="mt-5 text-xl text-gray-400">
+              <p className="mt-5 text-gray-400 text-md sm:text-xl">
                 The Quantifi Investor Fund offers managed exposure to a wide array of
                 cryptocurrencies on the BNB Blockchain. The fund prioritizes low drawdown and is
                 directed by a sophisticated quantitative investment model (see{" "}
@@ -435,7 +470,7 @@ function MyPage() {
         {/* Swap */}
         <div className="flex justify-center">
           <div className="flex flex-col items-center justify-start w-full max-w-md px-4 my-10 text-black ">
-            {/* Tab section */}
+            {/* Tab Section */}
             <div className="text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:text-gray-400 dark:border-gray-700">
               <ul className="flex flex-wrap -mb-px">
                 <li>
@@ -470,6 +505,7 @@ function MyPage() {
                 </li>
               </ul>
             </div>
+            {/* End Tab Section */}
 
             {/* Input */}
             <div className="w-full my-5">
@@ -499,8 +535,9 @@ function MyPage() {
                     {currentTab == "withdrawal" ? contractInfo?.tokenName : "USDT"}
                   </span>
                 </div>
-
-                <ChevronDownIcon className="w-5 h-5 text-gray-400" />
+                <div className="flex justify-center">
+                  <ArrowDownIcon className="w-5 h-5 text-gray-400" />
+                </div>
 
                 {/* Output */}
                 <div className="relative z-0 flex w-full mb-6 group">
@@ -538,68 +575,13 @@ function MyPage() {
       </div>
 
       {/* Notification */}
-      <div
-        aria-live="assertive"
-        className="fixed inset-0 flex items-end px-4 py-6 pointer-events-none sm:items-start sm:p-6"
-      >
-        <div className="flex flex-col items-center w-full space-y-4 sm:items-end">
-          {/* Notification panel, dynamically insert this into the live region when it needs to be displayed */}
-          <Transition
-            show={show}
-            as={Fragment}
-            enter="transform ease-out duration-300 transition"
-            enterFrom="translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2"
-            enterTo="translate-y-0 opacity-100 sm:translate-x-0"
-            leave="transition ease-in duration-100"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
-          >
-            <div className="w-full max-w-sm overflow-hidden bg-white rounded-lg shadow-lg pointer-events-auto ring-1 ring-black ring-opacity-5">
-              <div className="p-4">
-                <div className="flex items-center">
-                  <div className="flex justify-between flex-1 w-0">
-                    <p className="flex-1 w-0 text-sm font-medium text-gray-900">
-                      <svg
-                        className="inline w-4 h-4 mr-1 -ml-1 text-black animate-spin"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                      >
-                        <circle
-                          className="opacity-25"
-                          cx="12"
-                          cy="12"
-                          r="10"
-                          stroke="currentColor"
-                          strokeWidth="4"
-                        ></circle>
-                        <path
-                          className="opacity-75"
-                          fill="currentColor"
-                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                        ></path>
-                      </svg>
-                      Transaction is in progress...
-                    </p>
-                  </div>
-                  <div className="flex flex-shrink-0 ml-4">
-                    <button
-                      type="button"
-                      className="inline-flex text-gray-400 bg-white rounded-md hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                      onClick={() => {
-                        setShow(false);
-                      }}
-                    >
-                      <span className="sr-only">Close</span>
-                      <XMarkIcon className="w-5 h-5" aria-hidden="true" />
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </Transition>
-        </div>
-      </div>
+      <Notification
+        title={notificationTitle}
+        message={notificationMessage}
+        show={showNotification}
+        status={notificationStatus}
+        setNotificationShow={setNotificationShow}
+      />
     </>
   );
 }

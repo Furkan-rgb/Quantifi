@@ -87,7 +87,7 @@ function Carousel() {
                     {/* Title */}
                     <div className="mb-4 md:mb-0">
                       {slide.header.keyword.first ? (
-                        <p className="font-sans font-light ">
+                        <p className="font-sans font-light text-white">
                           <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#4FC0FF] via-[#6977EE] to-[#FF6098]">
                             {slide.header.keyword.content}
                           </span>{" "}
