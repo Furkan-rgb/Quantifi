@@ -146,6 +146,7 @@ function MyPage() {
 
           await timeout(2000);
           setNotificationShow(false);
+          _setContractInfo();
         } catch (error) {
           changeNotificationContent("Failed", "Deposit was rejected", "error");
           setNotificationShow(true);
@@ -179,6 +180,7 @@ function MyPage() {
 
             await timeout(2000);
             setNotificationShow(false);
+            _setContractInfo();
           } catch (error: any) {
             changeNotificationContent("Failed", "Withdrawal was rejected", "error");
             setNotificationShow(true);
