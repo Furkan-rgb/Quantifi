@@ -17,6 +17,7 @@ function WalletConnectButton() {
 
   const { library, active, account, activate, deactivate, chainId, connector, error, setError } =
     useWeb3React();
+  const isUnsupportedChainIdError = error instanceof UnsupportedChainIdError;
 
   async function changeNetwork() {
     if (library) {
@@ -44,10 +45,14 @@ function WalletConnectButton() {
   }
 
   function toggleModal() {
-    if (modalOpen) {
-      setModalOpen(false);
-    } else {
-      setModalOpen(true);
+    if (!active) {
+      if (modalOpen) {
+        setModalOpen(false);
+      } else {
+        setModalOpen(true);
+      }
+    } else if (active) {
+      disconnect();
     }
   }
 
@@ -83,11 +88,12 @@ function WalletConnectButton() {
 
     if (typeof chainId !== undefined) {
       if (connector?.supportedChainIds?.includes(chainId!) == true) {
-        return <span className="block">{truncateAddress(account)}</span>;
+        // return <span className="block">{truncateAddress(account)}</span>;
+        return <span className="block">Disconnect</span>;
       }
     }
 
-    if (wrongChain) {
+    if (wrongChain == true) {
       return <span className="block">Wrong Network</span>;
     }
 
@@ -104,6 +110,11 @@ function WalletConnectButton() {
 
   return (
     <>
+      {/* Need this for later */}
+      {/* <span className="text-white">ChainId: {chainId}</span>
+      <span className="text-white">
+        {isUnsupportedChainIdError ? "unsupported chain id" : null}
+      </span> */}
       <button
         onClick={() => {
           toggleModal();
@@ -111,7 +122,7 @@ function WalletConnectButton() {
         className="text-base relative inline-flex items-center justify-center p-0.5 mb-2 sm:mr-2 font-medium rounded-lg group bg-gradient-to-r from-[#4FC0FF] via-[#6977EE] to-[#FF6098] group-hover:from-[#4FC0FF] group-hover:via-[#6977EE] group-hover:to-[#FF6098] hover:text-white dark:text-white focus:ring-4 focus:outline-none "
       >
         {/* Inner button content */}
-        <span className="transition-all ease-in duration-100 sm:inline block relative sm:px-5 sm:py-2.5 px-2 py-2 text-sm sm:text-base rounded-md bg-white dark:bg-gray-900 group-hover:bg-opacity-0">
+        <span className="relative block px-2 py-2 text-sm transition-all duration-100 ease-in bg-white rounded-md sm:inline sm:px-4 sm:py-2 sm:text-base dark:bg-gray-900 group-hover:bg-opacity-0">
           <ConnectButtonContent />
         </span>
       </button>
