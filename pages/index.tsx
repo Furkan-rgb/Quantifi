@@ -12,15 +12,15 @@ function HomePage() {
         <div className="col-span-3 sm:col-span-2">
           <main className="relative flex items-center h-full px-4 pt-10 mx-auto sm:pt-12 sm:px-6 md:pt-16 lg:pt-20 lg:px-8 xl:pt-28">
             {/* Text part */}
-            <div className="items-start w-full sm:text-center lg:text-left">
-              <h1 className="text-4xl font-bold tracking-tight text-gray-200 sm:text-5xl sm:tracking-tight md:text-6xl md:tracking-tight">
+            <div className="items-start w-full sm:text-center ">
+              <h1 className="mb-2 text-4xl font-bold tracking-tight text-gray-200 sm:text-5xl sm:tracking-tight md:text-6xl md:tracking-tight">
                 <span className="block">The Decentralized world of</span>
                 <span className="block text-gray-200">Cryptocurrency</span>
               </h1>
-              <p className="mt-3 text-gray-200 sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-2xl lg:mx-0">
+              <span className="mt-3 text-center text-gray-200 sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-2xl lg:mx-0">
                 Buy, sell and earn crypto.
-              </p>
-              <div className="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start">
+              </span>
+              <div className="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-center">
                 {/* Get started button */}
                 <div>
                   <button className="w-full h-full flex items-center justify-center px-8 py-3 text-base font-medium rounded-md text-white bg-gradient-to-r from-[#4FC0FF] via-[#6977EE] to-[#FF6098] md:py-4 md:text-lg md:px-10 hover:opacity-80 transition-all ease-in duration-75">
