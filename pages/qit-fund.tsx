@@ -43,7 +43,6 @@ function MyPage() {
   const [loading, setLoading] = useState<boolean>(false); // loading state for button
 
   const { library, chainId, account, active, error, setError, connector } = useWeb3React();
-  const isUnsupportedChainIdError = error instanceof UnsupportedChainIdError;
 
   const QIT = new ethers.Contract("0x4C4470D0B9c0dD92B25Be1D2fB5181cdA7e6E3f7", myPageAbi, library);
   const ERC20 = new ethers.Contract(
@@ -122,7 +121,7 @@ function MyPage() {
 
           changeNotificationContent("Complete", "Approval was successful", "success");
           console.log(receipt);
-
+          _setContractInfo();
           await timeout(2000);
           setNotificationShow(false);
         } catch (error) {
@@ -420,21 +419,6 @@ function MyPage() {
                 <li>
                   <button
                     onClick={() => {
-                      setCurrentTab("withdrawal"),
-                        currentTab != "withdrawal" ? setOutputValue("") : null;
-                    }}
-                    className={classNames(
-                      currentTab == "withdrawal"
-                        ? "text-gray-100 items-stretch border-gray-100 inline-block p-4  border-b-2  rounded-t-lg active"
-                        : "inline-block p-4 rounded-t-lg active transition-all ease-in duration-100"
-                    )}
-                  >
-                    Withdrawal
-                  </button>
-                </li>
-                <li>
-                  <button
-                    onClick={() => {
                       setCurrentTab("deposit"), currentTab != "deposit" ? setOutputValue("") : null;
                     }}
                     className={classNames(
@@ -445,6 +429,21 @@ function MyPage() {
                     aria-current="page"
                   >
                     Deposit
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onClick={() => {
+                      setCurrentTab("withdrawal"),
+                        currentTab != "withdrawal" ? setOutputValue("") : null;
+                    }}
+                    className={classNames(
+                      currentTab == "withdrawal"
+                        ? "text-gray-100 items-stretch border-gray-100 inline-block p-4  border-b-2  rounded-t-lg active"
+                        : "inline-block p-4 rounded-t-lg active transition-all ease-in duration-100"
+                    )}
+                  >
+                    Withdrawal
                   </button>
                 </li>
               </ul>
@@ -475,7 +474,10 @@ function MyPage() {
                   >
                     From
                   </label>
-                  <span className="inline-flex items-center px-3 text-sm text-gray-300 border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
+
+
+                  <span className="inline-flex items-center px-3 text-sm text-white border-0 border-b-2 border-gray-300 appearance-none dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
+
                     {currentTab == "withdrawal" ? contractInfo?.tokenName : "USDT"}
                   </span>
                 </div>
@@ -499,7 +501,11 @@ function MyPage() {
                   >
                     To {outputValue}
                   </label>
-                  <span className="inline-flex items-center px-3 text-sm text-gray-300 border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
+
+
+
+                  <span className="inline-flex items-center px-3 text-sm text-white border-0 border-b-2 border-gray-300 appearance-none dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
+
                     {currentTab == "deposit" ? "QIT" : "USDT"}
                   </span>
                 </div>
