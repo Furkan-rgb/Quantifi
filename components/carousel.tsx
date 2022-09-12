@@ -83,12 +83,14 @@ function Carousel() {
               // Slide
               <div key={slide.id} className="flex flex-col-reverse flex-embla sm:flex-row">
                 {/* Image half */}
-                <div className="flex items-center justify-center w-full bg-center bg-no-repeat bg-cover h-[48vh] sm:h-full sm:w-1/2 bg-center-right">
+                <div className="flex items-center justify-center w-full bg-no-repeat bg-cover h-[48vh] sm:h-full sm:w-1/2 bg-center-right">
                   <div className="absolute w-full h-[49vh] sm:h-full sm:w-1/2 bg-gradient-to-t sm:bg-gradient-to-r from-transparent via-transparent to-black bg-right-center"></div>
                   {/* <img className="object-cover w-full h-full" src={slide.img.blurDataURL} /> */}
                   <Image
-                    className="object-cover w-full h-full"
+                    className="object-cover w-full h-full "
                     src={slide.img}
+                    width={500}
+                    height={500}
                     alt="carousel image"
                     placeholder="blur"
                   />
