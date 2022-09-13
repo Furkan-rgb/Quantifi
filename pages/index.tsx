@@ -7,7 +7,7 @@ function HomePage() {
       {/* 1 */}
       <div className="flex justify-center items-start relative min-h-[calc(100vh_-_5rem)] bg-black snap-start ">
         {/* Cone */}
-        <div className="absolute w-full max-w-full cone animate-wiggle"></div>
+        <div className="absolute w-full max-w-full overflow-hidden min-w-fit cone animate-wiggle"></div>
 
         <div className="grid justify-center grid-cols-4 max-w-7xl">
           <div className="col-span-4 sm:col-span-2">
@@ -50,7 +50,7 @@ function HomePage() {
               muted
               playsInline
             >
-              <source src="/logoVid2.webm" type="video/webm" />
+              <source src="/logoVid4.webm" type="video/webm" />
             </video>
           </div>
         </div>
