@@ -1,11 +1,19 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import Carousel from "../components/carousel";
 import useOnScreen from "../hooks/useOnScreen";
 
 // home page
 function HomePage() {
-  const carouselRef = useRef();
+  const carouselRef = useRef() as React.MutableRefObject<HTMLInputElement>;
   const carouselRefValue = useOnScreen(carouselRef);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    if (videoRef) {
+      videoRef.current!.play();
+    }
+  }, []);
+
   return (
     <div className="snap-y">
       {/* 1 */}
@@ -46,9 +54,10 @@ function HomePage() {
             </main>
           </div>
 
-          <div className="relative z-20 flex items-center col-span-4 pt-8 text-center sm:col-span-2 lg:text-right">
+          <div className="relative z-20 flex items-center col-span-4 pt-8 overflow-hidden text-center sm:col-span-2 lg:text-right">
             <video
               className="inline-block object-cover w-full h-full scale-125 sm:scale-150"
+              ref={videoRef}
               autoPlay
               loop
               muted
@@ -61,7 +70,7 @@ function HomePage() {
       </div>
 
       {/* 2 */}
-      <div className="z-20 pb-4 bg-black snap-start" ref={carouselRef.current}>
+      <div className="z-20 pb-4 bg-black snap-start" ref={carouselRef}>
         {carouselRefValue && <Carousel />}
       </div>
 
