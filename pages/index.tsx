@@ -52,7 +52,7 @@ function HomePage() {
         <div className="absolute w-full max-w-full overflow-hidden min-w-fit cone"></div>
 
         <div className="z-0 grid justify-center grid-cols-4 max-w-7xl">
-          <div className="col-span-4 sm:col-span-2">
+          <div className="text-center col-span-4 sm:col-span-2">
             <main className="relative flex items-center h-full px-4 pt-10 mx-auto sm:pt-12 sm:px-6 md:pt-16 lg:pt-20 lg:px-8 xl:pt-28">
               {/* Text part */}
               <div className="z-20 items-start w-full sm:text-center">
