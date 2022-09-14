@@ -65,9 +65,9 @@ function HomePage() {
             </main>
           </div>
 
-          <div className="relative z-20 flex items-center col-span-4 pt-8 overflow-hidden text-center sm:col-span-2 lg:text-right">
+          <div className="relative z-20 flex items-center col-span-4 pt-8 overflow-x-hidden text-center scale-125 sm:scale-150 sm:col-span-2 lg:text-right">
             <video
-              className="inline-block object-cover w-full h-full scale-125 sm:scale-150"
+              className="inline-block object-cover w-full h-full "
               ref={videoRef}
               autoPlay
               loop
