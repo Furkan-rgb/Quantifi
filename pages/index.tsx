@@ -18,11 +18,11 @@ function HomePage() {
     if (isBgTransition) {
       setTimeout(() => {
         setBgTransition(false);
-      }, 12000);
+      }, 4000);
     } else {
       setTimeout(() => {
         setBgTransition(true);
-      }, 12000);
+      }, 4000);
     }
   }, [isBgTransition]);
 
@@ -52,8 +52,8 @@ function HomePage() {
       {/* 1 */}
       <div
         className={classNames(
-          isBgTransition ? "via-[#225a7a]" : "via-[#8c2b4d]",
-          "flex justify-center items-center relative min-h-[calc(100vh_-_5rem)] sm:bg-qdark bg-gradient-to-b from-qdark transition-all duration-300 ease-in-out to-black snap-start overflow-hidden background-animate"
+          // isBgTransition ? "via-[#225a7a]" : "via-[#8c2b4d]",
+          "flex justify-center items-center relative min-h-[calc(100vh_-_5rem)] sm:bg-qdark bg-gradient-to-b from-qdark transition duration-300 ease-in-out via-[#225a7a]  to-black snap-start overflow-hidden background-animate"
         )}
       >
         {/* Cone */}
