@@ -8,9 +8,15 @@ function HomePage() {
   const carouselRefValue = useOnScreen(carouselRef);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isCarouselRef, setCarouselRef] = useState(false);
+
+  const lastRef = useRef() as React.MutableRefObject<HTMLInputElement>;
+  const [isLastRef, setLastRef] = useState(false);
+  const lastRefValue = useOnScreen(lastRef);
+
   useEffect(() => {
     if (!isCarouselRef) setCarouselRef(carouselRefValue);
-  }, [carouselRefValue]);
+    if (!isLastRef) setCarouselRef(lastRefValue);
+  }, [carouselRefValue, lastRefValue]);
 
   useEffect(() => {
     if (videoRef) {
@@ -79,21 +85,25 @@ function HomePage() {
       </div>
 
       {/* 3 */}
-      <div className="flex items-start justify-center py-32 min-h-fit bg-slate-50 snap-start">
-        <div className="mx-2 text-center text-gray-900 dark:text-gray-900">
-          <h1 className="text-4xl font-bold tracking-tight sm:text-5xl sm:tracking-tight md:text-6xl md:tracking-tight">
-            <span className="block">Are you ready to join us?</span>
-          </h1>
-          <div className="mt-3 mr-0 text-center sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-2xl lg:mx-0">
-            <span className="mr-0">Find more information about QuantiFi.</span>
+      <div ref={lastRef}>
+        {isLastRef && (
+          <div className="flex items-start justify-center py-32 min-h-fit bg-slate-50 snap-start">
+            <div className="mx-2 text-center text-gray-900 dark:text-gray-900">
+              <h1 className="text-4xl font-bold tracking-tight sm:text-5xl sm:tracking-tight md:text-6xl md:tracking-tight">
+                <span className="block">Are you ready to join us?</span>
+              </h1>
+              <div className="mt-3 mr-0 text-center sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-2xl lg:mx-0">
+                <span className="mr-0">Find more information about QuantiFi.</span>
+              </div>
+              {/* Glowing buttons, need to stay together */}
+              <div className="flex items-center justify-center mt-5 max-h-16">
+                <button className="items-center w-8/12 text-2xl text-center btnAnimated rounded-2xl h-14 font-lg">
+                  <div className="z-10">Get started</div>
+                </button>
+              </div>
+            </div>
           </div>
-          {/* Glowing buttons, need to stay together */}
-          <div className="flex items-center justify-center mt-5 max-h-16">
-            <button className="items-center w-8/12 text-2xl text-center btnAnimated rounded-2xl h-14 font-lg">
-              <div className="z-10">Get started</div>
-            </button>
-          </div>
-        </div>
+        )}
       </div>
     </div>
   );
