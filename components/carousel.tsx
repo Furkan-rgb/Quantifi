@@ -86,14 +86,14 @@ function Carousel() {
                 <div className="flex items-center justify-center w-full bg-no-repeat bg-cover h-[48vh] sm:h-full sm:w-1/2 bg-center-right">
                   <div className="absolute w-full h-[49vh] sm:h-full sm:w-1/2 bg-gradient-to-t sm:bg-gradient-to-r from-transparent via-transparent to-black bg-right-center"></div>
                   {/* <img className="object-cover w-full h-full" src={slide.img.blurDataURL} /> */}
-                  {/* <Image
+                  <Image
                     className="object-cover w-full h-full "
                     src={slide.img}
                     width={500}
                     height={500}
                     alt="carousel image"
                     placeholder="blur"
-                  /> */}
+                  />
                 </div>
                 {/* Text half */}
                 <div className="flex flex-col items-center sm:justify-center w-full py-6 text-5xl text-center bg-black sm:w-1/2 sm:items-center sm:text-left sm:h-full h-[49vh] z-20 max-h-fit overflow-visible justify-start">
