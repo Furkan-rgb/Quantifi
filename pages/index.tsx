@@ -1,13 +1,17 @@
+import { useRef } from "react";
 import Carousel from "../components/carousel";
+import useOnScreen from "../hooks/useOnScreen";
 
 // home page
 function HomePage() {
+  const carouselRef = useRef();
+  const carouselRefValue = useOnScreen(carouselRef);
   return (
     <div className="snap-y">
       {/* 1 */}
-      <div className="flex justify-center items-start relative min-h-[calc(100vh_-_5rem)] bg-black snap-start ">
+      <div className="flex justify-center items-center relative min-h-[calc(100vh_-_5rem)] bg-black snap-start ">
         {/* Cone */}
-        <div className="absolute w-full max-w-full overflow-hidden min-w-fit cone animate-wiggle"></div>
+        <div className="absolute w-full max-w-full overflow-hidden min-w-fit cone"></div>
 
         <div className="grid justify-center grid-cols-4 max-w-7xl">
           <div className="col-span-4 sm:col-span-2">
@@ -44,21 +48,22 @@ function HomePage() {
 
           <div className="relative z-20 flex items-center col-span-4 pt-8 text-center sm:col-span-2 lg:text-right">
             <video
-              className="inline-block object-cover w-full h-full p-4 md:h-96"
+              className="inline-block object-cover w-full h-full scale-125 sm:scale-150"
               autoPlay
               loop
               muted
               playsInline
             >
-              <source src="/logoVid4.webm" type="video/webm" />
+              <source src="/logoVid3.mp4" type="video/mp4;codecs=hvc1"></source>
+              <source src="/logoVid3.webm" type="video/webm" />
             </video>
           </div>
         </div>
       </div>
 
       {/* 2 */}
-      <div className="z-20 pb-4 bg-black snap-start">
-        <Carousel />
+      <div className="z-20 pb-4 bg-black snap-start" ref={carouselRef.current}>
+        {carouselRefValue && <Carousel />}
       </div>
 
       {/* 3 */}
