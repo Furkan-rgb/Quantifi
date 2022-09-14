@@ -12,31 +12,32 @@
     flex-direction: column;
   }
 }
+@media only screen and (min-width: 600px) {
+  .cone {
+    width: 98%;
+    height: 90%;
 
-.cone {
-  width: 98%;
-  height: 90%;
-
-  background: conic-gradient(
-    from 164.14deg at 61.44% 127.33%,
-    #040d16 -135.65deg,
-    #081a29 144.52deg,
-    #3771a4 151.32deg,
-    #48bed3 158.87deg,
-    #5968ee 168.95deg,
-    #a3aaf1 174.33deg,
-    #5262c7 175.76deg,
-    #c158d7 179.56deg,
-    #ec9f92 195.06deg,
-    #e45784 196.86deg,
-    #8a63b0 208.42deg,
-    #443782 216.35deg,
-    #040d16 224.35deg,
-    #081a29 504.52deg
-  );
-  filter: blur(50px);
-  animation: gradient 15s ease infinite;
-  transform: rotate(-0.99deg);
+    background: conic-gradient(
+      from 164.14deg at 61.44% 127.33%,
+      #040d16 -135.65deg,
+      #081a29 144.52deg,
+      #3771a4 151.32deg,
+      #48bed3 158.87deg,
+      #5968ee 168.95deg,
+      #a3aaf1 174.33deg,
+      #5262c7 175.76deg,
+      #c158d7 179.56deg,
+      #ec9f92 195.06deg,
+      #e45784 196.86deg,
+      #8a63b0 208.42deg,
+      #443782 216.35deg,
+      #040d16 224.35deg,
+      #081a29 504.52deg
+    );
+    filter: blur(50px);
+    animation: gradient 15s ease infinite;
+    transform: rotate(-0.99deg);
+  }
 }
 
 @keyframes gradient {

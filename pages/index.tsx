@@ -6,12 +6,13 @@ import useOnScreen from "../hooks/useOnScreen";
 function HomePage() {
   const carouselRef = useRef() as React.MutableRefObject<HTMLInputElement>;
   const carouselRefValue = useOnScreen(carouselRef);
-  const videoRef = useRef<HTMLVideoElement>(null);
   const [isCarouselRef, setCarouselRef] = useState(false);
 
   const lastRef = useRef() as React.MutableRefObject<HTMLInputElement>;
   const [isLastRef, setLastRef] = useState(false);
   const lastRefValue = useOnScreen(lastRef);
+
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
     if (!isCarouselRef) setCarouselRef(carouselRefValue);
