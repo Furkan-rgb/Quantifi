@@ -75,7 +75,7 @@ function HomePage() {
 
       {/* 2 */}
       <div className="z-20 pb-4 bg-black snap-start" ref={carouselRef}>
-        {carouselRefValue && <Carousel />}
+        {isCarouselRef && <Carousel />}
       </div>
 
       {/* 3 */}
