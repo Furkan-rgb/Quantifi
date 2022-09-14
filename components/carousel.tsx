@@ -117,9 +117,9 @@ function Carousel() {
                       )}
                     </div>
                     {/* Description */}
-                    {/* <p className="mt-2 mb-3 overflow-visible font-sans text-xl text-white sm:mt-6 md:mb-0">
+                    <p className="mt-2 mb-3 overflow-visible font-sans text-xl text-white sm:mt-6 md:mb-0">
                       {slide.desc}
-                    </p> */}
+                    </p>
                   </div>
                 </div>
               </div>
