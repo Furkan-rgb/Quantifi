@@ -10,31 +10,23 @@ function HomePage() {
 
   const [isBgTransition, setBgTransition] = useState(true);
 
-  function timeout(delay: number) {
-    return new Promise((res) => setTimeout(res, delay));
-  }
-
-  useEffect(() => {
-    if (isBgTransition) {
-      setTimeout(() => {
-        setBgTransition(false);
-      }, 4000);
-    } else {
-      setTimeout(() => {
-        setBgTransition(true);
-      }, 4000);
-    }
-  }, [isBgTransition]);
+  // useEffect(() => {
+  //   if (isBgTransition) {
+  //     setTimeout(() => {
+  //       setBgTransition(false);
+  //     }, 6000);
+  //   } else {
+  //     setTimeout(() => {
+  //       setBgTransition(true);
+  //     }, 6000);
+  //   }
+  // }, [isBgTransition]);
 
   const lastRef = useRef() as React.MutableRefObject<HTMLInputElement>;
   const [isLastRef, setLastRef] = useState(false);
   const lastRefValue = useOnScreen(lastRef);
 
   const videoRef = useRef<HTMLVideoElement>(null);
-
-  function classNames(...classes: string[]) {
-    return classes.filter(Boolean).join(" ");
-  }
 
   useEffect(() => {
     if (!isCarouselRef) setCarouselRef(carouselRefValue);
@@ -51,10 +43,10 @@ function HomePage() {
     <div className="snap-y">
       {/* 1 */}
       <div
-        className={classNames(
-          // isBgTransition ? "via-[#225a7a]" : "via-[#8c2b4d]",
-          "flex justify-center items-center relative min-h-[calc(100vh_-_5rem)] bg-gradient-to-b from-qdark transition duration-300 ease-in-out via-[#225a7a] to-black snap-start overflow-hidden background-animate"
-        )}
+        className={`flex justify-center items-center relative min-h-[calc(100vh_-_5rem)] bg-gradient-to-b from-qdark to-black overflow-hidden sm:bg-black transition ease-in-out delay-300 duration-3000 ${
+          isBgTransition ? "via-[#225a7a]" : "via-[#8c2b4d]"
+        }
+`}
       >
         {/* Cone */}
         <div className="absolute w-full max-w-full overflow-hidden min-w-fit cone"></div>
