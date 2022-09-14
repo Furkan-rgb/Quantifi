@@ -53,7 +53,7 @@ function HomePage() {
       <div
         className={classNames(
           // isBgTransition ? "via-[#225a7a]" : "via-[#8c2b4d]",
-          "flex justify-center items-center relative min-h-[calc(100vh_-_5rem)] bg-gradient-to-b from-qdark transition duration-300 ease-in-out via-[#225a7a] to-black snap-start  background-animate"
+          "flex justify-center items-center relative min-h-[calc(100vh_-_5rem)] bg-gradient-to-b from-qdark transition duration-300 ease-in-out via-[#225a7a] to-black snap-start overflow-hidden background-animate"
         )}
       >
         {/* Cone */}
