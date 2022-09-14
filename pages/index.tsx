@@ -54,7 +54,6 @@ function HomePage() {
               muted
               playsInline
             >
-              <source src="/logoVid3.mp4" type="video/mp4;codecs=hvc1"></source>
               <source src="/logoVid3.webm" type="video/webm" />
             </video>
           </div>
