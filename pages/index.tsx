@@ -15,7 +15,7 @@ function HomePage() {
 
   useEffect(() => {
     if (!isCarouselRef) setCarouselRef(carouselRefValue);
-    if (!isLastRef) setCarouselRef(lastRefValue);
+    if (!isLastRef) setLastRef(lastRefValue);
   }, [carouselRefValue, lastRefValue]);
 
   useEffect(() => {
