@@ -53,7 +53,7 @@ function HomePage() {
       <div
         className={classNames(
           // isBgTransition ? "via-[#225a7a]" : "via-[#8c2b4d]",
-          "flex justify-center items-center relative min-h-[calc(100vh_-_5rem)] sm:bg-qdark bg-gradient-to-b from-qdark transition duration-300 ease-in-out via-[#225a7a]  to-black snap-start overflow-hidden background-animate"
+          "flex justify-center items-center relative min-h-[calc(100vh_-_5rem)] bg-gradient-to-b from-qdark transition duration-300 ease-in-out via-[#225a7a] to-black snap-start overflow-hidden background-animate"
         )}
       >
         {/* Cone */}
@@ -63,7 +63,7 @@ function HomePage() {
           <div className="col-span-4 sm:col-span-2">
             <main className="relative flex items-center h-full px-4 pt-10 mx-auto sm:pt-12 sm:px-6 md:pt-16 lg:pt-20 lg:px-8 xl:pt-28">
               {/* Text part */}
-              <div className="items-start w-full sm:text-center ">
+              <div className="z-30 items-start w-full sm:text-center">
                 <h1 className="mb-2 text-4xl font-bold tracking-tight text-gray-200 sm:text-5xl sm:tracking-tight md:text-6xl md:tracking-tight">
                   <span className="block">The Decentralized world of</span>
                   <span className="block text-gray-200">Cryptocurrency</span>
