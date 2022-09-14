@@ -28,7 +28,7 @@ function HomePage() {
   return (
     <div className="snap-y">
       {/* 1 */}
-      <div className="flex justify-center items-center relative min-h-[calc(100vh_-_5rem)] bg-black snap-start ">
+      <div className="flex justify-center items-center relative min-h-[calc(100vh_-_5rem)] bg-black snap-start overflow-hidden">
         {/* Cone */}
         <div className="absolute w-full max-w-full overflow-hidden min-w-fit cone"></div>
 
@@ -81,14 +81,17 @@ function HomePage() {
       </div>
 
       {/* 2 */}
-      <div className="z-20 pb-4 bg-black snap-start" ref={carouselRef}>
+      <div
+        className="z-20 pb-4 transition ease-in-out delay-150 bg-black snap-start"
+        ref={carouselRef}
+      >
         {isCarouselRef && <Carousel />}
       </div>
 
       {/* 3 */}
       <div ref={lastRef}>
         {isLastRef && (
-          <div className="flex items-start justify-center py-32 min-h-fit bg-slate-50 snap-start">
+          <div className="flex items-start justify-center py-32 transition duration-300 ease-in-out delay-150 min-h-fit bg-slate-50 snap-start">
             <div className="mx-2 text-center text-gray-900 dark:text-gray-900">
               <h1 className="text-4xl font-bold tracking-tight sm:text-5xl sm:tracking-tight md:text-6xl md:tracking-tight">
                 <span className="block">Are you ready to join us?</span>
