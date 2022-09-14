@@ -59,11 +59,11 @@ function HomePage() {
         {/* Cone */}
         <div className="absolute w-full max-w-full overflow-hidden min-w-fit cone"></div>
 
-        <div className="grid justify-center grid-cols-4 max-w-7xl">
+        <div className="z-0 grid justify-center grid-cols-4 max-w-7xl">
           <div className="col-span-4 sm:col-span-2">
             <main className="relative flex items-center h-full px-4 pt-10 mx-auto sm:pt-12 sm:px-6 md:pt-16 lg:pt-20 lg:px-8 xl:pt-28">
               {/* Text part */}
-              <div className="z-30 items-start w-full sm:text-center">
+              <div className="z-20 items-start w-full sm:text-center">
                 <h1 className="mb-2 text-4xl font-bold tracking-tight text-gray-200 sm:text-5xl sm:tracking-tight md:text-6xl md:tracking-tight">
                   <span className="block">The Decentralized world of</span>
                   <span className="block text-gray-200">Cryptocurrency</span>
@@ -92,7 +92,7 @@ function HomePage() {
             </main>
           </div>
 
-          <div className="relative z-20 flex items-center col-span-4 pt-8 overflow-x-hidden text-center scale-125 sm:scale-150 sm:col-span-2 lg:text-right">
+          <div className="relative z-10 flex items-center col-span-4 pt-8 overflow-x-hidden text-center scale-125 sm:scale-150 sm:col-span-2 lg:text-right">
             <video
               className="inline-block object-cover w-full h-full "
               ref={videoRef}
