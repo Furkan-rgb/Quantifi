@@ -6,7 +6,14 @@ module.exports = {
   ],
   theme: {
     extend: {
+      animation: {
+        fadeIn: "fadeIn 2s ease-in forwards",
+      },
       keyframes: {
+        fadeIn: {
+          "0%": { opacity: 0 },
+          "100%": { opacity: 1 }
+        },
         wiggle: {
           '0%, 100%': {
             transform: 'rotate(-5deg)'
@@ -18,6 +25,9 @@ module.exports = {
       },
       animation: {
         wiggle: 'wiggle 10s ease-in-out infinite',
+      },
+      variants: {
+        animation: ["motion-safe"]
       },
       flex: {
         'embla': '0 0 100%'

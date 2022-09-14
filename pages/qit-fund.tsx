@@ -439,7 +439,7 @@ function MyPage() {
                     }}
                     className={classNames(
                       currentTab == "withdrawal"
-                        ? "text-gray-100 items-stretch border-gray-100 inline-block p-4  border-b-2  rounded-t-lg active"
+                        ? "text-gray-100 items-stretch border-gray-100 inline-block p-4  border-b-2 rounded-t-lg active"
                         : "inline-block p-4 rounded-t-lg active transition-all ease-in duration-100"
                     )}
                   >
@@ -475,9 +475,7 @@ function MyPage() {
                     From
                   </label>
 
-
                   <span className="inline-flex items-center px-3 text-sm text-white border-0 border-b-2 border-gray-300 appearance-none dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
-
                     {currentTab == "withdrawal" ? contractInfo?.tokenName : "USDT"}
                   </span>
                 </div>
@@ -502,10 +500,7 @@ function MyPage() {
                     To {outputValue}
                   </label>
 
-
-
                   <span className="inline-flex items-center px-3 text-sm text-white border-0 border-b-2 border-gray-300 appearance-none dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
-
                     {currentTab == "deposit" ? "QIT" : "USDT"}
                   </span>
                 </div>

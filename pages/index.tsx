@@ -8,11 +8,33 @@ function HomePage() {
   const carouselRefValue = useOnScreen(carouselRef);
   const [isCarouselRef, setCarouselRef] = useState(false);
 
+  const [isBgTransition, setBgTransition] = useState(true);
+
+  function timeout(delay: number) {
+    return new Promise((res) => setTimeout(res, delay));
+  }
+
+  useEffect(() => {
+    if (isBgTransition) {
+      setTimeout(() => {
+        setBgTransition(false);
+      }, 12000);
+    } else {
+      setTimeout(() => {
+        setBgTransition(true);
+      }, 12000);
+    }
+  }, [isBgTransition]);
+
   const lastRef = useRef() as React.MutableRefObject<HTMLInputElement>;
   const [isLastRef, setLastRef] = useState(false);
   const lastRefValue = useOnScreen(lastRef);
 
   const videoRef = useRef<HTMLVideoElement>(null);
+
+  function classNames(...classes: string[]) {
+    return classes.filter(Boolean).join(" ");
+  }
 
   useEffect(() => {
     if (!isCarouselRef) setCarouselRef(carouselRefValue);
@@ -28,7 +50,12 @@ function HomePage() {
   return (
     <div className="snap-y">
       {/* 1 */}
-      <div className="flex justify-center items-center relative min-h-[calc(100vh_-_5rem)] bg-black snap-start overflow-hidden">
+      <div
+        className={classNames(
+          isBgTransition ? "via-[#225a7a]" : "via-[#8c2b4d]",
+          "flex justify-center items-center relative min-h-[calc(100vh_-_5rem)] sm:bg-qdark bg-gradient-to-b from-qdark transition-all duration-300 ease-in-out to-black snap-start overflow-hidden background-animate"
+        )}
+      >
         {/* Cone */}
         <div className="absolute w-full max-w-full overflow-hidden min-w-fit cone"></div>
 
@@ -81,17 +108,14 @@ function HomePage() {
       </div>
 
       {/* 2 */}
-      <div
-        className="z-20 pb-4 transition ease-in-out delay-150 bg-black snap-start"
-        ref={carouselRef}
-      >
+      <div className="z-20 pb-4 bg-black snap-start motion-safe:animate-fadeIn" ref={carouselRef}>
         {isCarouselRef && <Carousel />}
       </div>
 
       {/* 3 */}
       <div ref={lastRef}>
         {isLastRef && (
-          <div className="flex items-start justify-center py-32 transition duration-300 ease-in-out delay-150 min-h-fit bg-slate-50 snap-start">
+          <div className="flex items-start justify-center py-32 min-h-fit bg-slate-50 snap-start motion-safe:animate-fadeIn">
             <div className="mx-2 text-center text-gray-900 dark:text-gray-900">
               <h1 className="text-4xl font-bold tracking-tight sm:text-5xl sm:tracking-tight md:text-6xl md:tracking-tight">
                 <span className="block">Are you ready to join us?</span>
