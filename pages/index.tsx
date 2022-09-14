@@ -57,11 +57,11 @@ function HomePage() {
               {/* Text part */}
               <div className="z-20 items-start w-full sm:text-center">
                 <h1 className="mb-2 text-4xl font-bold tracking-tight text-gray-200 sm:text-5xl sm:tracking-tight md:text-6xl md:tracking-tight">
-                  <span className="block">The Decentralized world of</span>
-                  <span className="block text-gray-200">Cryptocurrency</span>
+                  <span className="block">Data Driven</span>
+                  <span className="block text-gray-200">Investments</span>
                 </h1>
                 <span className="mt-3 text-center text-gray-200 sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-2xl lg:mx-0">
-                  Buy, sell and earn crypto.
+                  Welcome to QuantiFi
                 </span>
                 <div className="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-center">
                   {/* Get started button */}
@@ -113,7 +113,7 @@ function HomePage() {
                 <span className="block">Are you ready to join us?</span>
               </h1>
               <div className="mt-3 mr-0 text-center sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-2xl lg:mx-0">
-                <span className="mr-0">Find more information about QuantiFi.</span>
+                <span className="mr-0">Find out more about QuantiFi.</span>
               </div>
               {/* Glowing buttons, need to stay together */}
               <div className="flex items-center justify-center mt-5 max-h-16">
