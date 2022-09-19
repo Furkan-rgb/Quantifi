@@ -43,11 +43,15 @@ const data = {
 const config = {
   type: "bar",
   data: data,
-  options: {
-    scales: {
-      yAxis: {
-        beginAtZero: true,
-      },
+  legend: { display: false },
+  title: {
+    display: true,
+    text: "Price of QIT",
+  },
+  responsive: true,
+  scales: {
+    y: {
+      beginAtZero: true,
     },
   },
 };
