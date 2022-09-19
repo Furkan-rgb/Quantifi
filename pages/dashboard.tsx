@@ -13,17 +13,17 @@ function Dashboard() {
   ];
   return (
     <>
-      <div className="grid min-h-screen grid-cols-2 gap-4 bg-slate-100">
-        <div className="p-2 bg-white">
+      <div className="grid min-h-screen grid-cols-2 gap-4 p-4 bg-slate-100">
+        <div className="p-3 bg-white">
           <Doughnut></Doughnut>
         </div>
-        <div className="p-2 bg-white">
+        <div className="p-3 bg-white">
           <Barchart></Barchart>
         </div>
-        <div className="col-span-2 p-2 bg-white">
+        <div className="col-span-2 p-3 bg-white">
           <Linechart></Linechart>
         </div>
-        <div className="shadow-lg ">
+        <div className="p-3 shadow-lg">
           <dl className="grid grid-cols-1 gap-5 mt-5 sm:grid-cols-3">
             {stats.map((item) => (
               <div
@@ -38,7 +38,9 @@ function Dashboard() {
             ))}
           </dl>
         </div>
-        <div className="col-span-2 p-2 bg-white">06</div>
+        <div className="col-span-2 p-3 bg-white">
+          <Linechart></Linechart>
+        </div>
       </div>
     </>
   );
