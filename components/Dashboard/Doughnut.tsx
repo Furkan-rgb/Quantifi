@@ -19,6 +19,7 @@ function DoughnutChart() {
 
   const config = {
     type: "doughnut",
+    responsive: true,
     cutout: "90%",
     plugins: {
       legend: {

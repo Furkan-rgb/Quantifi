@@ -49,6 +49,7 @@ function Linechart() {
 
   const configLineChart = {
     type: "line",
+    responsive: true,
     dataLineChart,
     elements: {
       line: {

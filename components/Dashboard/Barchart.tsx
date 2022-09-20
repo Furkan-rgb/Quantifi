@@ -43,6 +43,7 @@ const data = {
 
 const config = {
   type: "bar",
+  responsive: true,
   data: data,
   plugins: {
     legend: { display: false },

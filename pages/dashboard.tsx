@@ -14,10 +14,10 @@ function Dashboard() {
   return (
     <>
       <div className="grid min-h-screen grid-cols-2 gap-4 p-4 bg-slate-100">
-        <div className="p-3 bg-white">
+        <div className="col-span-2 p-3 bg-white sm:col-span-1">
           <Doughnut></Doughnut>
         </div>
-        <div className="p-3 bg-white">
+        <div className="col-span-2 p-3 bg-white sm:col-span-1">
           <Barchart></Barchart>
         </div>
         <div className="col-span-2 p-3 bg-white">
