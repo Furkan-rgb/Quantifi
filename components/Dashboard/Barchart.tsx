@@ -1,5 +1,6 @@
 import React from "react";
-import { Bar } from "react-chartjs-3";
+import { Bar } from "react-chartjs-2";
+import "chart.js/auto";
 
 const labels = [
   "January",
@@ -42,10 +43,17 @@ const data = {
 
 const config = {
   type: "bar",
+  responsive: true,
   data: data,
-  options: {
+  plugins: {
+    legend: { display: false },
+    title: {
+      display: true,
+      text: "Price of QIT",
+    },
+    responsive: true,
     scales: {
-      yAxis: {
+      y: {
         beginAtZero: true,
       },
     },
