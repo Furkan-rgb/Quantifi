@@ -1,5 +1,6 @@
 import { Doughnut } from "react-chartjs-2";
 import "chart.js/auto";
+import { ChartOptions } from "chart.js";
 
 function DoughnutChart() {
   const totalValueLocked = 609428342;
@@ -17,10 +18,9 @@ function DoughnutChart() {
     ],
   };
 
-  const config = {
-    type: "doughnut",
+  const config: ChartOptions<"doughnut"> = {
+    cutout: 90,
     responsive: true,
-    cutout: "90%",
     plugins: {
       legend: {
         position: "right",

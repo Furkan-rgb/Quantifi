@@ -10,6 +10,7 @@ import {
   Legend,
   Filler,
   ScriptableContext,
+  ChartOptions,
 } from "chart.js";
 import { useRef } from "react";
 
@@ -25,7 +26,7 @@ ChartJS.register(
 );
 
 function Linechart() {
-  const chartRef = useRef<ChartJS>(null);
+  const chartRef = useRef<ChartJS<"line", number[], string>>(null);
   const labels = ["January", "February", "March", "April", "May", "June"];
 
   const dataLineChart = {
@@ -47,10 +48,8 @@ function Linechart() {
     ],
   };
 
-  const configLineChart = {
-    type: "line",
+  const configLineChart: ChartOptions<"line"> = {
     responsive: true,
-    dataLineChart,
     elements: {
       line: {
         tension: 0.35,
