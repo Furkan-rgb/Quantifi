@@ -26,10 +26,10 @@ function Dashboard() {
         {stats.map((item) => (
           <div
             key={item.name}
-            className="items-center w-full col-span-1 px-4 py-5 overflow-hidden bg-white rounded-lg shadow dark:bg-slate-100 sm:flex sm:flex-col sm:p-6"
+            className="flex flex-col items-center justify-center w-full col-span-1 px-4 py-5 overflow-hidden bg-white rounded-lg shadow dark:bg-slate-100 sm:flex sm:flex-col sm:p-6"
           >
             <dt className="text-sm font-medium text-gray-500 text-clip">{item.name}</dt>
-            <dd className="mt-1 text-3xl font-semibold tracking-tight text-gray-900">
+            <dd className="mt-1 text-xl font-semibold tracking-tight text-gray-900 sm:text-3xl">
               {item.stat}
             </dd>
           </div>

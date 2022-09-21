@@ -38,20 +38,20 @@ function DoughnutChart() {
 
   return (
     <>
-      <div className="grid items-center h-full grid-cols-6">
+      <div className="grid items-center h-full grid-cols-6 p-4">
         {/* Total Value Locked */}
-        <div className="flex justify-between h-10 col-span-6">
-          <span>Current Total Value Locked</span>
+        <div className="flex justify-between h-10 col-span-6 ">
+          <span className="text-gray-500">Current Total Value Locked</span>
           <span className="text-2xl subpixel-antialiased font-medium">{totalValueLocked} UST</span>
         </div>
 
         {/* Doughnut */}
-        <div className="col-span-3 ">
+        <div className="col-span-4 ">
           <Doughnut data={dataDoughnut} options={config} width={200} height={300} />
         </div>
 
         {/* Stats */}
-        <div className="col-span-3 justify-self-end ">
+        <div className="col-span-2 justify-self-end ">
           <div>
             <div className="inline-block">$ {totalDeposit}</div>
           </div>
