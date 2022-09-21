@@ -4,14 +4,14 @@ import { ChartOptions } from "chart.js";
 
 function DoughnutChart() {
   const totalValueLocked = 609428342;
-  const tDeposit = 60113801;
-  const tCollateral = 2314474;
+  const totalDeposit = 60113801;
+  const totalCollateral = 2314474;
   const dataDoughnut = {
     labels: ["Total Deposit", "Total Collateral"],
     datasets: [
       {
         label: "Total Value Locked",
-        data: [tDeposit, tCollateral],
+        data: [totalDeposit, totalCollateral],
         backgroundColor: ["rgb(75, 194, 216)", "rgb(238, 117, 156)"],
         hoverOffset: 4,
       },
@@ -19,7 +19,7 @@ function DoughnutChart() {
   };
 
   const config: ChartOptions<"doughnut"> = {
-    cutout: 90,
+    cutout: "90%",
     responsive: true,
     plugins: {
       legend: {
@@ -53,11 +53,11 @@ function DoughnutChart() {
         {/* Stats */}
         <div className="col-span-3 justify-self-end ">
           <div>
-            <div className="inline-block">$ {tDeposit}</div>
+            <div className="inline-block">$ {totalDeposit}</div>
           </div>
 
           <div>
-            <div className="inline-block">$ {tCollateral}</div>
+            <div className="inline-block">$ {totalCollateral}</div>
           </div>
         </div>
       </div>
