@@ -62,7 +62,17 @@ function Linechart() {
 
   return (
     <div>
-      <div className="px-5 py-3">Fund Profits</div>
+      <div className="flex flex-row justify-between py-3">
+        <div>Fund Profits</div>
+        <div>
+          <button className="px-2 border rounded-md border-slate-400">Week</button>
+          <button className="px-2">Month</button>
+          <button className="px-2">3 Months</button>
+          <button className="px-2">Year</button>
+          <button className="px-2">Lifetime</button>
+        </div>
+      </div>
+
       <Line data={dataLineChart} ref={chartRef} options={configLineChart}></Line>
     </div>
   );
