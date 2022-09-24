@@ -2,6 +2,16 @@ import { Doughnut } from "react-chartjs-2";
 import "chart.js/auto";
 import { Chart, ChartData, ChartDataset, ChartOptions } from "chart.js";
 
+// Create our number formatter.
+const formatter = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+
+  // These options are needed to round to whole numbers if that's what you want.
+  //minimumFractionDigits: 0, // (this suffices for whole numbers, but will print 2500.10 as $2,500.1)
+  //maximumFractionDigits: 0, // (causes 2500.99 to be printed as $2,501)
+});
+
 function DoughnutChart() {
   // Center of doughnut chart
   const totalValueLocked = 609428342;
@@ -61,20 +71,11 @@ function DoughnutChart() {
           ctx.textAlign = textXPosition;
           ctx.textBaseline = "middle";
           ctx.fillStyle = dataset?.borderColor[index];
-          ctx.fillText(dataset.data[index], xLine + extraLine + plusFivePx, yLine);
-
-          // Center data
-          ctx.restore();
-          var fontSize = (height / 114).toFixed(2);
-          ctx.font = fontSize + "em sans-serif";
-          ctx.textBaseline = "middle";
-
-          var text = "Total Value Locked:" + "$" + totalValueLocked.toString(),
-            textX = Math.round((width - ctx.measureText(text).width) / 2),
-            textY = height / 2;
-
-          ctx.fillText(text, textX, textY);
-          ctx.save();
+          ctx.fillText(
+            formatter.format(dataset.data[index]),
+            xLine + extraLine + plusFivePx,
+            yLine
+          );
         });
       });
     },
@@ -94,34 +95,35 @@ function DoughnutChart() {
     },
     plugins: {
       legend: {
-        display: false,
-        position: "right",
+        display: true,
+        position: "bottom",
         labels: {
           usePointStyle: true,
+          padding: 20,
         },
       },
     },
     elements: {
       arc: {
-        borderWidth: 1,
-        borderRadius: 10,
+        borderWidth: 0,
+        // borderRadius: 10,
       },
     },
   };
 
   return (
     <>
-      <div className="grid items-center h-full grid-cols-6 p-4">
+      <div className="grid items-center justify-center h-full grid-cols-6 p-4">
         {/* Total Value Locked */}
-        {/* <div className="flex justify-between h-10 col-span-6 ">
-          <div className="text-left text-gray-500">Current Total Value Locked</div>
-          <div className="text-2xl subpixel-antialiased font-medium text-right">
-            {totalValueLocked} UST
+        <div className="flex flex-col justify-center h-10 col-span-6 ">
+          <div className="text-center text-gray-500">Current Total Value Locked</div>
+          <div className="text-2xl subpixel-antialiased font-medium text-center">
+            {formatter.format(totalValueLocked)} UST
           </div>
-        </div> */}
+        </div>
 
         {/* Doughnut */}
-        <div className="flex col-span-6">
+        <div className="flex justify-center col-span-6">
           <div>
             <Doughnut
               data={dataDoughnut}
