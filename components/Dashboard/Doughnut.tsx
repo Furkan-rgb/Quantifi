@@ -99,7 +99,7 @@ function DoughnutChart() {
         position: "bottom",
         labels: {
           usePointStyle: true,
-          padding: 20,
+          padding: 25,
         },
       },
     },

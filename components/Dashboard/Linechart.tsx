@@ -11,6 +11,7 @@ import {
   Filler,
   ScriptableContext,
   ChartOptions,
+  ChartData,
 } from "chart.js";
 import { useRef } from "react";
 
@@ -25,7 +26,13 @@ ChartJS.register(
   Filler
 );
 
-function Linechart() {
+interface LinechartData {
+  title?: string;
+  data: ChartData<"line">;
+  config: ChartOptions<"line">;
+}
+
+function Linechart(props: LinechartData) {
   const chartRef = useRef<ChartJS<"line", number[], string>>(null);
   const labels = ["January", "February", "March", "April", "May", "June"];
 
@@ -63,17 +70,10 @@ function Linechart() {
   return (
     <div>
       <div className="flex flex-row justify-between py-3">
-        <div>Fund Profits</div>
-        <div>
-          <button className="px-2 border rounded-md border-slate-400">Week</button>
-          <button className="px-2">Month</button>
-          <button className="px-2">3 Months</button>
-          <button className="px-2">Year</button>
-          <button className="px-2">Lifetime</button>
-        </div>
+        {props.title ? <div>{props.title}</div> : null}
       </div>
 
-      <Line data={dataLineChart} ref={chartRef} options={configLineChart}></Line>
+      <Line data={props.data} ref={chartRef} options={props.config}></Line>
     </div>
   );
 }
