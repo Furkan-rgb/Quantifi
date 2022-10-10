@@ -33,6 +33,7 @@
     "embla-carousel-autoplay": "^7.0.0",
     "embla-carousel-react": "^7.0.0",
     "ethers": "^5.7.0",
+    "framer-motion": "^7.4.0",
     "heroicons": "^2.0.8",
     "next": "12.2.5",
     "prettier-plugin-tailwindcss": "^0.1.13",

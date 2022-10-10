@@ -1,6 +1,31 @@
-import { useEffect, useRef, useState } from "react";
+import { ReactNode, useEffect, useRef, useState } from "react";
 import Carousel from "../components/carousel";
 import useOnScreen from "../hooks/useOnScreen";
+import { useInView } from "framer-motion";
+
+interface Props {
+  children?: ReactNode;
+  // any props that come into the component
+}
+
+function Section({ children }: Props) {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true });
+
+  return (
+    <section ref={ref}>
+      <span
+        style={{
+          transform: isInView ? "none" : "translateX(-200px)",
+          opacity: isInView ? 1 : 0,
+          transition: "all 0.9s cubic-bezier(0.17, 0.55, 0.55, 1) 0.5s",
+        }}
+      >
+        {children}
+      </span>
+    </section>
+  );
+}
 
 // home page
 function HomePage() {
@@ -10,6 +35,7 @@ function HomePage() {
 
   const [isBgTransition, setBgTransition] = useState(true);
 
+  // Switch background colour for first section
   // useEffect(() => {
   //   if (isBgTransition) {
   //     setTimeout(() => {
@@ -50,11 +76,11 @@ function HomePage() {
       >
         {/* Cone */}
         {/* <div className="absolute w-full max-w-full overflow-hidden cone min-w-fit"></div> */}
-
         <div className="z-0 grid justify-center grid-cols-4 max-w-7xl">
           <div className="col-span-4 text-center sm:col-span-2">
             <main className="relative flex items-center h-full px-4 pt-10 mx-auto sm:px-6 sm:pt-12 md:pt-16 lg:px-8 lg:pt-20 xl:pt-28">
               {/* Text part */}
+
               <div className="z-20 items-start w-full sm:text-center">
                 <h1 className="mb-2 text-4xl font-bold tracking-tight text-gray-200 sm:text-5xl sm:tracking-tight md:text-6xl md:tracking-tight">
                   <span className="block">Data Driven</span>
@@ -100,13 +126,15 @@ function HomePage() {
       </div>
 
       {/* 2 */}
-      <div className="z-20 pb-4 bg-black motion-safe:animate-fadeIn snap-start" ref={carouselRef}>
-        {isCarouselRef && <Carousel />}
-      </div>
+      <Section>
+        <div className="z-20 pb-4 bg-black motion-safe:animate-fadeIn snap-start" ref={carouselRef}>
+          {isCarouselRef && <Carousel />}
+        </div>
+      </Section>
 
       {/* 3 */}
-      <div ref={lastRef}>
-        {isLastRef && (
+      <Section>
+        <div ref={lastRef}>
           <div className="flex items-start justify-center py-32 motion-safe:animate-fadeIn min-h-fit snap-start bg-slate-50">
             <div className="mx-2 text-center text-gray-900 dark:text-gray-900">
               <h1 className="text-4xl font-bold tracking-tight sm:text-5xl sm:tracking-tight md:text-6xl md:tracking-tight">
@@ -123,8 +151,8 @@ function HomePage() {
               </div>
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      </Section>
     </div>
   );
 }
