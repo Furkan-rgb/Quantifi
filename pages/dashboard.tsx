@@ -1,59 +1,127 @@
-import { ChartOptions } from "chart.js";
+import { ChartData, ChartOptions } from "chart.js";
 import { useEffect, useState } from "react";
 import Barchart from "../components/Dashboard/Barchart";
 import Doughnut from "../components/Dashboard/Doughnut";
 import Linechart from "../components/Dashboard/Linechart";
 import "chartjs-adapter-date-fns";
 // Dummy data dashboard
-import qitData from "../json/qit.json";
+// import qitData from "../json/qit.json";
+type dashboardData = {
+  averageHolding: number;
+  dailyPriceDates: priceDate[];
+  monthlyPriceDates: priceDate[];
+  netDeposits: number;
+  numInvestors: number;
+  profits: object;
+};
+
+type priceDate = {
+  date: string;
+  price: number;
+};
 
 function Dashboard() {
+  const [qitData, setQitData] = useState<dashboardData>();
+  const [lineData, setLineData] = useState<ChartData<"line">>();
+  const [barData, setBarData] = useState<ChartData<"bar">>();
   async function getQitData() {
     try {
-      const res = await fetch(`https://rgtestnet.pythonanywhere.com/api/v1/qit`, {
-        mode: "no-cors",
-      });
+      const res = await fetch(`https://rgtestnet.pythonanywhere.com/api/v1/qit`, {});
       const data = await res.json();
-      console.log("API Data:" + data);
+      // console.log(data);
+      setQitData(data);
+      console.log("data set");
+      console.log(qitData);
     } catch (err) {
       console.error(err);
     }
   }
-  // const [qitData, setQitData] = useState(null);
 
   useEffect(() => {
     getQitData();
-    console.log(qitData);
   }, []);
+
+  useEffect(() => {
+    if (!qitData) {
+      console.log("No dashboard data");
+      return;
+    }
+    // Line chart
+    setLineData({
+      labels: qitData?.dailyPriceDates.map((item) => item.date).slice(-chartDate),
+      datasets: [
+        {
+          backgroundColor: (context: any) => {
+            const ctx = context.chart.ctx;
+            const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+            gradient.addColorStop(0, "rgba(235,237,255,1)");
+            gradient.addColorStop(1, "rgba(235,237,255,0)");
+            return gradient;
+          },
+          label: "UST",
+          fill: "start",
+          borderColor: "#8E95DF",
+          data: qitData.dailyPriceDates.map((item) => item.price).slice(-chartDate),
+        },
+      ],
+    });
+
+    // Barchart
+    setBarData({
+      labels: qitData?.monthlyPriceDates.map((item) => item.date),
+      datasets: [
+        {
+          label: "Price of QIT",
+          data: qitData?.monthlyPriceDates.map((i) => i.price),
+          backgroundColor: [
+            "rgba(220, 218, 251)",
+            "rgba(253, 147, 128)",
+            "rgba(220, 218, 251)",
+            "rgba(253, 147, 128)",
+            "rgba(220, 218, 251)",
+            "rgba(253, 147, 128)",
+            "rgba(220, 218, 251)",
+            "rgba(253, 147, 128)",
+            "rgba(220, 218, 251)",
+            "rgba(253, 147, 128)",
+            "rgba(220, 218, 251)",
+            "rgba(253, 147, 128)",
+          ],
+          borderWidth: 1,
+        },
+      ],
+    });
+  }, [qitData]);
+
   const [chartDate, setChartDate] = useState(7);
 
-  const labels = qitData.monthlyPriceDates.map((item) => item.date);
+  // const labels = qitData.monthlyPriceDates.map((item) => item.date);
 
   // Barchart
-  const data = {
-    labels: labels,
-    datasets: [
-      {
-        label: "Price of QIT",
-        data: qitData.monthlyPriceDates.map((i) => i.price),
-        backgroundColor: [
-          "rgba(220, 218, 251)",
-          "rgba(253, 147, 128)",
-          "rgba(220, 218, 251)",
-          "rgba(253, 147, 128)",
-          "rgba(220, 218, 251)",
-          "rgba(253, 147, 128)",
-          "rgba(220, 218, 251)",
-          "rgba(253, 147, 128)",
-          "rgba(220, 218, 251)",
-          "rgba(253, 147, 128)",
-          "rgba(220, 218, 251)",
-          "rgba(253, 147, 128)",
-        ],
-        borderWidth: 1,
-      },
-    ],
-  };
+  // const data = {
+  //   labels: labels,
+  //   datasets: [
+  //     {
+  //       label: "Price of QIT",
+  //       data: qitData.monthlyPriceDates.map((i) => i.price),
+  //       backgroundColor: [
+  //         "rgba(220, 218, 251)",
+  //         "rgba(253, 147, 128)",
+  //         "rgba(220, 218, 251)",
+  //         "rgba(253, 147, 128)",
+  //         "rgba(220, 218, 251)",
+  //         "rgba(253, 147, 128)",
+  //         "rgba(220, 218, 251)",
+  //         "rgba(253, 147, 128)",
+  //         "rgba(220, 218, 251)",
+  //         "rgba(253, 147, 128)",
+  //         "rgba(220, 218, 251)",
+  //         "rgba(253, 147, 128)",
+  //       ],
+  //       borderWidth: 1,
+  //     },
+  //   ],
+  // };
 
   const config: ChartOptions<"bar"> = {
     maintainAspectRatio: false,
@@ -73,24 +141,24 @@ function Dashboard() {
   };
 
   // Line chart
-  const dailyPriceData = {
-    labels: qitData.dailyPriceDates.map((item) => item.date).slice(-chartDate),
-    datasets: [
-      {
-        backgroundColor: (context: any) => {
-          const ctx = context.chart.ctx;
-          const gradient = ctx.createLinearGradient(0, 0, 0, 400);
-          gradient.addColorStop(0, "rgba(235,237,255,1)");
-          gradient.addColorStop(1, "rgba(235,237,255,0)");
-          return gradient;
-        },
-        label: "UST",
-        fill: "start",
-        borderColor: "#8E95DF",
-        data: qitData.dailyPriceDates.map((item) => item.price).slice(-chartDate),
-      },
-    ],
-  };
+  // const dailyPriceData = {
+  //   labels: qitData.dailyPriceDates.map((item) => item.date).slice(-chartDate),
+  //   datasets: [
+  //     {
+  //       backgroundColor: (context: any) => {
+  //         const ctx = context.chart.ctx;
+  //         const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+  //         gradient.addColorStop(0, "rgba(235,237,255,1)");
+  //         gradient.addColorStop(1, "rgba(235,237,255,0)");
+  //         return gradient;
+  //       },
+  //       label: "UST",
+  //       fill: "start",
+  //       borderColor: "#8E95DF",
+  //       data: qitData.dailyPriceDates.map((item) => item.price).slice(-chartDate),
+  //     },
+  //   ],
+  // };
 
   const dailyPriceConfig: ChartOptions<"line"> = {
     responsive: true,
@@ -117,14 +185,13 @@ function Dashboard() {
 
   return (
     <>
-      <button onClick={() => getQitData()}>get data</button>
       <div className="flex justify-center py-4 text-black">
         <div className="grid self-center max-w-5xl min-h-screen grid-cols-2 gap-4 p-4 text-black">
           <div className="col-span-2 bg-white rounded-lg dark:bg-slate-100 sm:col-span-1">
             <Doughnut></Doughnut>
           </div>
           <div className="col-span-2 p-3 bg-white rounded-lg dark:bg-slate-100 sm:col-span-1">
-            <Barchart data={data} config={config}></Barchart>
+            <Barchart data={barData as ChartData<"bar">} config={config}></Barchart>
           </div>
           <div className="col-span-2 p-3 bg-white rounded-lg dark:bg-slate-100">
             <div>
@@ -171,7 +238,7 @@ function Dashboard() {
             </div>
             <Linechart
               title="Daily Prices"
-              data={dailyPriceData}
+              data={lineData as ChartData<"line">}
               config={dailyPriceConfig}
             ></Linechart>
           </div>
@@ -180,7 +247,7 @@ function Dashboard() {
           <div className="flex flex-col items-center justify-center w-full col-span-1 px-4 py-5 overflow-hidden text-center bg-white rounded-lg shadow dark:bg-slate-100 sm:flex sm:flex-col sm:p-6">
             <dt className="text-sm font-medium text-gray-500 text-clip">{"Number of Investors"}</dt>
             <dd className="mt-1 text-xl font-semibold tracking-tight text-gray-900 sm:text-3xl">
-              {qitData.numInvestors}
+              {qitData?.numInvestors}
             </dd>
           </div>
 
@@ -190,12 +257,12 @@ function Dashboard() {
               {"Avg. Investment into Fund"}
             </dt>
             <dd className="mt-1 text-xl font-semibold tracking-tight text-gray-900 sm:text-3xl">
-              {qitData.averageHolding}
+              {qitData?.averageHolding}
             </dd>
           </div>
 
           <div className="col-span-2 p-3 bg-white rounded-lg dark:bg-slate-100">
-            <Linechart data={dailyPriceData} config={dailyPriceConfig}></Linechart>
+            <Linechart data={lineData as ChartData<"line">} config={dailyPriceConfig}></Linechart>
           </div>
         </div>
       </div>

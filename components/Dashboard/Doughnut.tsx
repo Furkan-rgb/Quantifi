@@ -41,7 +41,6 @@ function DoughnutChart() {
 
       chart.data.datasets.forEach((dataset: any, i: number) => {
         chart.getDatasetMeta(i).data.forEach((datapoint, index: number) => {
-          console.log(dataset);
           const { x, y } = datapoint.tooltipPosition();
 
           //draw line
@@ -62,7 +61,6 @@ function DoughnutChart() {
 
           //text
           const textWidth = ctx.measureText(dataset.data[index]).width;
-          console.log(textWidth);
           ctx.font = "12px Arial";
 
           //control the position
