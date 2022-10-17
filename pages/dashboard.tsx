@@ -8,7 +8,21 @@ import "chartjs-adapter-date-fns";
 import qitData from "../json/qit.json";
 
 function Dashboard() {
+  async function getQitData() {
+    try {
+      const res = await fetch(`https://rgtestnet.pythonanywhere.com/api/v1/qit`, {
+        mode: "no-cors",
+      });
+      const data = await res.json();
+      console.log("API Data:" + data);
+    } catch (err) {
+      console.error(err);
+    }
+  }
+  // const [qitData, setQitData] = useState(null);
+
   useEffect(() => {
+    getQitData();
     console.log(qitData);
   }, []);
   const [chartDate, setChartDate] = useState(7);
@@ -103,6 +117,7 @@ function Dashboard() {
 
   return (
     <>
+      <button onClick={() => getQitData()}>get data</button>
       <div className="flex justify-center py-4 text-black">
         <div className="grid self-center max-w-5xl min-h-screen grid-cols-2 gap-4 p-4 text-black">
           <div className="col-span-2 bg-white rounded-lg dark:bg-slate-100 sm:col-span-1">
