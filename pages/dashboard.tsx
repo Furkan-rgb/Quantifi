@@ -21,6 +21,7 @@ type priceDate = {
 
 function Dashboard() {
   const [qitData, setQitData] = useState<dashboardData>();
+  const [chartDate, setChartDate] = useState(7);
   const [lineData, setLineData] = useState<ChartData<"line">>({
     labels: [],
     datasets: [
@@ -103,9 +104,8 @@ function Dashboard() {
         },
       ],
     });
-  }, [qitData]);
+  }, [qitData, chartDate]);
 
-  const [chartDate, setChartDate] = useState(7);
   const config: ChartOptions<"bar"> = {
     maintainAspectRatio: false,
     scales: {
@@ -153,7 +153,7 @@ function Dashboard() {
             <Doughnut></Doughnut>
           </div>
           <div className="col-span-2 p-3 bg-white rounded-lg dark:bg-slate-100 sm:col-span-1">
-            <Barchart data={barData as ChartData<"bar">} config={config}></Barchart>
+            <Barchart data={barData} config={config}></Barchart>
           </div>
           <div className="col-span-2 p-3 bg-white rounded-lg dark:bg-slate-100">
             <div>
