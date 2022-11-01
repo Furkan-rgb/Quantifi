@@ -1,0 +1,148 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@media (prefers-color-scheme: dark) {
+  html {
+    color-scheme: dark;
+  }
+  body {
+    color: white;
+    display: flex;
+    flex-direction: column;
+  }
+}
+@media only screen and (min-width: 600px) {
+  .cone {
+    width: 98%;
+    height: 90%;
+
+    background: conic-gradient(
+      from 164.14deg at 61.44% 127.33%,
+      #040d16 -135.65deg,
+      #081a29 144.52deg,
+      #3771a4 151.32deg,
+      #48bed3 158.87deg,
+      #5968ee 168.95deg,
+      #a3aaf1 174.33deg,
+      #5262c7 175.76deg,
+      #c158d7 179.56deg,
+      #ec9f92 195.06deg,
+      #e45784 196.86deg,
+      #8a63b0 208.42deg,
+      #443782 216.35deg,
+      #040d16 224.35deg,
+      #081a29 504.52deg
+    );
+    filter: blur(50px);
+    animation: gradient 15s ease infinite;
+    transform: rotate(-0.99deg);
+  }
+}
+
+.background-animate {
+  background-size: 400%;
+
+  -webkit-animation: AnimationName 20s ease infinite;
+  -moz-animation: AnimationName 20s ease infinite;
+  animation: AnimationName 20s ease infinite;
+}
+
+@keyframes AnimationName {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.embla__dots {
+  display: flex;
+  list-style: none;
+  justify-content: center;
+  padding-top: 10px;
+}
+
+.embla__dot {
+  background-color: transparent;
+  cursor: pointer;
+  position: relative;
+  padding: 0;
+  outline: 0;
+  border: 0;
+  width: 30px;
+  height: 30px;
+  margin-right: 7.5px;
+  margin-left: 7.5px;
+  display: flex;
+  align-items: center;
+}
+
+.embla__dot:after {
+  background-color: #efefef;
+  opacity: 0.5;
+  width: 100%;
+  height: 4px;
+  border-radius: 2px;
+  content: "";
+}
+
+.embla__dot.is-selected:after {
+  background-color: #ffffff;
+  opacity: 1;
+}
+
+/* Glowing buttons on home page */
+.btnAnimated {
+  /* reset */
+  -webkit-appearance: none;
+  border: 0;
+  outline: 0;
+  /* styles */
+  background: linear-gradient(
+    45deg,
+    #4fc0ff 10%,
+    #6977ee 30%,
+    #ff6098 50%,
+    #6977ee 70%,
+    #4fc0ff 90%
+  );
+  background-size: 200% 100%;
+  color: white;
+  transition: 1s;
+
+  animation: loop 8s infinite;
+}
+
+@keyframes loop {
+  0% {
+    background-position: 0 0;
+  }
+
+  50% {
+    background-position: 100% 0;
+  }
+
+  100% {
+    background-position: 0 0;
+  }
+}
+
+.btnAnimated a {
+  color: lighten(#222, 10%);
+  transition: 0.3s;
+}
