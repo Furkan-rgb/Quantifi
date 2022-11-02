@@ -1,10 +1,9 @@
 import React, { Fragment, useEffect, useState } from "react";
 import myPageAbi from "../components/abi/QIT.json";
 import erc20ABI from "../components/abi/erc20.json";
-import { useWeb3React } from "@web3-react/core";
+import { useWeb3React, UnsupportedChainIdError } from "@web3-react/core";
 import { BigNumber, ethers } from "ethers";
 import { networkParams } from "../components/utils/networks";
-import { UnsupportedChainIdError } from "@web3-react/core";
 import { ArrowDownIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { Transition } from "@headlessui/react";
 import Notification, { NotificationContent } from "../components/Notification";
@@ -263,7 +262,7 @@ function MyPage() {
           </div>
         </div>
         {/* Cards */}
-        <div className="flex flex-col items-center justify-center w-full px-4 my-10 sm:items-start sm:flex-row ">
+        <div className="flex flex-col items-center justify-center w-full px-4 my-10 sm:flex-row sm:items-start ">
           {/* Holdings */}
           <div className="w-full max-w-lg min-h-full px-6 py-4 my-3 overflow-hidden text-gray-900 rounded-lg shadow-lg mx-7 bg-neutral-100 ">
             {/* Title */}
@@ -414,7 +413,7 @@ function MyPage() {
         <div className="flex justify-center">
           <div className="flex flex-col items-center justify-start w-full max-w-md px-4 my-10 text-black ">
             {/* Tab Section */}
-            <div className="text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:text-gray-400 dark:border-gray-700">
+            <div className="text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:border-gray-700 dark:text-gray-400">
               <ul className="flex flex-wrap -mb-px">
                 <li>
                   <button
@@ -423,8 +422,8 @@ function MyPage() {
                     }}
                     className={classNames(
                       currentTab == "deposit"
-                        ? " text-gray-100 border-gray-100 inline-block p-4  border-b-2  rounded-t-lg active"
-                        : "inline-block p-4 rounded-t-lg active transition-all ease-in duration-100 "
+                        ? " active inline-block rounded-t-lg border-b-2  border-gray-100  p-4 text-gray-100"
+                        : "active inline-block rounded-t-lg p-4 transition-all duration-100 ease-in "
                     )}
                     aria-current="page"
                   >
@@ -439,8 +438,8 @@ function MyPage() {
                     }}
                     className={classNames(
                       currentTab == "withdrawal"
-                        ? "text-gray-100 items-stretch border-gray-100 inline-block p-4  border-b-2 rounded-t-lg active"
-                        : "inline-block p-4 rounded-t-lg active transition-all ease-in duration-100"
+                        ? "active inline-block items-stretch rounded-t-lg border-b-2  border-gray-100 p-4 text-gray-100"
+                        : "active inline-block rounded-t-lg p-4 transition-all duration-100 ease-in"
                     )}
                   >
                     Withdrawal
@@ -464,18 +463,18 @@ function MyPage() {
                     type="number"
                     name="floating_input"
                     id="floating_input"
-                    className="block py-2.5 px-0 w-full text-sm text-gray-300 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                    className="peer block w-full appearance-none border-0 border-b-2 border-gray-300 bg-transparent py-2.5 px-0 text-sm text-gray-300 focus:border-blue-600 focus:outline-none focus:ring-0 dark:border-gray-600 dark:text-white dark:focus:border-blue-500"
                     placeholder=" "
                     required
                   />
                   <label
                     htmlFor="floating_input"
-                    className="peer-focus:font-medium absolute text-sm text-gray-300 dark:text-gray-300 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                    className="absolute top-3 -z-10 origin-[0] -translate-y-6 scale-75 transform text-sm text-gray-300 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:left-0 peer-focus:-translate-y-6 peer-focus:scale-75 peer-focus:font-medium peer-focus:text-blue-600 dark:text-gray-300 peer-focus:dark:text-blue-500"
                   >
                     From
                   </label>
 
-                  <span className="inline-flex items-center px-3 text-sm text-white border-0 border-b-2 border-gray-300 appearance-none dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
+                  <span className="inline-flex items-center px-3 text-sm text-white border-0 border-b-2 border-gray-300 appearance-none peer focus:border-blue-600 focus:outline-none focus:ring-0 dark:border-gray-600 dark:focus:border-blue-500">
                     {currentTab == "withdrawal" ? contractInfo?.tokenName : "USDT"}
                   </span>
                 </div>
@@ -489,18 +488,18 @@ function MyPage() {
                     type="number"
                     name="floating_output"
                     id="floating_output"
-                    className="block py-2.5 px-0 w-full text-sm text-gray-300 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                    className="peer block w-full appearance-none border-0 border-b-2 border-gray-300 bg-transparent py-2.5 px-0 text-sm text-gray-300 focus:border-blue-600 focus:outline-none focus:ring-0 dark:border-gray-600 dark:text-white dark:focus:border-blue-500"
                     placeholder=" "
                     disabled
                   />
                   <label
                     htmlFor="floating_output"
-                    className="peer-focus:font-medium absolute text-sm text-gray-300 dark:text-gray-300 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                    className="absolute top-3 -z-10 origin-[0] -translate-y-6 scale-75 transform text-sm text-gray-300 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:left-0 peer-focus:-translate-y-6 peer-focus:scale-75 peer-focus:font-medium peer-focus:text-blue-600 dark:text-gray-300 peer-focus:dark:text-blue-500"
                   >
                     To {outputValue}
                   </label>
 
-                  <span className="inline-flex items-center px-3 text-sm text-white border-0 border-b-2 border-gray-300 appearance-none dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
+                  <span className="inline-flex items-center px-3 text-sm text-white border-0 border-b-2 border-gray-300 appearance-none peer focus:border-blue-600 focus:outline-none focus:ring-0 dark:border-gray-600 dark:focus:border-blue-500">
                     {currentTab == "deposit" ? "QIT" : "USDT"}
                   </span>
                 </div>
@@ -509,7 +508,7 @@ function MyPage() {
                     swapOrApprove();
                   }}
                   type="button"
-                  className="text-white  bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 "
+                  className="w-full  rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 "
                 >
                   {swapButtonText}
                 </button>
