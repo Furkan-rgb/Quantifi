@@ -44,7 +44,7 @@ function GovernancePage() {
                 <p className="mt-3 text-base text-gray-300 sm:mt-5 sm:text-xl lg:text-xl xl:text-2xl">
                   of the Quantifi Decentralized Investment Fund
                 </p>
-                <div className="flex sm:justify-center ">
+                <div className="flex justify-start sm:justify-center lg:justify-start">
                   <button className="mt-8 flex items-center justify-center rounded-lg bg-gradient-to-r from-[#4FC0FF] via-[#6977EE] to-[#FF6098] px-8 py-3 text-base font-medium text-white transition-all duration-75 ease-in hover:opacity-80 md:py-4 md:px-10 md:text-lg">
                     <a href="#">Get started</a>
                   </button>
