@@ -1,5 +1,6 @@
 import { Disclosure, Transition } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
+import { useWeb3React } from "@web3-react/core";
 import { useRouter } from "next/router";
 import { Fragment } from "react";
 import WalletConnectButton from "./buttons/walletConnectButton";
@@ -10,6 +11,8 @@ function classNames(...classes: string[]) {
 
 export default function Navbar() {
   const router = useRouter();
+  const { library, active, account, activate, deactivate, chainId, connector, error, setError } =
+    useWeb3React();
 
   const navigation = [
     { name: "Home", href: "/", current: router.pathname == "/" ? true : false },
