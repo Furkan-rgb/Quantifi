@@ -155,48 +155,73 @@ function Dashboard() {
           <div className="col-span-2 p-3 bg-white rounded-lg dark:bg-slate-100 sm:col-span-1">
             <Barchart data={barData} config={config}></Barchart>
           </div>
-          <div className="col-span-2 p-3 bg-white rounded-lg dark:bg-slate-100">
-            <div>
-              <button
+          {/* Line chart card */}
+          <div className="col-span-2 p-4 bg-white rounded-lg dark:bg-slate-100">
+            <p className="mb-2 text-lg font-normal tracking-tight text-gray-600 sm:text-xl lg:text-2xl">
+              Daily QNTFI Prices
+            </p>
+            {/* Line chart filter buttons */}
+            <div className="grid grid-cols-6 text-sm text-center border rounded-lg dark:border-gray-700">
+              <div
+                onClick={() => {
+                  setChartDate(1);
+                }}
+                className={`${
+                  chartDate === 1 ? "bg-gray-200" : ""
+                } cursor-pointer border-r p-1 hover:bg-gray-100 hover:text-indigo-500 dark:border-gray-700 dark:hover:bg-gray-900`}
+              >
+                24h
+              </div>
+              <div
                 onClick={() => {
                   setChartDate(7);
                 }}
-                className={`rounded-md px-2 ${chartDate === 7 ? "border border-black" : ""}`}
+                className={`${
+                  chartDate === 7 ? "bg-gray-200" : ""
+                } cursor-pointer border-r p-1 hover:bg-gray-100 hover:text-indigo-500 dark:border-gray-700 dark:hover:bg-gray-900`}
               >
-                Week
-              </button>
-              <button
+                7d
+              </div>
+              <div
+                onClick={() => {
+                  setChartDate(14);
+                }}
+                className={`${
+                  chartDate === 14 ? "bg-gray-200" : ""
+                } cursor-pointer border-r p-1 hover:bg-gray-100 hover:text-indigo-500 dark:border-gray-700 dark:hover:bg-gray-900`}
+              >
+                14d
+              </div>
+              <div
                 onClick={() => {
                   setChartDate(30);
                 }}
-                className={`rounded-md px-2 ${chartDate === 30 ? "border border-black" : ""}`}
+                className={`${
+                  chartDate === 30 ? "bg-gray-200" : ""
+                } cursor-pointer border-r p-1 hover:bg-gray-100 hover:text-indigo-500 dark:border-gray-700 dark:hover:bg-gray-900`}
               >
-                Month
-              </button>
-              <button
+                30d
+              </div>
+              <div
+                onClick={() => {
+                  setChartDate(90);
+                }}
+                className={`${
+                  chartDate === 90 ? "bg-gray-200" : ""
+                } cursor-pointer border-r p-1 hover:bg-gray-100 hover:text-indigo-500 dark:border-gray-700 dark:hover:bg-gray-900`}
+              >
+                90d
+              </div>
+              <div
                 onClick={() => {
                   setChartDate(180);
                 }}
-                className={`rounded-md px-2 ${chartDate === 180 ? "border border-black" : ""}`}
+                className={`${
+                  chartDate === 180 ? "bg-gray-200" : ""
+                } cursor-pointer border-r p-1 hover:bg-gray-100 hover:text-indigo-500 dark:border-gray-700 dark:hover:bg-gray-900`}
               >
-                3 Months
-              </button>
-              <button
-                onClick={() => {
-                  setChartDate(365);
-                }}
-                className={`rounded-md px-2 ${chartDate === 365 ? "border border-black" : ""}`}
-              >
-                Year
-              </button>
-              <button
-                onClick={() => {
-                  setChartDate(0);
-                }}
-                className={`rounded-md px-2 ${chartDate === 0 ? "border border-black" : ""}`}
-              >
-                Lifetime
-              </button>
+                180d
+              </div>
             </div>
             <Linechart title="Daily Prices" data={lineData} config={dailyPriceConfig}></Linechart>
           </div>
