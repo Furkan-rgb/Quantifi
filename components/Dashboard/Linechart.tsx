@@ -69,7 +69,7 @@ function Linechart(props: LinechartData) {
 
   return (
     <div>
-      <div className="flex flex-row justify-between py-3">
+      <div className="flex flex-row justify-between">
         {props.title ? <div>{props.title}</div> : null}
       </div>
 
