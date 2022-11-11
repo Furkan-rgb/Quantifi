@@ -1,6 +1,7 @@
 import { ArrowDownIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
 import { ethers } from "ethers";
 import { useEffect, useState } from "react";
+import Proposals from "../components/Governance/Proposals";
 
 // our-domain.com/governance
 function GovernancePage() {
@@ -11,6 +12,7 @@ function GovernancePage() {
   function classNames(...classes: string[]) {
     return classes.filter(Boolean).join(" ");
   }
+
   // Returns swap button with correct body text based on input value
   function changeSwapButtonText() {
     if (inputValue == "") {
@@ -26,6 +28,7 @@ function GovernancePage() {
       }
     }
   }
+
   // Keeps track of input value to update swap button text
   useEffect(() => {
     changeSwapButtonText();
@@ -174,6 +177,7 @@ function GovernancePage() {
             </p>
           </div>
         </div>
+        {/* Section 2 */}
         <div className="pb-12 mt-10 bg-white sm:pb-16">
           <div className="relative">
             <div className="absolute inset-0 h-1/2 bg-gray-50" />
@@ -221,6 +225,14 @@ function GovernancePage() {
                 </dl>
               </div>
             </div>
+          </div>
+        </div>
+        <div className="flex justify-center py-4 bg-white">
+          <div className="w-full max-w-6xl pb-6 text-center">
+            <h2 className="mt-1 mb-4 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
+              Proposals
+            </h2>
+            <Proposals />
           </div>
         </div>
       </div>
