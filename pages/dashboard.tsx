@@ -252,7 +252,7 @@ function Dashboard() {
             </div>
 
             {lineData.datasets[0].data.length !== 0 ? (
-              <Linechart title="Daily Prices" data={lineData} config={dailyPriceConfig}></Linechart>
+              <Linechart data={lineData} config={dailyPriceConfig}></Linechart>
             ) : (
               <div className="flex items-center justify-center w-full h-full py-4">
                 <svg
