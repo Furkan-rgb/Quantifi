@@ -29,6 +29,13 @@ function GovernancePage() {
     }
   }
 
+  function resetOutputValue(_currentTab: string) {
+    if (_currentTab === currentTab) {
+      return;
+    }
+    setOutputValue("");
+  }
+
   // Keeps track of input value to update swap button text
   useEffect(() => {
     changeSwapButtonText();
@@ -61,42 +68,50 @@ function GovernancePage() {
                   <div className="flex justify-center">
                     <div className="flex flex-col items-center justify-start w-full max-w-md px-4 my-10 text-black ">
                       {/* Tab Section */}
-                      <div className="text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:border-gray-700 dark:text-gray-400">
-                        <ul className="flex flex-wrap -mb-px">
-                          <li>
-                            <button
-                              onClick={() => {
-                                setCurrentTab("deposit"),
-                                  currentTab != "deposit" ? setOutputValue("") : null;
-                              }}
-                              className={classNames(
-                                currentTab == "deposit"
-                                  ? " active inline-block rounded-t-lg border-b-2  border-gray-900  p-4 text-gray-900"
-                                  : "active inline-block rounded-t-lg p-4 transition-all duration-100 ease-in "
-                              )}
-                              aria-current="page"
+                      <div className="grid grid-cols-2 text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:border-gray-700 dark:text-gray-400">
+                        <div className="col-span-1">
+                          <button
+                            onClick={() => {
+                              setCurrentTab("deposit");
+                              resetOutputValue("deposit");
+                            }}
+                            className={`${
+                              currentTab == "deposit"
+                                ? "active inline-block  rounded-t-lg  border-b-2  border-gray-900 p-4 text-gray-900"
+                                : "inline-block rounded-t-lg  p-4 "
+                            } w-full text-center font-normal transition duration-200 ease-in-out`}
+                          >
+                            <div
+                              className={`${
+                                currentTab == "deposit" ? "-translate-y-1" : ""
+                              } transition duration-200 ease-in-out`}
                             >
                               Deposit
-                            </button>
-                          </li>
-                          <li>
-                            <button
-                              onClick={() => {
-                                setCurrentTab("withdrawal"),
-                                  currentTab != "withdrawal" ? setOutputValue("") : null;
-                              }}
-                              className={classNames(
-                                currentTab == "withdrawal"
-                                  ? "active inline-block items-stretch rounded-t-lg border-b-2  border-gray-900 p-4 text-gray-900"
-                                  : "active inline-block rounded-t-lg p-4 transition-all duration-100 ease-in"
-                              )}
+                            </div>
+                          </button>
+                        </div>
+                        <div className="col-span-1">
+                          <button
+                            onClick={() => {
+                              setCurrentTab("withdrawal");
+                              resetOutputValue("withdrawal");
+                            }}
+                            className={`${
+                              currentTab == "withdrawal"
+                                ? "active inline-block  rounded-t-lg  border-b-2  border-gray-900 p-4 text-gray-900"
+                                : "inline-block rounded-t-lg  p-4 "
+                            } w-full text-center font-normal transition duration-200 ease-in-out`}
+                          >
+                            <div
+                              className={`${
+                                currentTab == "withdrawal" ? "-translate-y-1" : ""
+                              } transition duration-200 ease-in-out`}
                             >
                               Withdrawal
-                            </button>
-                          </li>
-                        </ul>
+                            </div>
+                          </button>
+                        </div>
                       </div>
-                      {/* End Tab Section */}
 
                       {/* Input */}
                       <div className="w-full my-5">
@@ -106,13 +121,13 @@ function GovernancePage() {
                               type="number"
                               name="floating_input"
                               id="floating_input"
-                              className="peer block w-full appearance-none border-0 border-b-2 border-gray-300 bg-transparent py-2.5 px-0 text-sm text-gray-300 focus:border-blue-600 focus:outline-none focus:ring-0 dark:border-gray-600 dark:text-white dark:focus:border-blue-500"
+                              className="peer block w-full appearance-none border-0 border-b-2 border-gray-300 bg-transparent py-2.5 px-0 text-sm text-gray-900 focus:border-blue-600 focus:outline-none focus:ring-0 dark:border-gray-600 dark:focus:border-blue-500"
                               placeholder=" "
                               required
                             />
                             <label
                               htmlFor="floating_input"
-                              className="absolute top-3 -z-10 origin-[0] -translate-y-6 scale-75 transform text-sm text-gray-900 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:left-0 peer-focus:-translate-y-6 peer-focus:scale-75 peer-focus:font-medium peer-focus:text-blue-600 dark:text-gray-300 peer-focus:dark:text-blue-500"
+                              className="absolute top-3 -z-10 origin-[0] -translate-y-6 scale-75 transform text-sm text-gray-900 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:left-0 peer-focus:-translate-y-6 peer-focus:scale-75 peer-focus:font-medium peer-focus:text-blue-600 peer-focus:dark:text-blue-500"
                             >
                               From
                             </label>
@@ -131,13 +146,13 @@ function GovernancePage() {
                               type="number"
                               name="floating_output"
                               id="floating_output"
-                              className="peer block w-full appearance-none border-0 border-b-2 border-gray-300 bg-transparent py-2.5 px-0 text-sm text-gray-300 focus:border-blue-600 focus:outline-none focus:ring-0 dark:border-gray-600 dark:text-white dark:focus:border-blue-500"
+                              className="peer block w-full appearance-none border-0 border-b-2 border-gray-300 bg-transparent py-2.5 px-0 text-sm text-gray-900 focus:border-blue-600 focus:outline-none focus:ring-0 dark:border-gray-600 dark:focus:border-blue-500"
                               placeholder=" "
                               disabled
                             />
                             <label
                               htmlFor="floating_output"
-                              className="absolute top-3 -z-10 origin-[0] -translate-y-6 scale-75 transform text-sm text-gray-900 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:left-0 peer-focus:-translate-y-6 peer-focus:scale-75 peer-focus:font-medium peer-focus:text-blue-600 dark:text-gray-300 peer-focus:dark:text-blue-500"
+                              className="absolute top-3 -z-10 origin-[0] -translate-y-6 scale-75 transform text-sm text-gray-900 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:left-0 peer-focus:-translate-y-6 peer-focus:scale-75 peer-focus:font-medium peer-focus:text-blue-600 peer-focus:dark:text-blue-500"
                             >
                               To {outputValue}
                             </label>

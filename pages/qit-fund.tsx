@@ -246,6 +246,13 @@ function MyPage() {
     changeSwapButtonText();
   }, [inputValue, contractInfo.allowance]);
 
+  function resetOutputValue(_currentTab: string) {
+    if (_currentTab === currentTab) {
+      return;
+    }
+    setOutputValue("");
+  }
+
   // Update balances
 
   return (
@@ -413,39 +420,49 @@ function MyPage() {
         <div className="flex justify-center">
           <div className="flex flex-col items-center justify-start w-full max-w-md px-4 my-10 text-black ">
             {/* Tab Section */}
-            <div className="text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:border-gray-700 dark:text-gray-400">
-              <ul className="flex flex-wrap -mb-px">
-                <li>
-                  <button
-                    onClick={() => {
-                      setCurrentTab("deposit"), currentTab != "deposit" ? setOutputValue("") : null;
-                    }}
-                    className={classNames(
-                      currentTab == "deposit"
-                        ? " active inline-block rounded-t-lg border-b-2  border-gray-100  p-4 text-gray-100"
-                        : "active inline-block rounded-t-lg p-4 transition-all duration-100 ease-in "
-                    )}
-                    aria-current="page"
+            <div className="grid grid-cols-2 text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:border-gray-700 dark:text-gray-400">
+              <div className="col-span-1">
+                <button
+                  onClick={() => {
+                    setCurrentTab("deposit");
+                    resetOutputValue("deposit");
+                  }}
+                  className={`${
+                    currentTab == "deposit"
+                      ? "active inline-block  rounded-t-lg  border-b-2  border-gray-100 p-4 text-gray-100"
+                      : "inline-block rounded-t-lg  p-4 "
+                  } w-full text-center font-normal transition duration-200 ease-in-out`}
+                >
+                  <div
+                    className={`${
+                      currentTab == "deposit" ? "-translate-y-1" : ""
+                    } transition duration-200 ease-in-out`}
                   >
                     Deposit
-                  </button>
-                </li>
-                <li>
-                  <button
-                    onClick={() => {
-                      setCurrentTab("withdrawal"),
-                        currentTab != "withdrawal" ? setOutputValue("") : null;
-                    }}
-                    className={classNames(
-                      currentTab == "withdrawal"
-                        ? "active inline-block items-stretch rounded-t-lg border-b-2  border-gray-100 p-4 text-gray-100"
-                        : "active inline-block rounded-t-lg p-4 transition-all duration-100 ease-in"
-                    )}
+                  </div>
+                </button>
+              </div>
+              <div className="col-span-1">
+                <button
+                  onClick={() => {
+                    setCurrentTab("withdrawal");
+                    resetOutputValue("withdrawal");
+                  }}
+                  className={`${
+                    currentTab == "withdrawal"
+                      ? "active inline-block  rounded-t-lg  border-b-2  border-gray-100 p-4 text-gray-100"
+                      : "inline-block rounded-t-lg  p-4 "
+                  } w-full text-center font-normal transition duration-200 ease-in-out`}
+                >
+                  <div
+                    className={`${
+                      currentTab == "withdrawal" ? "-translate-y-1" : ""
+                    } transition duration-200 ease-in-out`}
                   >
                     Withdrawal
-                  </button>
-                </li>
-              </ul>
+                  </div>
+                </button>
+              </div>
             </div>
             {/* End Tab Section */}
 

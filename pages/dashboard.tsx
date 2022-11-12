@@ -149,10 +149,12 @@ function Dashboard() {
   return (
     <>
       <div className="flex justify-center py-4 text-black">
-        <div className="grid self-center min-h-screen grid-cols-2 gap-4 p-4 text-black min-w-fit max-w-7xl">
+        <div className="grid self-center min-h-screen grid-cols-2 gap-4 p-3 text-black min-w-fit max-w-7xl">
+          {/* Doughnut */}
           <div className="col-span-2 bg-white rounded-lg dark:bg-slate-100 sm:col-span-1">
-            <Doughnut></Doughnut>
+            <Doughnut />
           </div>
+          {/* Barchart */}
           <div className="col-span-2 p-3 bg-white rounded-lg dark:bg-slate-100 sm:col-span-1">
             {barData.datasets[0].data.length !== 0 ? (
               <Barchart data={barData} config={config}></Barchart>
@@ -182,11 +184,31 @@ function Dashboard() {
               </div>
             )}
           </div>
+
+          {/* Nr of investors */}
+          <div className="flex flex-col items-center justify-center w-full col-span-1 px-4 py-5 overflow-hidden text-center bg-white rounded-lg shadow dark:bg-slate-100 sm:flex sm:flex-col sm:p-6">
+            <dt className="text-sm font-medium text-gray-500 text-clip">{"Number of Investors"}</dt>
+            <dd className="mt-1 text-xl font-semibold tracking-tight text-gray-900 sm:text-3xl">
+              {qitData?.numInvestors}
+            </dd>
+          </div>
+
+          {/* Avg investment into fund */}
+          <div className="flex flex-col items-center justify-center w-full col-span-1 px-4 py-5 overflow-hidden text-center bg-white rounded-lg shadow dark:bg-slate-100 sm:flex sm:flex-col sm:p-6">
+            <dt className="text-sm font-medium text-gray-500 text-clip">
+              {"Avg. Investment into Fund"}
+            </dt>
+            <dd className="mt-1 text-xl font-semibold tracking-tight text-gray-900 sm:text-3xl">
+              {qitData?.averageHolding}
+            </dd>
+          </div>
+
           {/* Line chart card */}
-          <div className="col-span-2 p-4 bg-white rounded-lg dark:bg-slate-100">
-            <p className="mb-2 text-lg font-normal tracking-tight text-gray-600 sm:text-xl lg:text-2xl">
+          <div className="col-span-2 p-4 text-center bg-white rounded-lg dark:bg-slate-100">
+            <div className="mb-2 text-xl font-medium tracking-tight text-gray-500">
               Daily QNTFI Prices
-            </p>
+            </div>
+
             {/* Line chart filter buttons */}
             <div className="grid grid-cols-6 text-sm text-center border rounded-lg dark:border-gray-700">
               <div
@@ -195,7 +217,7 @@ function Dashboard() {
                 }}
                 className={`${
                   chartDate === 1 ? "bg-gray-200" : ""
-                } cursor-pointer border-r p-1 hover:bg-gray-100 hover:text-indigo-500 dark:border-gray-700 dark:hover:bg-gray-900`}
+                } cursor-pointer rounded-l-lg border-r p-1 hover:bg-gray-100 hover:text-indigo-500 dark:border-gray-700 dark:hover:bg-gray-900`}
               >
                 24h
               </div>
@@ -244,8 +266,8 @@ function Dashboard() {
                   setChartDate(180);
                 }}
                 className={`${
-                  chartDate === 180 ? "bg-gray-200" : ""
-                } cursor-pointer border-r p-1 hover:bg-gray-100 hover:text-indigo-500 dark:border-gray-700 dark:hover:bg-gray-900`}
+                  chartDate === 180 ? " bg-gray-200" : ""
+                } cursor-pointer rounded-r-lg p-1 hover:bg-gray-100 hover:text-indigo-500 dark:border-gray-900 dark:hover:bg-gray-900`}
               >
                 180d
               </div>
