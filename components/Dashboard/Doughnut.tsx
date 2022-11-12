@@ -24,8 +24,8 @@ function DoughnutChart() {
       {
         label: "Total Value Locked",
         data: [totalDeposit, totalCollateral],
-        backgroundColor: ["rgb(135, 217, 233)", "rgb(230, 163, 183)"],
-        borderColor: ["rgb(73, 208, 235)", "rgb(242, 121, 157)"],
+        backgroundColor: ["rgb(59, 87, 155)", "rgb(135, 151, 199)"],
+        borderColor: ["rgb(78, 101, 166)", "rgb(159, 172, 213)"],
         hoverOffset: 4,
       },
     ],
@@ -111,7 +111,7 @@ function DoughnutChart() {
 
   return (
     <>
-      <div className="grid items-center justify-center h-full grid-cols-6 p-4">
+      <div className="grid items-center justify-center h-full grid-cols-6">
         {/* Total Value Locked */}
         <div className="flex flex-col justify-center h-10 col-span-6 ">
           <div className="text-center text-gray-500">Current Total Value Locked</div>
