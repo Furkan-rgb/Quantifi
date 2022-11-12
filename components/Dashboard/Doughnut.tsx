@@ -111,7 +111,7 @@ function DoughnutChart() {
 
   return (
     <>
-      <div className="grid items-center justify-center h-full grid-cols-6">
+      <div className="grid items-center justify-center h-full grid-cols-6 pt-4">
         {/* Total Value Locked */}
         <div className="flex flex-col justify-center h-10 col-span-6 ">
           <div className="text-center text-gray-500">Current Total Value Locked</div>
