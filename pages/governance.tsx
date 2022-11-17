@@ -1,5 +1,4 @@
-import { ArrowDownIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
-import { ethers } from "ethers";
+import { ArrowDownIcon } from "@heroicons/react/20/solid";
 import { useEffect, useState } from "react";
 import Proposals from "../components/Governance/Proposals";
 
@@ -77,8 +76,8 @@ function GovernancePage() {
                             }}
                             className={`${
                               currentTab == "deposit"
-                                ? "active inline-block  rounded-t-lg  border-b-2  border-gray-900 p-4 text-gray-900"
-                                : "inline-block rounded-t-lg  p-4 "
+                                ? "active inline-block  rounded-t border-b-2  border-gray-900 p-4 text-gray-900"
+                                : "inline-block rounded-t  p-4 "
                             } w-full text-center font-normal transition duration-200 ease-in-out`}
                           >
                             <div

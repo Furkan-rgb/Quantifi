@@ -1,31 +1,7 @@
-import { ReactNode, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Carousel from "../components/carousel";
 import useOnScreen from "../hooks/useOnScreen";
-import { useInView } from "framer-motion";
-
-interface Props {
-  children?: ReactNode;
-  // any props that come into the component
-}
-
-function Section({ children }: Props) {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true });
-
-  return (
-    <section ref={ref}>
-      <span
-        style={{
-          transform: isInView ? "none" : "translateX(-200px)",
-          opacity: isInView ? 1 : 0,
-          transition: "all 0.9s cubic-bezier(0.17, 0.55, 0.55, 1) 0.5s",
-        }}
-      >
-        {children}
-      </span>
-    </section>
-  );
-}
+import { motion } from "framer-motion";
 
 // home page
 function HomePage() {
@@ -34,19 +10,6 @@ function HomePage() {
   const [isCarouselRef, setCarouselRef] = useState(false);
 
   const [isBgTransition, setBgTransition] = useState(true);
-
-  // Switch background colour for first section
-  // useEffect(() => {
-  //   if (isBgTransition) {
-  //     setTimeout(() => {
-  //       setBgTransition(false);
-  //     }, 6000);
-  //   } else {
-  //     setTimeout(() => {
-  //       setBgTransition(true);
-  //     }, 6000);
-  //   }
-  // }, [isBgTransition]);
 
   const lastRef = useRef() as React.MutableRefObject<HTMLInputElement>;
   const [isLastRef, setLastRef] = useState(false);
@@ -66,9 +29,9 @@ function HomePage() {
   }, []);
 
   return (
-    <div className="snap-y">
+    <>
       {/* 1 */}
-      <div
+      <motion.div
         className={`duration-3000 relative flex min-h-[calc(100vh_-_5rem)] items-center justify-center overflow-hidden bg-gradient-to-b from-qdark to-black transition delay-300 ease-in-out sm:bg-black ${
           isBgTransition ? "via-[#225a7a]" : "via-[#8c2b4d]"
         }
@@ -80,7 +43,6 @@ function HomePage() {
           <div className="col-span-4 text-center sm:col-span-2">
             <main className="relative flex items-center h-full px-4 pt-10 mx-auto sm:px-6 sm:pt-12 md:pt-16 lg:px-8 lg:pt-20 xl:pt-28">
               {/* Text part */}
-
               <div className="z-20 items-start w-full sm:text-center">
                 <h1 className="mb-2 text-4xl font-bold tracking-tight text-gray-200 sm:text-5xl sm:tracking-tight md:text-6xl md:tracking-tight">
                   <span className="block">Data Driven</span>
@@ -123,37 +85,42 @@ function HomePage() {
             </video>
           </div>
         </div>
-      </div>
+      </motion.div>
 
       {/* 2 */}
-      <Section>
-        <div className="z-20 pb-4 bg-black motion-safe:animate-fadeIn snap-start" ref={carouselRef}>
-          {isCarouselRef && <Carousel />}
+      <motion.div
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        className="z-20 flex justify-center pb-4 bg-black motion-safe:animate-fadeIn"
+      >
+        <div className="">
+          <Carousel />
         </div>
-      </Section>
+      </motion.div>
 
       {/* 3 */}
-      <Section>
-        <div ref={lastRef}>
-          <div className="flex items-start justify-center py-32 motion-safe:animate-fadeIn min-h-fit snap-start bg-slate-50">
-            <div className="mx-2 text-center text-gray-900 dark:text-gray-900">
-              <h1 className="text-4xl font-bold tracking-tight sm:text-5xl sm:tracking-tight md:text-6xl md:tracking-tight">
-                <span className="block">Are you ready to join us?</span>
-              </h1>
-              <div className="mt-3 mr-0 text-center sm:mx-auto sm:mt-5 sm:max-w-xl sm:text-lg md:mt-5 md:text-2xl lg:mx-0">
-                <span className="mr-0">Find out more about QuantiFi.</span>
-              </div>
-              {/* Glowing buttons, need to stay together */}
-              <div className="flex items-center justify-center mt-5 max-h-16">
-                <button className="items-center w-8/12 text-2xl text-center btnAnimated font-lg h-14 rounded-2xl">
-                  <div className="z-10">Get started</div>
-                </button>
-              </div>
-            </div>
+
+      <motion.div
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        className="flex items-start justify-center py-32 motion-safe:animate-fadeIn min-h-fit snap-start bg-slate-50"
+      >
+        <div className="mx-2 text-center text-gray-900 dark:text-gray-900">
+          <h1 className="text-4xl font-bold tracking-tight sm:text-5xl sm:tracking-tight md:text-6xl md:tracking-tight">
+            <span className="block">Are you ready to join us?</span>
+          </h1>
+          <div className="mt-3 mr-0 text-center sm:mx-auto sm:mt-5 sm:max-w-xl sm:text-lg md:mt-5 md:text-2xl lg:mx-0">
+            <span className="mr-0">Find out more about QuantiFi.</span>
+          </div>
+          {/* Glowing buttons, need to stay together */}
+          <div className="flex items-center justify-center mt-5 max-h-16">
+            <motion.button className="items-center w-8/12 text-2xl text-center btnAnimated font-lg h-14 rounded-2xl">
+              <div className="z-10">Get started</div>
+            </motion.button>
           </div>
         </div>
-      </Section>
-    </div>
+      </motion.div>
+    </>
   );
 }
 
