@@ -11,8 +11,6 @@ function classNames(...classes: string[]) {
 
 export default function Navbar() {
   const router = useRouter();
-  const { library, active, account, activate, deactivate, chainId, connector, error, setError } =
-    useWeb3React();
 
   const navigation = [
     { name: "Home", href: "/", current: router.pathname == "/" ? true : false },
@@ -26,6 +24,11 @@ export default function Navbar() {
       name: "Governance",
       href: "/governance",
       current: router.pathname == "/governance" ? true : false,
+    },
+    {
+      name: "Dividends",
+      href: "/dividends",
+      current: router.pathname == "/dividends" ? true : false,
     },
     {
       name: "Docs",
