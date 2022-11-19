@@ -9,8 +9,6 @@ function HomePage() {
   const carouselRefValue = useOnScreen(carouselRef);
   const [isCarouselRef, setCarouselRef] = useState(false);
 
-  const [isBgTransition, setBgTransition] = useState(true);
-
   const lastRef = useRef() as React.MutableRefObject<HTMLInputElement>;
   const [isLastRef, setLastRef] = useState(false);
   const lastRefValue = useOnScreen(lastRef);
@@ -31,12 +29,7 @@ function HomePage() {
   return (
     <>
       {/* 1 */}
-      <motion.div
-        className={`duration-3000 relative flex min-h-[calc(100vh_-_5rem)] items-center justify-center overflow-hidden bg-gradient-to-b from-qdark to-black transition delay-300 ease-in-out sm:bg-black ${
-          isBgTransition ? "via-[#225a7a]" : "via-[#8c2b4d]"
-        }
-`}
-      >
+      <motion.div className="relative flex min-h-[calc(100vh_-_5rem)] items-center justify-center overflow-hidden bg-gradient-to-b from-qdark via-[#225a7a] to-black transition delay-300 ease-in-out sm:bg-black">
         {/* Cone */}
         {/* <div className="absolute w-full max-w-full overflow-hidden cone min-w-fit"></div> */}
         <div className="z-0 grid justify-center grid-cols-4 max-w-7xl">
@@ -87,19 +80,10 @@ function HomePage() {
         </div>
       </motion.div>
 
-      {/* 2 */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        className="z-20 flex justify-center pb-4 bg-black motion-safe:animate-fadeIn"
-      >
-        <div className="">
-          <Carousel />
-        </div>
-      </motion.div>
+      {/* Carousel */}
+      <Carousel />
 
-      {/* 3 */}
-
+      {/* Join us section */}
       <motion.div
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}

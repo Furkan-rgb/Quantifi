@@ -119,7 +119,7 @@ export default function Proposals() {
 
   useEffect(() => {
     getProposals();
-  }, [proposalsData]);
+  }, []);
   return (
     <div className="overflow-hidden bg-white shadow sm:rounded-md">
       <ul role="list" className="divide-y divide-gray-200">

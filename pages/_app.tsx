@@ -14,11 +14,9 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <Web3ReactProvider getLibrary={getLibrary}>
       <div className="min-h-screen bg-qdark">
-        <Navbar></Navbar>
-
+        <Navbar />
         <Component {...pageProps} />
-
-        <Footer></Footer>
+        <Footer />
       </div>
     </Web3ReactProvider>
   );
