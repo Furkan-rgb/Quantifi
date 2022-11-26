@@ -48,8 +48,8 @@ export default function proposalDetail() {
           </div>
         </div>
         {/* Results Card */}
-        <div className="col-span-2 rounded-lg shadow-lg h-max bg-clip-padding sm:col-span-1">
-          <div className="px-6 py-6 bg-gray-200 rounded-t-lg sm:flex sm:items-center">
+        <div className="col-span-2 h-max bg-clip-padding sm:col-span-1 sm:rounded-lg sm:shadow-lg">
+          <div className="px-6 py-6 bg-gray-200 sm:flex sm:items-center sm:rounded-t-lg">
             <div className="sm:flex-auto">
               <h1 className="text-2xl font-semibold text-gray-900">Results</h1>
             </div>

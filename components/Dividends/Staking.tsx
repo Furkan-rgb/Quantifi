@@ -147,8 +147,8 @@ function Staking() {
                     onChange={(e) => {
                       setInputValue(e.target.value),
                         currentTab === "deposit"
-                          ? getDepositValue(e.target.value)
-                          : getWithdrawalValue(e.target.value);
+                          ? console.log(e.target.value)
+                          : console.log(e.target.value);
                     }}
                     type="number"
                     name="floating_input"
