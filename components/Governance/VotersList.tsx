@@ -57,7 +57,7 @@ function classNames(...classes: string[]) {
 
 export default function VotersList() {
   return (
-    <div className="px-4 pt-6 bg-gray-200 rounded-lg shadow-lg sm:px-6 lg:px-8">
+    <div className="px-4 pt-6 bg-gray-200 sm:rounded-lg sm:px-6 sm:shadow-lg lg:px-8">
       <div className="sm:flex sm:items-center">
         <div className="sm:flex-auto">
           <h1 className="text-2xl font-semibold text-gray-900">Voters</h1>
