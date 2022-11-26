@@ -1,109 +1,122 @@
 import { ChartOptions } from "chart.js";
-import React from "react";
+import React, { useEffect } from "react";
 import Linechart from "../components/Dashboard/Linechart";
+import { XMarkIcon } from "@heroicons/react/24/solid";
 
 function DividendsPage() {
-  const stats = [
-    { name: "Total Subscribers", stat: "71,897" },
-    { name: "Avg. Open Rate", stat: "58.16%" },
-    { name: "Avg. Click Rate", stat: "24.57%" },
-  ];
-
-  const labels = new Array(7).fill(0).map((_, i) => `Day ${i + 1}`);
-  const lineChartData = {
-    labels: labels,
-    datasets: [
-      {
-        label: "My First Dataset",
-        data: [65, 59, 80, 81, 56, 55, 40],
-        fill: false,
-        borderColor: "rgb(75, 192, 192)",
-        tension: 0.1,
-      },
-    ],
-  };
-
-  const lineChartConfig: ChartOptions<"line"> = {
-    responsive: true,
-    scales: {
-      y: {
-        beginAtZero: true,
-      },
-    },
-    plugins: {
-      legend: {
-        display: false,
-      },
-      tooltip: {
-        mode: "index",
-        intersect: false,
-      },
-      title: {
-        display: true,
-        text: "Chart.js Line Chart - Multi Axis",
-      },
-    },
-  };
+  const [showBanner, toggleBanner] = React.useState(true);
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      if (localStorage.getItem("hideBanner") === "true") {
+        toggleBanner(false);
+        return;
+      }
+      if (localStorage.getItem("hideBanner") === "false") {
+        toggleBanner(true);
+        return;
+      }
+      localStorage.setItem("hideBanner", "false");
+    }
+  }, [showBanner]);
 
   return (
-    <div className="flex justify-center p-6 ">
-      <div className="w-full min-h-screen sm:max-w-7xl">
-        <div className="pb-8">
-          <h3 className="text-xl font-medium leading-6 text-gray-100">QNTFI Token</h3>
-          <div className="px-4 py-5 overflow-hidden bg-white rounded-lg shadow sm:p-6">
-            <Linechart data={lineChartData} config={lineChartConfig} />
+    <>
+      <div className={`${showBanner ? "" : "hidden"} relative bg-gray-800`}>
+        <div
+          className={`${
+            showBanner ? "" : "hidden"
+          } absolute top-0 right-0 mt-2 mr-4 cursor-pointer text-white`}
+          onClick={() => {
+            toggleBanner(false);
+            localStorage.setItem("hideBanner", "true");
+          }}
+        >
+          <XMarkIcon className="w-6 h-6" />
+        </div>
+        <div className="max-w-5xl px-4 py-10 mx-auto sm:py-18 sm:px-6 lg:flex lg:justify-between lg:px-8">
+          <div>
+            <h1 className="text-lg font-bold tracking-tight text-white sm:text-xl lg:text-2xl">
+              About Dividends
+            </h1>
+            <p className="my-5 text-gray-400 text-md sm:text-lg">
+              The Quantifi Investor Fund offers dividends to all stakers. Stakers of the QNTFI token
+              are elligible to receive dividends from fees collected by Quantifi's products. Staking
+              can be done through the Governance page.
+            </p>
+            <a href="/governance" className="text-xl text-gray-300 hover:text-white">
+              Go to Governance
+            </a>
           </div>
         </div>
-        <div className="pb-8">
-          <h3 className="text-lg font-medium leading-6 text-gray-100">Your Dividends</h3>
-          <dl className="grid grid-cols-1 gap-5 mt-5 sm:grid-cols-3">
-            {stats.map((item) => (
-              <div
-                key={item.name}
-                className="px-4 py-5 overflow-hidden bg-white rounded-lg shadow sm:p-6"
-              >
-                <dt className="text-sm font-medium text-gray-500 truncate">{item.name}</dt>
-                <dd className="mt-1 text-3xl font-semibold tracking-tight text-gray-900">
-                  {item.stat}
-                </dd>
-              </div>
-            ))}
-          </dl>
-        </div>
-        <div className="pb-8">
-          <h3 className="text-lg font-medium leading-6 text-gray-100">Next Dividend</h3>
-          <dl className="grid grid-cols-1 gap-5 mt-5 sm:grid-cols-3">
-            {stats.map((item) => (
-              <div
-                key={item.name}
-                className="px-4 py-5 overflow-hidden bg-white rounded-lg shadow sm:p-6"
-              >
-                <dt className="text-sm font-medium text-gray-500 truncate">{item.name}</dt>
-                <dd className="mt-1 text-3xl font-semibold tracking-tight text-gray-900">
-                  {item.stat}
-                </dd>
-              </div>
-            ))}
-          </dl>
-        </div>
-        <div className="pb-8">
-          <h3 className="text-lg font-medium leading-6 text-gray-100">Dividend History</h3>
-          <dl className="grid grid-cols-1 gap-5 mt-5 sm:grid-cols-3">
-            {stats.map((item) => (
-              <div
-                key={item.name}
-                className="px-4 py-5 overflow-hidden bg-white rounded-lg shadow sm:p-6"
-              >
-                <dt className="text-sm font-medium text-gray-500 truncate">{item.name}</dt>
-                <dd className="mt-1 text-3xl font-semibold tracking-tight text-gray-900">
-                  {item.stat}
-                </dd>
-              </div>
-            ))}
-          </dl>
+      </div>
+      <div className="flex justify-center p-6 bg-white">
+        <div className="grid w-full min-h-screen grid-cols-12 gap-4 text-center sm:max-w-7xl">
+          <h2 className="col-span-12 mt-0 mb-6 text-3xl font-semibold text-start">QNTFI Token</h2>
+          <div className="col-span-4 p-4 bg-white rounded-lg shadow-lg">
+            <span className="block">Current Price of QNTFI</span>
+            <span className="block">2.49 USDT</span>
+          </div>
+          <div className="col-span-4 bg-white rounded-lg shadow-lg">
+            <span className="block">Current Price of QNTFI</span>
+            <span className="block">2.49 USDT</span>
+          </div>
+          <div className="col-span-4 p-4 bg-white rounded-lg shadow-lg">Placeholder</div>
+          <h1 className="col-span-12 mt-0 mb-6 text-3xl font-semibold text-start">
+            Your Dividends
+          </h1>
+          <div className="col-span-4 bg-white rounded-lg shadow-lg">
+            <span className="block">Current Price of QNTFI</span>
+            <span className="block">2.49 USDT</span>
+          </div>
+          <div className="col-span-4 bg-white rounded-lg shadow-lg">
+            <span className="block">Current Price of QNTFI</span>
+            <span className="block">2.49 USDT</span>
+          </div>
+          <div className="col-span-4 bg-white rounded-lg shadow-lg">
+            <span className="block">Current Price of QNTFI</span>
+            <span className="block">2.49 USDT</span>
+          </div>
+          <h1 className="col-span-12 mt-0 mb-6 text-3xl font-semibold text-start">Next Dividend</h1>
+
+          <div className="col-span-3 bg-white rounded-lg shadow-lg">
+            <span className="block">Current Price of QNTFI</span>
+            <span className="block">2.49 USDT</span>
+          </div>
+          <div className="col-span-3 bg-white rounded-lg shadow-lg">
+            <span className="block">Current Price of QNTFI</span>
+            <span className="block">2.49 USDT</span>
+          </div>
+          <div className="col-span-3 bg-white rounded-lg shadow-lg">
+            <span className="block">Current Price of QNTFI</span>
+            <span className="block">2.49 USDT</span>
+          </div>
+          <div className="col-span-3 bg-white rounded-lg shadow-lg">
+            <span className="block">Current Price of QNTFI</span>
+            <span className="block">2.49 USDT</span>
+          </div>
+          <h1 className="col-span-12 mt-0 mb-6 text-3xl font-semibold text-start">
+            Dividend History
+          </h1>
+
+          <div className="col-span-3 bg-white rounded-lg shadow-lg">
+            <span className="block">Current Price of QNTFI</span>
+            <span className="block">2.49 USDT</span>
+          </div>
+          <div className="col-span-3 bg-white rounded-lg shadow-lg">
+            <span className="block">Current Price of QNTFI</span>
+            <span className="block">2.49 USDT</span>
+          </div>
+          <div className="col-span-3 bg-white rounded-lg shadow-lg">
+            <span className="block">Current Price of QNTFI</span>
+            <span className="block">2.49 USDT</span>
+          </div>
+          <div className="col-span-3 bg-white rounded-lg shadow-lg">
+            <span className="block">Current Price of QNTFI</span>
+            <span className="block">2.49 USDT</span>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 

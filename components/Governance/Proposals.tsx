@@ -1,4 +1,6 @@
 import { CalendarIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
+import Link from "next/link";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 type Proposal = {
@@ -100,6 +102,7 @@ const positions = [
 ];
 
 export default function Proposals() {
+  const router = useRouter();
   const [proposalsData, setProposalsData] = useState<Proposal[]>();
   function classNames(...classes: string[]) {
     return classes.filter(Boolean).join(" ");
@@ -124,8 +127,14 @@ export default function Proposals() {
     <div className="overflow-hidden bg-white shadow sm:rounded-md">
       <ul role="list" className="divide-y divide-gray-200">
         {proposalsData?.map((proposal) => (
-          <li key={proposal.id}>
-            <a href="#" className="block hover:bg-gray-50">
+          <li key={proposal.id} className="cursor-pointer hover:bg-gray-50">
+            <Link
+              href={{
+                pathname: `/proposalDetail/${encodeURIComponent(proposal.id)}`,
+                query: { title: proposal.title },
+              }}
+              className="block"
+            >
               <div className="flex items-center px-4 py-4 sm:px-6">
                 <div className="flex-1 min-w-0 sm:flex sm:items-center sm:justify-between">
                   <div className="truncate">
@@ -168,24 +177,12 @@ export default function Proposals() {
                       </div>
                     </div>
                   </div>
-                  {/* <div className="flex-shrink-0 mt-4 sm:mt-0 sm:ml-5">
-                    <div className="flex -space-x-1 overflow-hidden">
-                      {position.applicants.map((applicant) => (
-                        <img
-                          key={applicant.email}
-                          className="inline-block w-6 h-6 rounded-full ring-2 ring-white"
-                          src={applicant.imageUrl}
-                          alt={applicant.name}
-                        />
-                      ))}
-                    </div>
-                  </div> */}
                 </div>
                 <div className="flex-shrink-0 ml-5">
                   <ChevronRightIcon className="w-5 h-5 text-gray-400" aria-hidden="true" />
                 </div>
               </div>
-            </a>
+            </Link>
           </li>
         ))}
       </ul>
