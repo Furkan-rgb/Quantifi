@@ -197,7 +197,10 @@ function GovernancePage() {
         </div>
         <div className="flex justify-center py-4 bg-white">
           <div className="w-full max-w-6xl pb-6 text-center">
-            <h2 className="mt-1 mb-4 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
+            <h2
+              id="proposals"
+              className="mt-1 mb-4 text-4xl font-bold tracking-tight text-gray-900 -scroll-mt-60 sm:text-5xl"
+            >
               Proposals
             </h2>
             <Proposals />

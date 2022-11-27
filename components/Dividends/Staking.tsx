@@ -2,7 +2,7 @@ import { ArrowDownIcon } from "@heroicons/react/24/outline";
 import React from "react";
 
 function Staking() {
-  const [currentTab, setCurrentTab] = React.useState<string>("deposit");
+  const [currentTab, setCurrentTab] = React.useState<string>("stake");
   function resetOutputValue(_currentTab: string) {
     if (_currentTab === currentTab) {
       return;
@@ -97,42 +97,42 @@ function Staking() {
               <div className="col-span-1">
                 <button
                   onClick={() => {
-                    setCurrentTab("deposit");
-                    resetOutputValue("deposit");
+                    setCurrentTab("stake");
+                    resetOutputValue("stake");
                   }}
                   className={`${
-                    currentTab == "deposit"
+                    currentTab == "stake"
                       ? "active inline-block  rounded-t-lg  border-b-2  border-black p-4 text-black"
                       : "inline-block rounded-t-lg  p-4 "
                   } w-full text-center font-normal transition duration-200 ease-in-out`}
                 >
                   <div
                     className={`${
-                      currentTab == "deposit" ? "-translate-y-1" : ""
+                      currentTab == "stake" ? "-translate-y-1" : ""
                     } transition duration-200 ease-in-out`}
                   >
-                    Deposit
+                    Stake
                   </div>
                 </button>
               </div>
               <div className="col-span-1">
                 <button
                   onClick={() => {
-                    setCurrentTab("withdrawal");
-                    resetOutputValue("withdrawal");
+                    setCurrentTab("unstake");
+                    resetOutputValue("unstake");
                   }}
                   className={`${
-                    currentTab == "withdrawal"
+                    currentTab == "unstake"
                       ? "active inline-block  rounded-t-lg  border-b-2  border-black p-4 text-black"
                       : "inline-block rounded-t-lg  p-4 "
                   } w-full text-center font-normal transition duration-200 ease-in-out`}
                 >
                   <div
                     className={`${
-                      currentTab == "withdrawal" ? "-translate-y-1" : ""
+                      currentTab == "unstake" ? "-translate-y-1" : ""
                     } transition duration-200 ease-in-out`}
                   >
-                    Withdrawal
+                    Unstake
                   </div>
                 </button>
               </div>
@@ -161,11 +161,11 @@ function Staking() {
                     htmlFor="floating_input"
                     className="absolute top-3 -z-10 origin-[0] -translate-y-6 scale-75 transform text-sm text-gray-300 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:left-0 peer-focus:-translate-y-6 peer-focus:scale-75 peer-focus:font-medium peer-focus:text-blue-600 dark:text-gray-300 peer-focus:dark:text-blue-500"
                   >
-                    From
+                    Available: 10QNTFI
                   </label>
 
                   <span className="inline-flex items-center px-3 text-sm text-black border-0 border-b-2 border-gray-300 appearance-none peer focus:border-blue-600 focus:outline-none focus:ring-0 dark:border-gray-600 dark:focus:border-blue-500">
-                    {currentTab == "withdrawal" ? "QNTFI" : "USDT"}
+                    {currentTab == "stake" ? "QNTFI" : "USDT"}
                   </span>
                 </div>
                 <div className="flex justify-center">
@@ -190,7 +190,7 @@ function Staking() {
                   </label>
 
                   <span className="inline-flex items-center px-3 text-sm text-black border-0 border-b-2 border-gray-300 appearance-none peer focus:border-blue-600 focus:outline-none focus:ring-0 dark:border-gray-600 dark:focus:border-blue-500">
-                    {currentTab == "deposit" ? "QNTFI" : "USDT"}
+                    {currentTab == "unstake" ? "QNTFI" : "USDT"}
                   </span>
                 </div>
                 <button

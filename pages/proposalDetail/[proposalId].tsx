@@ -1,4 +1,5 @@
-import { CalendarIcon } from "@heroicons/react/24/outline";
+import { CalendarIcon, ChevronLeftIcon } from "@heroicons/react/24/outline";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import VotersList from "../../components/Governance/VotersList";
@@ -19,12 +20,18 @@ export default function proposalDetail() {
         {/* Section 1 */}
         <div className="col-span-2 p-8 h-max">
           <div className=" lg:w-1/2 xl:pr-16">
-            <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl md:text-6xl lg:text-5xl xl:text-6xl">
+            <div className="flex items-center cursor-pointer">
+              <ChevronLeftIcon className="inline-block w-5 h-5 sm:h-6 sm:w-6" />{" "}
+              <Link href="/governance#proposals">
+                <span className="hover:underline sm:text-sm md:text-base">Back to Proposals</span>
+              </Link>
+            </div>
+
+            <h1 className="mt-3 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl md:text-6xl lg:text-5xl xl:text-6xl">
               <span className="block xl:inline">{query.title}</span>
             </h1>
             <p className="max-w-md mx-auto mt-3 text-lg text-gray-500 sm:text-xl md:mt-5 md:max-w-3xl">
-              Description
-              {query.proposalId}
+              {query.description}
             </p>
             <div className="flex mt-2">
               <div className="flex items-center text-sm text-gray-500">
