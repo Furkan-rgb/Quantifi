@@ -6,7 +6,7 @@ import VotersList from "../../components/Governance/VotersList";
 export default function proposalDetail() {
   const router = useRouter();
   const query = router.query;
-  const [percentage1, setPercentage1] = useState(12);
+  const [percentage1, setPercentage1] = useState(15);
   const [percentage2, setPercentage2] = useState(35);
 
   useEffect(() => {
@@ -58,7 +58,8 @@ export default function proposalDetail() {
             {/* 1 */}
             <div className="relative p-4 my-4 overflow-hidden border border-gray-200 rounded-lg hover:border-indigo-500">
               <div
-                className={`scale-x-[${percentage1}%] absolute inset-0 w-full origin-top-left bg-indigo-500 bg-opacity-50`}
+                style={{ transform: `scaleX(${percentage1 / 100})` }}
+                className="absolute inset-0 w-full origin-left bg-indigo-500 bg-opacity-50"
               ></div>
               <div className="relative text-black z-100 dark:text-white">
                 <div className="font-medium">0% burn, 2.5% revenue</div>
@@ -68,7 +69,10 @@ export default function proposalDetail() {
             </div>
             {/* 2 */}
             <div className="relative p-4 my-4 overflow-hidden border border-gray-200 rounded-lg hover:border-indigo-500">
-              <div className=" absolute inset-0 w-[35%] bg-indigo-500 bg-opacity-50"></div>
+              <div
+                style={{ transform: `scaleX(${percentage2 / 100})` }}
+                className="absolute inset-0 w-full origin-left bg-indigo-500 bg-opacity-50"
+              ></div>
               <div className="relative text-black z-100 dark:text-white">
                 <div className="font-medium">1.25% burn, 1.25% revenue</div>
                 <div className="text-sm">13 voters</div>
