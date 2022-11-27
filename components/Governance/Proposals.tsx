@@ -131,7 +131,7 @@ export default function Proposals() {
             <Link
               href={{
                 pathname: `/proposalDetail/${encodeURIComponent(proposal.id)}`,
-                query: { title: proposal.title },
+                query: { title: proposal.title, description: proposal.description },
               }}
               className="block"
             >
