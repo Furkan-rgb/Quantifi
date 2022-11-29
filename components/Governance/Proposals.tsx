@@ -1,11 +1,12 @@
-import { CalendarIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
+import { ArrowUpIcon, CalendarIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 type Proposal = {
   created: Date;
-  deadline: Date;
+  startime: string;
+  deadline: string;
   description: string;
   id: number;
   title: string;
@@ -112,7 +113,6 @@ export default function Proposals() {
     try {
       const res = await fetch(`https://rgtestnet.pythonanywhere.com/api/v1/qit/votes`, {});
       const data = await res.json();
-      console.log(data);
       setProposalsData(data.votes);
       console.log(proposalsData);
     } catch (err) {
@@ -123,6 +123,38 @@ export default function Proposals() {
   useEffect(() => {
     getProposals();
   }, []);
+
+  function ProposalLabel(props: any) {
+    const currentDate = new Date();
+    if (currentDate < new Date(props.deadline)) {
+      if (currentDate > new Date(props.startime)) {
+        return (
+          <div className="mr-1 inline-flex items-center justify-center rounded-full bg-green-100 px-2 py-0.5 text-sm font-medium text-green-800 md:mt-2 lg:mt-0">
+            Open
+          </div>
+        );
+      } else {
+        return (
+          <div className="mr-1 inline-flex items-center justify-center rounded-full bg-yellow-100 px-2 py-0.5 text-sm font-medium text-yellow-800 md:mt-2 lg:mt-0">
+            Upcoming
+          </div>
+        );
+      }
+    }
+    if (currentDate > new Date(props.deadline)) {
+      return (
+        <div className="mr-1 inline-flex items-center justify-center rounded-full bg-red-100 px-2 py-0.5 text-sm font-medium text-red-800 md:mt-2 lg:mt-0">
+          Closed
+        </div>
+      );
+    }
+    return (
+      <div className="mr-1 inline-flex items-center justify-center rounded-full bg-gray-100 px-2 py-0.5 text-sm font-medium text-gray-800 md:mt-2 lg:mt-0">
+        Unknown
+      </div>
+    );
+  }
+
   return (
     <div className="overflow-hidden bg-white shadow sm:rounded-md">
       <ul role="list" className="divide-y divide-gray-200">
@@ -131,7 +163,12 @@ export default function Proposals() {
             <Link
               href={{
                 pathname: `/proposalDetail/${encodeURIComponent(proposal.id)}`,
-                query: { title: proposal.title, description: proposal.description },
+                query: {
+                  title: proposal.title,
+                  description: proposal.description,
+                  deadline: proposal.deadline,
+                  startime: proposal.startime,
+                },
               }}
               className="block"
             >
@@ -142,23 +179,18 @@ export default function Proposals() {
                       <div>
                         <p className="font-medium text-indigo-600 truncate">
                           {" "}
-                          <div
-                            className={classNames(
-                              new Date() < new Date(proposal.deadline)
-                                ? "bg-green-100 text-green-800"
-                                : "bg-red-100 text-red-800",
-                              "mr-1 inline-flex items-center justify-center rounded-full px-2 py-0.5 text-sm font-medium md:mt-2 lg:mt-0"
-                            )}
-                          >
-                            {new Date() > new Date(proposal.deadline) ? "Closed" : "Open"}
-                          </div>
+                          <ProposalLabel
+                            deadline={proposal.deadline}
+                            startime={proposal.startime}
+                          />
                           {proposal.title}
                         </p>
                       </div>
                       <p className="mt-1 text-sm text-gray-600 ">{proposal.description}</p>
                     </div>
+                    {/* Deadline */}
                     <div className="flex mt-2">
-                      <div className="flex items-center text-sm text-gray-500">
+                      <div className="flex items-center mr-2 text-sm text-gray-500">
                         <CalendarIcon
                           className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
                           aria-hidden="true"
@@ -167,6 +199,24 @@ export default function Proposals() {
                           Deadline:{" "}
                           <time dateTime={new Date(proposal.deadline).toTimeString()}>
                             {new Date(proposal.deadline).toLocaleDateString(undefined, {
+                              weekday: "long",
+                              year: "numeric",
+                              month: "long",
+                              day: "numeric",
+                            })}
+                          </time>
+                        </p>
+                      </div>
+                      {/* Start time */}
+                      <div className="flex items-center text-sm text-gray-500">
+                        <ArrowUpIcon
+                          className="mr-0.5 h-5 w-5 flex-shrink-0 text-gray-400"
+                          aria-hidden="true"
+                        />
+                        <p>
+                          Start Date:{" "}
+                          <time>
+                            {new Date(proposal.startime).toLocaleDateString(undefined, {
                               weekday: "long",
                               year: "numeric",
                               month: "long",

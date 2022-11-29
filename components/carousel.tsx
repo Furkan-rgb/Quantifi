@@ -76,7 +76,7 @@ function Carousel() {
 
   return (
     <>
-      <div className="h-full overflow-hidden md:h-fit" ref={emblaRef}>
+      <div className="h-full max-w-6xl overflow-hidden bg-black md:h-fit" ref={emblaRef}>
         <div className="flex">
           {slides.map((slide) => {
             return (
