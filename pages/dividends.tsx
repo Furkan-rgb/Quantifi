@@ -4,7 +4,7 @@ import Linechart from "../components/Dashboard/Linechart";
 import { XMarkIcon } from "@heroicons/react/24/solid";
 
 function DividendsPage() {
-  const [showBanner, toggleBanner] = React.useState(true);
+  const [showBanner, toggleBanner] = React.useState(false);
   useEffect(() => {
     if (typeof window !== "undefined") {
       if (localStorage.getItem("hideBanner") === "true") {

@@ -81,7 +81,9 @@ function HomePage() {
       </motion.div>
 
       {/* Carousel */}
-      <Carousel />
+      <div className="flex justify-center bg-black">
+        <Carousel />
+      </div>
 
       {/* Join us section */}
       <motion.div

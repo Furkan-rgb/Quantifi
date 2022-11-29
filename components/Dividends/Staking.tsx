@@ -1,5 +1,6 @@
 import { ArrowDownIcon } from "@heroicons/react/24/outline";
-import React from "react";
+import React, { useEffect } from "react";
+import DatePicker from "../DatePicker";
 
 function Staking() {
   const [currentTab, setCurrentTab] = React.useState<string>("stake");
@@ -10,7 +11,7 @@ function Staking() {
     setOutputValue("");
   }
   const [inputValue, setInputValue] = React.useState<string>("");
-  const [outputValue, setOutputValue] = React.useState<string>();
+  const [outputValue, setOutputValue] = React.useState<string>("");
   const [swapButtonText, setSwapButtonText] = React.useState<string>("Loading...");
   function depositOrWithdrawal() {
     if (currentTab === "deposit") {
@@ -30,68 +31,17 @@ function Staking() {
 
   return (
     <div>
-      <div className="grid max-w-6xl grid-cols-3 gap-4">
-        {/* Table */}
-        <div className="col-span-3 lg:col-span-2">
-          <div className="flex flex-col mt-8">
-            <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-              <div className="inline-block min-w-full min-h-full py-2 align-middle md:px-6 lg:px-8">
-                <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
-                  <table className="min-w-full min-h-full divide-y divide-gray-300">
-                    <thead className="bg-gray-50">
-                      <tr>
-                        <th
-                          scope="col"
-                          className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
-                        >
-                          Amount
-                        </th>
-                        <th
-                          scope="col"
-                          className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-                        >
-                          Locked Until
-                        </th>
-                        <th
-                          scope="col"
-                          className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-                        >
-                          Locked Time
-                        </th>
-                        <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-6">
-                          <span className="sr-only">Edit</span>
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-gray-200 ">
-                      {staking.map((staking) => (
-                        <tr key={staking.amount}>
-                          <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-6">
-                            {staking.amount}
-                          </td>
-                          <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
-                            {staking.locked_date}
-                          </td>
-                          <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
-                            {staking.locked_time}
-                          </td>
-                          <td className="relative py-4 pl-3 pr-4 text-sm font-medium text-right whitespace-nowrap sm:pr-6">
-                            <a href="#" className="text-indigo-600 hover:text-indigo-900">
-                              Edit<span className="sr-only">, {staking.amount}</span>
-                            </a>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          </div>
+      <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="mt-8 mb-4 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
+            Stake QNTFI
+          </h2>
         </div>
-        {/* Deposit/withdraw */}
-        <div className="col-span-3 lg:col-span-1">
-          <div className="flex flex-col items-center justify-start w-full p-4 px-4 mt-8 text-black bg-white md:rounded-lg md:shadow-md">
+      </div>
+      <div className="grid grid-cols-3 gap-4">
+        {/* Stake/unstake */}
+        <div className="col-span-3 lg:col-span-3">
+          <div className="flex flex-col items-center justify-start w-full max-w-sm p-4 px-4 mx-auto text-black bg-white md:rounded-lg md:shadow-md">
             {/* Tab Section */}
             <div className="grid grid-cols-2 text-sm font-medium text-center text-gray-500 border-b border-gray-400 dark:border-gray-700 dark:text-gray-400">
               <div className="col-span-1">
@@ -146,7 +96,7 @@ function Staking() {
                   <input
                     onChange={(e) => {
                       setInputValue(e.target.value),
-                        currentTab === "deposit"
+                        currentTab === "stake"
                           ? console.log(e.target.value)
                           : console.log(e.target.value);
                     }}
@@ -165,34 +115,18 @@ function Staking() {
                   </label>
 
                   <span className="inline-flex items-center px-3 text-sm text-black border-0 border-b-2 border-gray-300 appearance-none peer focus:border-blue-600 focus:outline-none focus:ring-0 dark:border-gray-600 dark:focus:border-blue-500">
-                    {currentTab == "stake" ? "QNTFI" : "USDT"}
+                    QNTFI
                   </span>
                 </div>
-                <div className="flex justify-center">
-                  <ArrowDownIcon className="w-5 h-5 text-gray-400" />
+                <div className="pb-6">
+                  {currentTab === "stake" ? (
+                    <div>
+                      <h2>Select staking end date</h2>
+                      <DatePicker />
+                    </div>
+                  ) : null}
                 </div>
 
-                {/* Output */}
-                <div className="relative z-0 flex w-full mb-6 group">
-                  <input
-                    type="number"
-                    name="floating_output"
-                    id="floating_output"
-                    className="peer block w-full appearance-none border-0 border-b-2 border-gray-300 bg-transparent py-2.5 px-0 text-sm text-gray-300 focus:border-blue-600 focus:outline-none focus:ring-0 dark:border-gray-600 dark:text-white dark:focus:border-blue-500"
-                    placeholder=" "
-                    disabled
-                  />
-                  <label
-                    htmlFor="floating_output"
-                    className="absolute top-3 -z-10 origin-[0] -translate-y-6 scale-75 transform text-sm text-gray-300 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:left-0 peer-focus:-translate-y-6 peer-focus:scale-75 peer-focus:font-medium peer-focus:text-blue-600 dark:text-gray-300 peer-focus:dark:text-blue-500"
-                  >
-                    To {outputValue}
-                  </label>
-
-                  <span className="inline-flex items-center px-3 text-sm text-black border-0 border-b-2 border-gray-300 appearance-none peer focus:border-blue-600 focus:outline-none focus:ring-0 dark:border-gray-600 dark:focus:border-blue-500">
-                    {currentTab == "unstake" ? "QNTFI" : "USDT"}
-                  </span>
-                </div>
                 <button
                   onClick={() => {
                     depositOrWithdrawal();
@@ -203,6 +137,64 @@ function Staking() {
                   {swapButtonText}
                 </button>
               </form>
+            </div>
+          </div>
+        </div>
+        {/* Table */}
+        <div className="col-span-3 lg:col-span-3">
+          <div className="flex flex-col justify-center mt-8">
+            <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+              <div className="inline-block w-full max-w-6xl min-h-full py-2 align-middle">
+                <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
+                  <table className="min-w-full min-h-full divide-y divide-gray-300">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th
+                          scope="col"
+                          className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
+                        >
+                          Amount
+                        </th>
+                        <th
+                          scope="col"
+                          className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                        >
+                          Locked Until
+                        </th>
+                        <th
+                          scope="col"
+                          className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                        >
+                          Locked Time
+                        </th>
+                        <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-6">
+                          <span className="sr-only">Edit</span>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200 ">
+                      {staking.map((staking) => (
+                        <tr key={staking.amount}>
+                          <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-6">
+                            {staking.amount}
+                          </td>
+                          <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
+                            {staking.locked_date}
+                          </td>
+                          <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
+                            {staking.locked_time}
+                          </td>
+                          <td className="relative py-4 pl-3 pr-4 text-sm font-medium text-right whitespace-nowrap sm:pr-6">
+                            <a href="#" className="text-indigo-600 hover:text-indigo-900">
+                              Edit<span className="sr-only">, {staking.amount}</span>
+                            </a>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </div>
           </div>
         </div>
