@@ -163,7 +163,7 @@ function GovernancePage() {
         <Staking />
 
         {/* Title  */}
-        <div className="px-4 pt-6 mx-auto max-w-7xl sm:px-6 lg:px-8">
+        <div className="px-4 pt-16 mx-auto max-w-7xl sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="mb-4 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
               Your staked QNTFI
@@ -204,7 +204,7 @@ function GovernancePage() {
           </div>
         </div>
         {/* Proposals */}
-        <div className="flex justify-center py-4 bg-white">
+        <div className="flex justify-center pb-4 bg-white">
           <div className="w-full max-w-6xl pb-6 text-center">
             <h2
               id="proposals"
