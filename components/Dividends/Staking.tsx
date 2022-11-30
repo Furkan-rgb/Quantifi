@@ -3,102 +3,31 @@ import React, { useEffect } from "react";
 import DatePicker from "../DatePicker";
 
 function Staking() {
-  const [currentTab, setCurrentTab] = React.useState<string>("stake");
-  function resetOutputValue(_currentTab: string) {
-    if (_currentTab === currentTab) {
-      return;
-    }
-    setOutputValue("");
-  }
+  const [stakeMultiplier, setStakeMultiplier] = React.useState<number>(0);
   const [inputValue, setInputValue] = React.useState<string>("");
   const [outputValue, setOutputValue] = React.useState<string>("");
   const [swapButtonText, setSwapButtonText] = React.useState<string>("Loading...");
-  function depositOrWithdrawal() {
-    if (currentTab === "deposit") {
-      return "Deposit";
-    } else {
-      return "Withdrawal";
-    }
-  }
-
-  const staking = [
-    {
-      amount: "12 QNTFI",
-      locked_date: "23 September 2023",
-      locked_time: "23:59:59",
-    },
-  ];
 
   return (
     <div>
       <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="mt-8 mb-4 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
+          <h2 className="mb-4 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
             Stake QNTFI
           </h2>
         </div>
       </div>
       <div className="grid grid-cols-3 gap-4">
-        {/* Stake/unstake */}
+        {/* Stake */}
         <div className="col-span-3 lg:col-span-3">
-          <div className="flex flex-col items-center justify-start w-full max-w-sm p-4 px-4 mx-auto text-black bg-white md:rounded-lg md:shadow-md">
-            {/* Tab Section */}
-            <div className="grid grid-cols-2 text-sm font-medium text-center text-gray-500 border-b border-gray-400 dark:border-gray-700 dark:text-gray-400">
-              <div className="col-span-1">
-                <button
-                  onClick={() => {
-                    setCurrentTab("stake");
-                    resetOutputValue("stake");
-                  }}
-                  className={`${
-                    currentTab == "stake"
-                      ? "active inline-block  rounded-t-lg  border-b-2  border-black p-4 text-black"
-                      : "inline-block rounded-t-lg  p-4 "
-                  } w-full text-center font-normal transition duration-200 ease-in-out`}
-                >
-                  <div
-                    className={`${
-                      currentTab == "stake" ? "-translate-y-1" : ""
-                    } transition duration-200 ease-in-out`}
-                  >
-                    Stake
-                  </div>
-                </button>
-              </div>
-              <div className="col-span-1">
-                <button
-                  onClick={() => {
-                    setCurrentTab("unstake");
-                    resetOutputValue("unstake");
-                  }}
-                  className={`${
-                    currentTab == "unstake"
-                      ? "active inline-block  rounded-t-lg  border-b-2  border-black p-4 text-black"
-                      : "inline-block rounded-t-lg  p-4 "
-                  } w-full text-center font-normal transition duration-200 ease-in-out`}
-                >
-                  <div
-                    className={`${
-                      currentTab == "unstake" ? "-translate-y-1" : ""
-                    } transition duration-200 ease-in-out`}
-                  >
-                    Unstake
-                  </div>
-                </button>
-              </div>
-            </div>
-            {/* End Tab Section */}
-
+          <div className="flex flex-col items-center justify-start w-full p-4 text-black bg-white sm:mx-auto sm:max-w-sm sm:px-4 md:rounded-lg md:shadow-md">
             {/* Input */}
-            <div className="w-full my-5">
+            <div className="w-full max-w-sm my-5">
               <form>
-                <div className="relative z-0 flex w-full mb-6 group">
+                <div className="relative z-0 flex w-full mb-4 group">
                   <input
                     onChange={(e) => {
-                      setInputValue(e.target.value),
-                        currentTab === "stake"
-                          ? console.log(e.target.value)
-                          : console.log(e.target.value);
+                      setInputValue(e.target.value);
                     }}
                     type="number"
                     name="floating_input"
@@ -118,83 +47,20 @@ function Staking() {
                     QNTFI
                   </span>
                 </div>
-                <div className="pb-6">
-                  {currentTab === "stake" ? (
-                    <div>
-                      <h2>Select staking end date</h2>
-                      <DatePicker />
-                    </div>
-                  ) : null}
+                <div className="pb-2">
+                  <div>
+                    <h2>Select staking end date</h2>
+                    <DatePicker minDate={7} />
+                  </div>
                 </div>
-
+                <div className="mb-4">Staking Multiplier: {stakeMultiplier}x</div>
                 <button
-                  onClick={() => {
-                    depositOrWithdrawal();
-                  }}
                   type="button"
                   className="w-full  rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 "
                 >
                   {swapButtonText}
                 </button>
               </form>
-            </div>
-          </div>
-        </div>
-        {/* Table */}
-        <div className="col-span-3 lg:col-span-3">
-          <div className="flex flex-col justify-center mt-8">
-            <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-              <div className="inline-block w-full max-w-6xl min-h-full py-2 align-middle">
-                <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
-                  <table className="min-w-full min-h-full divide-y divide-gray-300">
-                    <thead className="bg-gray-50">
-                      <tr>
-                        <th
-                          scope="col"
-                          className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
-                        >
-                          Amount
-                        </th>
-                        <th
-                          scope="col"
-                          className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-                        >
-                          Locked Until
-                        </th>
-                        <th
-                          scope="col"
-                          className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-                        >
-                          Locked Time
-                        </th>
-                        <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-6">
-                          <span className="sr-only">Edit</span>
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-gray-200 ">
-                      {staking.map((staking) => (
-                        <tr key={staking.amount}>
-                          <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-6">
-                            {staking.amount}
-                          </td>
-                          <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
-                            {staking.locked_date}
-                          </td>
-                          <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
-                            {staking.locked_time}
-                          </td>
-                          <td className="relative py-4 pl-3 pr-4 text-sm font-medium text-right whitespace-nowrap sm:pr-6">
-                            <a href="#" className="text-indigo-600 hover:text-indigo-900">
-                              Edit<span className="sr-only">, {staking.amount}</span>
-                            </a>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
             </div>
           </div>
         </div>
