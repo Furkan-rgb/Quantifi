@@ -28,6 +28,7 @@ const votingOptions = [
   },
 ];
 
+// Show voting options if open or else notify that voting hasn't started yet
 function VotingResults(props: any) {
   if (props.proposalState === "upcoming") {
     return (
@@ -51,6 +52,7 @@ function VotingResults(props: any) {
   return null;
 }
 
+// If proposal is open or closed, show voting options or results
 function VotingOptions(props: any) {
   const totalVotes = props.votingOptions.reduce(
     (a: any, b: { votes: any }) => a + (b.votes || 0),
@@ -67,7 +69,7 @@ function VotingOptions(props: any) {
                 style={{ transform: `scaleX(${option.votes / totalVotes})` }}
                 className="absolute inset-0 w-full origin-left bg-indigo-500 bg-opacity-50"
               ></div>
-              <div className="relative text-black z-100 dark:text-white">
+              <div className="relative text-black z-100">
                 <div className="font-medium">{option.description}</div>
                 <div className="text-sm">{option.votes} voters</div>
                 <div className="text-sm">
@@ -88,7 +90,7 @@ function VotingOptions(props: any) {
             <div id={option.id}>
               <div className="relative p-4 my-4 overflow-hidden border border-gray-200 rounded-lg cursor-pointer hover:border-indigo-500">
                 <div className="absolute inset-0 w-full origin-left bg-opacity-50"></div>
-                <div className="relative text-black z-100 dark:text-white">
+                <div className="relative text-black z-100 ">
                   <div className="font-medium">{option.description}</div>
                 </div>
               </div>
@@ -154,7 +156,7 @@ export default function proposalDetail() {
         {/* Section 1 */}
         <div className="col-span-2 p-8 h-max">
           <div className=" lg:w-1/2 xl:pr-16">
-            <div className="flex items-center cursor-pointer">
+            <div className="flex items-center text-black cursor-pointer">
               <ChevronLeftIcon className="inline-block w-5 h-5 sm:h-6 sm:w-6" />{" "}
               <Link href="/governance#proposals">
                 <span className="hover:underline sm:text-sm md:text-base">Back to Proposals</span>
