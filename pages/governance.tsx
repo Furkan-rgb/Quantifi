@@ -3,6 +3,7 @@ import { ChartOptions } from "chart.js";
 import { useEffect, useState } from "react";
 import Linechart from "../components/Dashboard/Linechart";
 import Staking from "../components/Dividends/Staking";
+import { Unstaking } from "../components/Dividends/Unstaking";
 import Proposals from "../components/Governance/Proposals";
 
 // our-domain.com/governance
@@ -159,20 +160,23 @@ function GovernancePage() {
         </div>
       </main>
       <div className="pt-12 bg-gray-50 sm:pt-16">
-        <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+        <Staking />
+
+        {/* Title  */}
+        <div className="px-4 pt-6 mx-auto max-w-7xl sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="mb-4 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
               Your staked QNTFI
             </h2>
           </div>
         </div>
-        {/* Section 2 */}
+        {/* Table and Info */}
         <div className="pb-12 bg-white sm:pb-16">
           <div className="relative">
             <div className="absolute inset-0 h-1/2 bg-gray-50" />
-            <div className="relative px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+            <div className="relative mx-auto max-w-7xl sm:px-6 lg:px-8">
               <div className="max-w-2xl mx-auto">
-                <dl className="bg-white rounded-lg shadow-lg sm:grid sm:grid-cols-2">
+                <dl className="bg-white rounded-lg shadow-md sm:grid sm:grid-cols-2 sm:shadow-lg">
                   <div className="flex flex-col p-6 text-center border-b border-gray-100 sm:border-0 sm:border-r">
                     <dt className="order-2 mt-2 text-lg font-medium leading-6 text-gray-500">
                       Total QNTFI staked
@@ -191,10 +195,15 @@ function GovernancePage() {
                   </div>
                 </dl>
               </div>
-              <Staking />
+              <div className="flex justify-center w-full">
+                <div className="w-full max-w-2xl">
+                  <Unstaking />
+                </div>
+              </div>
             </div>
           </div>
         </div>
+        {/* Proposals */}
         <div className="flex justify-center py-4 bg-white">
           <div className="w-full max-w-6xl pb-6 text-center">
             <h2
