@@ -7,7 +7,7 @@ import {
   returnProposalState,
   returnProposalLabel,
   Proposal,
-} from "../../components/utils/proposalUtil";
+} from "../../components/utils/proposalUtils";
 
 const votingOptions = [
   {
