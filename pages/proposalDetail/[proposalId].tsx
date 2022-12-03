@@ -154,7 +154,7 @@ export default function proposalDetail() {
     <div className="flex justify-center min-h-screen bg-white">
       <div className="grid w-full grid-flow-row grid-cols-2 gap-4 py-8 max-w-7xl auto-rows-max">
         {/* Section 1 */}
-        <div className="col-span-2 p-8 h-max">
+        <div className="col-span-2 p-8 h-max sm:pl-0">
           <div className=" lg:w-1/2 xl:pr-16">
             <div className="flex items-center text-black cursor-pointer">
               <ChevronLeftIcon className="inline-block w-5 h-5 sm:h-6 sm:w-6" />{" "}
