@@ -1,20 +1,11 @@
 import { Doughnut } from "react-chartjs-2";
 import "chart.js/auto";
 import { Chart, ChartData, ChartDataset, ChartOptions } from "chart.js";
+import { formatCurrency } from "../utils/formatter";
 
 // Create our number formatter.
-const formatter = new Intl.NumberFormat("en-US", {
-  style: "currency",
-  currency: "USD",
-
-  // These options are needed to round to whole numbers if that's what you want.
-  //minimumFractionDigits: 0, // (this suffices for whole numbers, but will print 2500.10 as $2,500.1)
-  //maximumFractionDigits: 0, // (causes 2500.99 to be printed as $2,501)
-});
-
 function DoughnutChart() {
   // Center of doughnut chart
-  const totalValueLocked = 609428342;
 
   const totalDeposit = 60113801;
   const totalCollateral = 2314474;
@@ -70,7 +61,7 @@ function DoughnutChart() {
           ctx.textBaseline = "middle";
           ctx.fillStyle = dataset?.borderColor[index];
           ctx.fillText(
-            formatter.format(dataset.data[index]),
+            formatCurrency(dataset.data[index], "USD"),
             xLine + extraLine + plusFivePx,
             yLine
           );
@@ -111,37 +102,7 @@ function DoughnutChart() {
 
   return (
     <>
-      <div className="grid items-center justify-center h-full grid-cols-6 pt-4">
-        {/* Total Value Locked */}
-        <div className="flex flex-col justify-center h-10 col-span-6 ">
-          <div className="text-center text-gray-500">Current Total Value Locked</div>
-          <div className="text-2xl subpixel-antialiased font-medium text-center">
-            {formatter.format(totalValueLocked)} UST
-          </div>
-        </div>
-
-        {/* Doughnut */}
-        <div className="flex justify-center col-span-6">
-          <div>
-            <Doughnut
-              data={dataDoughnut}
-              options={config}
-              plugins={[doughnutLabelsLine]}
-              height={300}
-            />
-          </div>
-        </div>
-        {/* Stats */}
-        {/* <div className="col-span-2 text-right justify-self-end">
-          <div>
-            <div className="inline-block">$ {totalDeposit}</div>
-          </div>
-
-          <div>
-            <div className="inline-block">$ {totalCollateral}</div>
-          </div>
-        </div> */}
-      </div>
+      <Doughnut data={dataDoughnut} options={config} plugins={[doughnutLabelsLine]} />
     </>
   );
 }
