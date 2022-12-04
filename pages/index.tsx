@@ -82,7 +82,7 @@ function HomePage() {
 
       {/* Carousel */}
       <div className="flex justify-center bg-black">
-        <div className="max-w-7xl">
+        <div className="overflow-hidden max-w-7xl">
           <Carousel />
         </div>
       </div>

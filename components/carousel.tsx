@@ -75,69 +75,67 @@ function Carousel() {
   ];
 
   return (
-    <>
-      <div className="h-full overflow-hidden bg-black md:h-fit" ref={emblaRef}>
-        <div className="flex">
-          {slides.map((slide) => {
-            return (
-              // Slide
-              <div key={slide.id} className="flex flex-col-reverse flex-embla sm:flex-row">
-                {/* Image half */}
-                <div className="bg-center-right flex h-[48vh] w-full items-center justify-center  bg-cover bg-no-repeat sm:h-full sm:w-1/2">
-                  <div className="bg-right-center absolute h-[49vh] w-full bg-gradient-to-t from-transparent via-transparent to-black sm:h-full sm:w-1/2 sm:bg-gradient-to-r" />
-                  <Image
-                    className="object-cover w-fit"
-                    src={slide.img}
-                    width={500}
-                    height={500}
-                    alt="carousel image"
-                    placeholder="blur"
-                  />
-                </div>
-                {/* Text half */}
-                <div className="z-20 flex h-[49vh] max-h-fit w-full flex-col items-center justify-start overflow-visible bg-black py-6 text-center text-5xl sm:h-full sm:w-1/2 sm:items-center sm:justify-center sm:text-left">
-                  <div className="max-w-lg px-5 overflow-visible bg-gradient-to-t from-transparent to-black sm:bg-transparent">
-                    {/* Title */}
-                    <div className="mb-4 md:mb-0">
-                      {slide.header.keyword.first ? (
-                        <p className="font-sans font-light text-white">
-                          <span className="bg-gradient-to-r from-[#4FC0FF] via-[#6977EE] to-[#FF6098] bg-clip-text text-transparent">
-                            {slide.header.keyword.content}
-                          </span>{" "}
-                          {slide.header.title}
-                        </p>
-                      ) : (
-                        <p className="font-sans font-light text-white">
-                          <span>{slide.header.title}</span>{" "}
-                          <span className="bg-gradient-to-r from-[#4FC0FF] via-[#6977EE] to-[#FF6098] bg-clip-text text-transparent">
-                            {slide.header.keyword.content}
-                          </span>
-                        </p>
-                      )}
-                    </div>
-                    {/* Description */}
-                    <p className="mt-2 mb-3 overflow-visible font-sans text-xl text-white sm:mt-6 md:mb-0">
-                      {slide.desc}
-                    </p>
+    <div className="h-full max-w-full overflow-hidden bg-black md:h-fit" ref={emblaRef}>
+      <div className="flex">
+        {slides.map((slide) => {
+          return (
+            // Slide
+            <div key={slide.id} className="flex flex-col-reverse flex-embla sm:flex-row">
+              {/* Image half */}
+              <div className="bg-center-right flex h-[48vh] w-full items-center justify-center  bg-cover bg-no-repeat sm:h-full sm:w-1/2">
+                <div className="bg-right-center absolute h-[49vh] w-full bg-gradient-to-t from-transparent via-transparent to-black sm:h-full sm:w-1/2 sm:bg-gradient-to-r" />
+                <Image
+                  className="object-cover w-full h-full"
+                  src={slide.img}
+                  width={500}
+                  height={500}
+                  alt={slide.header.title}
+                  placeholder="blur"
+                />
+              </div>
+              {/* Text half */}
+              <div className="z-20 flex h-[49vh] max-h-fit w-full flex-col items-center justify-start overflow-visible bg-black py-6 text-center text-5xl sm:h-full sm:w-1/2 sm:items-center sm:justify-center sm:text-left">
+                <div className="max-w-lg px-5 overflow-visible bg-gradient-to-t from-transparent to-black sm:bg-transparent">
+                  {/* Title */}
+                  <div className="mb-4 md:mb-0">
+                    {slide.header.keyword.first ? (
+                      <p className="font-sans font-light text-white">
+                        <span className="bg-gradient-to-r from-[#4FC0FF] via-[#6977EE] to-[#FF6098] bg-clip-text text-transparent">
+                          {slide.header.keyword.content}
+                        </span>{" "}
+                        {slide.header.title}
+                      </p>
+                    ) : (
+                      <p className="font-sans font-light text-white">
+                        <span>{slide.header.title}</span>{" "}
+                        <span className="bg-gradient-to-r from-[#4FC0FF] via-[#6977EE] to-[#FF6098] bg-clip-text text-transparent">
+                          {slide.header.keyword.content}
+                        </span>
+                      </p>
+                    )}
                   </div>
+                  {/* Description */}
+                  <p className="mt-2 mb-3 overflow-visible font-sans text-xl text-white sm:mt-6 md:mb-0">
+                    {slide.desc}
+                  </p>
                 </div>
               </div>
-            );
-          })}
-        </div>
-        <div className="flex justify-center">
-          <div className="embla__dots">
-            {scrollSnaps.map((_, index) => (
-              <DotButton
-                key={index}
-                selected={index === selectedIndex}
-                onClick={() => scrollTo(index)}
-              />
-            ))}
-          </div>
+            </div>
+          );
+        })}
+      </div>
+      <div className="flex justify-center">
+        <div className="embla__dots">
+          {scrollSnaps.map((_, index) => (
+            <DotButton
+              key={index}
+              selected={index === selectedIndex}
+              onClick={() => scrollTo(index)}
+            />
+          ))}
         </div>
       </div>
-    </>
+    </div>
   );
 }
 
