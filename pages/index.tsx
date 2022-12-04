@@ -82,7 +82,9 @@ function HomePage() {
 
       {/* Carousel */}
       <div className="flex justify-center bg-black">
-        <Carousel />
+        <div className="max-w-7xl">
+          <Carousel />
+        </div>
       </div>
 
       {/* Join us section */}

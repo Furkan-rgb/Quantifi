@@ -3,11 +3,11 @@ import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
 import { DotButton } from "./emblaButtons";
 import Image, { StaticImageData } from "next/future/image";
-import image1 from "../public/image1.png";
-import image2 from "../public/image2.png";
-import image3 from "../public/image3.png";
-import image4 from "../public/image4.png";
-import image5 from "../public/image5.png";
+import image1 from "../public/image11.png";
+import image2 from "../public/image22.png";
+import image3 from "../public/image33.png";
+import image4 from "../public/image44.png";
+import image5 from "../public/image55.png";
 
 function Carousel() {
   // Autoplay
@@ -76,18 +76,17 @@ function Carousel() {
 
   return (
     <>
-      <div className="h-full max-w-6xl overflow-hidden bg-black md:h-fit" ref={emblaRef}>
+      <div className="h-full overflow-hidden bg-black md:h-fit" ref={emblaRef}>
         <div className="flex">
           {slides.map((slide) => {
             return (
               // Slide
               <div key={slide.id} className="flex flex-col-reverse flex-embla sm:flex-row">
                 {/* Image half */}
-                <div className="bg-center-right flex h-[48vh] w-full items-center justify-center bg-cover bg-no-repeat sm:h-full sm:w-1/2">
-                  <div className="bg-right-center absolute h-[49vh] w-full bg-gradient-to-t from-transparent via-transparent to-black sm:h-full sm:w-1/2 sm:bg-gradient-to-r"></div>
-                  {/* <img className="object-cover w-full h-full" src={slide.img.blurDataURL} /> */}
+                <div className="bg-center-right flex h-[48vh] w-full items-center justify-center  bg-cover bg-no-repeat sm:h-full sm:w-1/2">
+                  <div className="bg-right-center absolute h-[49vh] w-full bg-gradient-to-t from-transparent via-transparent to-black sm:h-full sm:w-1/2 sm:bg-gradient-to-r" />
                   <Image
-                    className="object-cover w-full h-full "
+                    className="object-cover w-fit"
                     src={slide.img}
                     width={500}
                     height={500}
