@@ -1,5 +1,4 @@
 import React, { Fragment, useContext, useEffect, useState } from "react";
-import { Web3Provider } from "@ethersproject/providers";
 import ErrorMessage from "../ErrorMessage";
 import { ethers } from "ethers";
 import { toHex, truncateAddress } from "../utils";
@@ -9,10 +8,13 @@ import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
 import { connectors } from "../utils/connectors";
 import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon, ExclamationTriangleIcon } from "@heroicons/react/24/outline";
+import { useRouter } from "next/router";
 
 function WalletConnectButton() {
-  const [modalOpen, setModalOpen] = useState(false);
-  const [open, setOpen] = useState(true);
+  const router = useRouter();
+  const [connectedBtnHover, setConnectedBtnHover] = useState(false);
+  const [connectModalOpen, setConnectModalOpen] = useState(false);
+  const [open, setOpen] = useState(false);
   const [wrongChain, setWrongChain] = useState(false);
 
   const { library, active, account, activate, deactivate, chainId, connector, error, setError } =
@@ -45,13 +47,16 @@ function WalletConnectButton() {
   }
 
   function toggleModal() {
+    console.log(connectModalOpen);
+    // If theres no web3 wallet connected, open the modal
     if (!active) {
-      if (modalOpen) {
-        setModalOpen(false);
+      if (connectModalOpen) {
+        setConnectModalOpen(false);
       } else {
-        setModalOpen(true);
+        setConnectModalOpen(true);
       }
     } else if (active) {
+      console.log("disconnecting");
       disconnect();
     }
   }
@@ -82,23 +87,31 @@ function WalletConnectButton() {
   }, [active]);
 
   function ConnectButtonContent() {
+    if (connectedBtnHover && active) {
+      return <span className="block">Disconnect</span>;
+    }
+
     if (!active) {
       return <span className="relative block rounded-md sm:inline">Connect Wallet</span>;
     }
 
     if (typeof chainId !== undefined) {
       if (connector?.supportedChainIds?.includes(chainId!) == true) {
-        // return <span className="block">{truncateAddress(account)}</span>;
-        return <span className="block">Disconnect</span>;
+        return <span className="block">{truncateAddress(account)}</span>;
       }
     }
 
-    if (wrongChain == true) {
+    if (wrongChain) {
       return <span className="block">Wrong Network</span>;
     }
 
-    return <span className="block">Temp</span>;
+    return <span className="block">Undefined</span>;
   }
+
+  useEffect(() => {
+    ConnectButtonContent();
+  }, [connectedBtnHover]);
+
   useEffect(() => {
     if (!library) {
       console.log("can't find library");
@@ -106,30 +119,35 @@ function WalletConnectButton() {
     }
     handleNetworkSwitch();
     ConnectButtonContent();
-  }, [account, chainId]);
+  }, [account, chainId, active]);
 
   return (
     <>
-      {/* Need this for later */}
-      {/* <span className="text-white">ChainId: {chainId}</span>
-      <span className="text-white">
-        {isUnsupportedChainIdError ? "unsupported chain id" : null}
-      </span> */}
       <button
         onClick={() => {
           toggleModal();
         }}
-        className="text-base relative inline-flex items-center justify-center p-0.5 mb-2 sm:mr-2 font-medium rounded-lg group bg-gradient-to-r from-[#4FC0FF] via-[#6977EE] to-[#FF6098] group-hover:from-[#4FC0FF] group-hover:via-[#6977EE] group-hover:to-[#FF6098] hover:text-white dark:text-white focus:ring-4 focus:outline-none "
+        onMouseEnter={() => {
+          if (active) {
+            setConnectedBtnHover(true);
+          }
+        }}
+        onMouseLeave={() => {
+          if (active) {
+            setConnectedBtnHover(false);
+          }
+        }}
+        className="group relative mb-2 inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-[#4FC0FF] via-[#6977EE] to-[#FF6098] p-0.5 text-base font-medium transition-all duration-100 ease-in hover:text-white focus:outline-none focus:ring-4 group-hover:from-[#4FC0FF] group-hover:via-[#6977EE] group-hover:to-[#FF6098] dark:text-white sm:mr-2"
       >
         {/* Inner button content */}
-        <span className="relative block px-2 py-2 text-sm transition-all duration-100 ease-in bg-white rounded-md sm:inline sm:px-4 sm:py-2 sm:text-base dark:bg-gray-900 group-hover:bg-opacity-0">
+        <span className="relative block px-2 py-2 text-sm transition-all duration-100 ease-in bg-white rounded-md group-hover:bg-opacity-0 dark:bg-gray-900 sm:inline sm:px-4 sm:py-2 sm:text-base">
           <ConnectButtonContent />
         </span>
       </button>
-      <SelectWalletModal modalOpen={modalOpen} toggleModal={toggleModal} />
+      <SelectWalletModal modalOpen={connectModalOpen} toggleModal={toggleModal} />
       {/* Modal for unsupported chain id */}
-      <Transition.Root show={wrongChain}>
-        <Dialog as="div" className="absolute z-20" onClose={setOpen}>
+      <Transition.Root show={wrongChain && router.pathname !== "/"}>
+        <Dialog as="div" className="absolute z-20" onClose={() => setOpen(false)}>
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"

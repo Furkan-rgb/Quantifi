@@ -83,7 +83,7 @@ function Carousel() {
             <div key={slide.id} className="flex flex-col-reverse flex-embla sm:flex-row">
               {/* Image half */}
               <div className="bg-center-right flex h-[48vh] w-full items-center justify-center  bg-cover bg-no-repeat sm:h-full sm:w-1/2">
-                <div className="bg-right-center absolute h-[49vh] w-full bg-gradient-to-t from-transparent via-transparent to-black sm:h-full sm:w-1/2 sm:bg-gradient-to-r" />
+                <div className="bg-right-center max-w-screen absolute h-[49vh] w-full bg-gradient-to-t from-transparent via-transparent to-black sm:h-full sm:w-1/2 sm:bg-gradient-to-r" />
                 <Image
                   className="object-cover w-full h-full"
                   src={slide.img}
