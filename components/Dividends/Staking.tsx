@@ -8,6 +8,7 @@ function Staking() {
   const [stakeAmountQNTFI, setStakeAmountQNTFI] = React.useState<number>(0);
   const [stakeAmountDays, setStakeAmountDays] = React.useState<number>(0);
   const [swapButtonText, setSwapButtonText] = React.useState<string>("Stake");
+  const [touched, setTouched] = React.useState<boolean>(false);
 
   return (
     <div>
@@ -53,7 +54,7 @@ function Staking() {
                     <div className="relative z-0 flex w-full mb-4 group">
                       <input
                         onChange={(e) => {
-                          setStakeAmountDays(e.target.valueAsNumber);
+                          setStakeAmountDays(e.target.valueAsNumber), setTouched(true);
                         }}
                         type="number"
                         name="floating_input"
@@ -73,9 +74,11 @@ function Staking() {
                         Days
                       </span>
                     </div>
-                    <p className="visible font-light text-red-700 peer-invalid:visible">
-                      Minimum days to stake is: 7 Days
-                    </p>
+                    {touched && stakeAmountDays < 7 && (
+                      <p className="visible font-light text-red-700 peer-invalid:visible">
+                        Minimum days to stake is: 7 Days
+                      </p>
+                    )}
                   </div>
                 </div>
                 <div className="mb-4">
