@@ -47,7 +47,7 @@ function WalletConnectButton() {
   }
 
   function toggleModal() {
-    console.log(connectModalOpen);
+    console.log("button click");
     // If theres no web3 wallet connected, open the modal
     if (!active) {
       if (connectModalOpen) {
@@ -127,7 +127,7 @@ function WalletConnectButton() {
         onClick={() => {
           toggleModal();
         }}
-        onMouseEnter={() => {
+        onMouseOver={() => {
           if (active) {
             setConnectedBtnHover(true);
           }
@@ -146,7 +146,7 @@ function WalletConnectButton() {
       </button>
       <SelectWalletModal modalOpen={connectModalOpen} toggleModal={toggleModal} />
       {/* Modal for unsupported chain id */}
-      <Transition.Root show={wrongChain && router.pathname !== "/"}>
+      <Transition.Root show={wrongChain && router.pathname !== "/" && active}>
         <Dialog as="div" className="absolute z-20" onClose={() => setOpen(false)}>
           <Transition.Child
             as={Fragment}
