@@ -1,20 +1,54 @@
 import { ArrowDownIcon } from "@heroicons/react/20/solid";
+import { useWeb3React } from "@web3-react/core";
 import { ChartOptions } from "chart.js";
+import { ethers } from "ethers";
 import { useEffect, useState } from "react";
 import Linechart from "../components/Dashboard/Linechart";
 import Staking from "../components/Dividends/Staking";
 import { Unstaking } from "../components/Dividends/Unstaking";
 import Proposals from "../components/Governance/Proposals";
+import qntfiABI from "../components/abi/qntfi.json";
 
 // our-domain.com/governance
 function GovernancePage() {
   const [currentTab, setCurrentTab] = useState<string>("deposit");
+  const [loading, setLoading] = useState<boolean>(false);
   const [inputValue, setInputValue] = useState<string>("");
   const [outputValue, setOutputValue] = useState<string>();
   const [swapButtonText, setSwapButtonText] = useState<string>("Loading...");
+  const { library, chainId, account, active, error, setError, connector } = useWeb3React();
+  const [qntfiInfo, setQntfiInfo] = useState<any>([]);
   function classNames(...classes: string[]) {
     return classes.filter(Boolean).join(" ");
   }
+  const QNTFI = new ethers.Contract(
+    "0xB45482c80BE748620153B2A66ED3794A74EBde3b",
+    qntfiABI,
+    library
+  );
+
+  // Sets the contract values
+  async function _setContractInfo() {
+    setLoading(true);
+    try {
+      setQntfiInfo({
+        address: QNTFI.address,
+        tokenName: "QNTFI",
+        qntfiBalance: await QNTFI.balanceOf(account),
+        allowance: await QNTFI.allowance(account, QNTFI.address),
+      });
+    } catch (error) {
+      console.error("Couldn't set contract info: " + error);
+    } finally {
+      setLoading(false);
+    }
+  }
+  // account change -> contract info update
+  useEffect(() => {
+    if (account) {
+      _setContractInfo();
+    }
+  }, [account]);
 
   // Returns swap button with correct body text based on input value
   function changeSwapButtonText() {
@@ -160,7 +194,7 @@ function GovernancePage() {
         </div>
       </main>
       <div className="pt-12 bg-gray-50 sm:pt-16">
-        <Staking />
+        <Staking balance={qntfiInfo.qntfiBalance} />
 
         {/* Title  */}
         <div className="px-4 pt-16 mx-auto max-w-7xl sm:px-6 lg:px-8">
@@ -208,7 +242,7 @@ function GovernancePage() {
           <div className="w-full max-w-6xl pb-6 text-center">
             <h2
               id="proposals"
-              className="mb-4 text-4xl font-bold tracking-tight text-gray-900  -scroll-mt-60 sm:text-5xl"
+              className="mb-4 text-4xl font-bold tracking-tight text-gray-900 -scroll-mt-60 sm:text-5xl"
             >
               Proposals
             </h2>
