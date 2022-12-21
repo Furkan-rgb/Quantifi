@@ -150,7 +150,7 @@ function Dashboard() {
   };
 
   return (
-    <>
+    <div className="min-h-90vh">
       <div className="flex justify-center text-black">
         <div className="grid self-center grid-cols-2 gap-4 p-3 text-black min-w-fit max-w-7xl">
           {/* Doughnut */}
@@ -322,7 +322,7 @@ function Dashboard() {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }
 

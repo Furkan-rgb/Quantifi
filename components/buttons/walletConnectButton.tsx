@@ -22,13 +22,14 @@ function WalletConnectButton() {
   const isUnsupportedChainIdError = error instanceof UnsupportedChainIdError;
 
   async function changeNetwork() {
+    console.log("Chain id is: " + chainId);
     if (library) {
       try {
         await library.provider.request({
           method: "wallet_addEthereumChain",
           params: [
             {
-              ...networkParams["tbsc"],
+              ...networkParams["bsc"],
             },
           ],
         });
@@ -41,9 +42,12 @@ function WalletConnectButton() {
   }
 
   function handleNetworkSwitch() {
-    if (chainId !== 97) {
+    if (chainId !== 56) {
       setWrongChain(true);
     }
+    // if (chainId === 97) {
+    //   setWrongChain(false);
+    // }
   }
 
   function toggleModal() {
@@ -71,6 +75,9 @@ function WalletConnectButton() {
   }
 
   const connectWalletOnPageLoad = async () => {
+    if (router.route === "/") {
+      return;
+    }
     if (localStorage?.getItem("provider") !== null) {
       try {
         await activate(connectors.injected);
@@ -86,6 +93,7 @@ function WalletConnectButton() {
     connectWalletOnPageLoad();
   }, [active]);
 
+  // TODO: Move this out of the component
   function ConnectButtonContent() {
     if (connectedBtnHover && active) {
       return <span className="block">Disconnect</span>;

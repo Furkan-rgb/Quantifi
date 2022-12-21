@@ -38,7 +38,6 @@ function MyPage() {
 
   const minDeposit = 1000; // this will be updated to actual value
   const minTopup = 500; // this will be updated to actual value
-  const tBNBChain = 97;
   const [loading, setLoading] = useState<boolean>(false); // loading state for button
 
   const { library, chainId, account, active, error, setError, connector } = useWeb3React();
@@ -190,7 +189,6 @@ function MyPage() {
   }
 
   // Sets the contract values
-  // TODO: Is it possible to put this in the useEffect directly?
   async function _setContractInfo() {
     setLoading(true);
     try {
@@ -303,7 +301,7 @@ function MyPage() {
                         d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                       ></path>
                     </svg>
-                  )}
+                  )}{" "}
                   QIT
                 </span>
               </div>

@@ -32,9 +32,9 @@ const votingOptions = [
 function VotingResults(props: any) {
   if (props.proposalState === "upcoming") {
     return (
-      <div className="flex h-64 w-full flex-col items-center justify-center bg-white">
-        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">
-          <CalendarIcon className="h-8 w-8 text-gray-400" />
+      <div className="flex flex-col items-center justify-center w-full h-64 bg-white">
+        <div className="flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full">
+          <CalendarIcon className="w-8 h-8 text-gray-400" />
         </div>
         <h3 className="mt-4 text-sm font-medium text-gray-900">Voting has not started yet</h3>
       </div>
@@ -64,12 +64,12 @@ function VotingOptions(props: any) {
       <div>
         {props.votingOptions.map((option: any) => (
           <>
-            <div className="relative my-4 overflow-hidden rounded-lg border border-gray-200 p-4 hover:border-indigo-500">
+            <div className="relative p-4 my-4 overflow-hidden border border-gray-200 rounded-lg hover:border-indigo-500">
               <div
                 style={{ transform: `scaleX(${option.votes / totalVotes})` }}
                 className="absolute inset-0 w-full origin-left bg-indigo-500 bg-opacity-50"
               ></div>
-              <div className="z-100 relative text-black">
+              <div className="relative text-black z-100">
                 <div className="font-medium">{option.description}</div>
                 <div className="text-sm">{option.votes} voters</div>
                 <div className="text-sm">
@@ -88,18 +88,18 @@ function VotingOptions(props: any) {
         <div>
           {props.votingOptions.map((option: any) => (
             <div id={option.id}>
-              <div className="relative my-4 cursor-pointer overflow-hidden rounded-lg border border-gray-200 p-4 hover:border-indigo-500">
+              <div className="relative p-4 my-4 overflow-hidden border border-gray-200 rounded-lg cursor-pointer hover:border-indigo-500">
                 <div className="absolute inset-0 w-full origin-left bg-opacity-50"></div>
-                <div className="z-100 relative text-black ">
+                <div className="relative text-black z-100 ">
                   <div className="font-medium">{option.description}</div>
                 </div>
               </div>
             </div>
           ))}
-          <div className="flex w-full flex-col items-center justify-center bg-white">
+          <div className="flex flex-col items-center justify-center w-full bg-white">
             <button
               type="button"
-              className="mb-4 inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-6 py-2 text-sm font-medium leading-4 text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+              className="inline-flex items-center px-6 py-2 mb-4 text-sm font-medium leading-4 text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
             >
               Vote
             </button>
@@ -111,12 +111,12 @@ function VotingOptions(props: any) {
         <div>
           {props.votingOptions.map((option: any) => (
             <>
-              <div className="relative my-4 overflow-hidden rounded-lg border border-gray-200 p-4 hover:border-indigo-500">
+              <div className="relative p-4 my-4 overflow-hidden border border-gray-200 rounded-lg hover:border-indigo-500">
                 <div
                   style={{ transform: `scaleX(${option.votes / totalVotes})` }}
                   className="absolute inset-0 w-full origin-left bg-indigo-500 bg-opacity-50"
                 />
-                <div className="z-100 relative text-black dark:text-white">
+                <div className="relative text-black z-100 dark:text-white">
                   <div className="font-medium">{option.description}</div>
                   <div className="text-sm">{option.votes} voters</div>
                   <div className="text-sm">
@@ -150,13 +150,13 @@ export default function proposalDetail() {
   }, [router, proposalState]);
 
   return (
-    <div className="flex min-h-screen justify-center bg-white">
-      <div className="grid w-full max-w-7xl grid-flow-row auto-rows-max grid-cols-2 gap-4 py-8">
+    <div className="flex justify-center min-h-screen bg-white">
+      <div className="grid w-full grid-flow-row grid-cols-2 gap-4 pt-4 pb-8 max-w-7xl auto-rows-max">
         {/* Section 1 */}
-        <div className="col-span-2 h-max p-8 sm:pl-0">
+        <div className="col-span-2 p-4 h-max sm:pl-0">
           <div className=" lg:w-1/2 xl:pr-16">
-            <div className="flex cursor-pointer items-center text-black">
-              <ChevronLeftIcon className="inline-block h-5 w-5 sm:h-6 sm:w-6" />{" "}
+            <div className="flex items-center text-black cursor-pointer">
+              <ChevronLeftIcon className="inline-block w-5 h-5 sm:h-6 sm:w-6" />{" "}
               <Link href="/governance#proposals">
                 <span className="hover:underline sm:text-sm md:text-base">Back to Proposals</span>
               </Link>
@@ -166,10 +166,10 @@ export default function proposalDetail() {
             <h1 className="mt-3 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl md:text-6xl lg:text-5xl xl:text-6xl">
               <span className="block xl:inline">{query.title}</span>
             </h1>
-            <p className="mx-auto mt-3 max-w-md text-lg text-gray-500 sm:text-xl md:mt-5 md:max-w-3xl">
+            <p className="max-w-md mx-auto mt-3 text-lg text-gray-500 sm:text-xl md:mt-5 md:max-w-3xl">
               {query.description}
             </p>
-            <div className="mt-2 flex">
+            <div className="flex mt-2">
               <div className="flex items-center text-sm text-gray-500">
                 <CalendarIcon
                   className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
@@ -210,7 +210,7 @@ export default function proposalDetail() {
         </div>
         {/* Results Card */}
         <div className="col-span-2 h-max bg-clip-padding sm:col-span-1 sm:rounded-lg sm:shadow-lg">
-          <div className="bg-gray-200 px-6 py-6 sm:flex sm:items-center sm:rounded-t-lg">
+          <div className="px-6 py-6 bg-gray-200 sm:flex sm:items-center sm:rounded-t-lg">
             <div className="sm:flex-auto">
               <h1 className="text-2xl font-semibold text-gray-900">Results</h1>
             </div>
