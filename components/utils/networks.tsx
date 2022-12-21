@@ -34,7 +34,7 @@ export const networkParams: Network = {
       symbol: "BNB",
       decimals: 18,
     },
-    rpcUrls: ["https://bsc-dataseed.binance.org/"],
+    rpcUrls: ["https://bsc-dataseed.binance.org"],
     blockExplorerUrls: ["https://bscscan.com"],
     iconUrls: ["https://cryptologos.cc/logos/bnb-bnb-logo.svg"],
   },
