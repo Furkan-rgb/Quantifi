@@ -26,28 +26,41 @@ function WalletConnectButton() {
     if (library) {
       try {
         await library.provider.request({
-          method: "wallet_addEthereumChain",
-          params: [
-            {
-              ...networkParams["bsc"],
-            },
-          ],
+          method: "wallet_switchEthereumChain",
+          // params: [{ chainId: "0x38" }],
+          params: [{ chainId: "0x61" }],
         });
       } catch (err: any) {
         console.log(err);
         setError(err.message);
+        if (err.code === 4902) {
+          try {
+            await library.provider.request({
+              method: "wallet_addEthereumChain",
+              params: [
+                {
+                  ...networkParams["bsc"],
+                },
+              ],
+            });
+          } catch (err: any) {
+            console.log(err);
+            setError(err.message);
+          }
+        }
+        setWrongChain(false);
       }
     }
-    setWrongChain(false);
   }
 
   function handleNetworkSwitch() {
-    if (chainId !== 56) {
+    console.log(chainId);
+    // 56 mainnnet 97 testnet
+    if (chainId !== 97) {
       setWrongChain(true);
+      return;
     }
-    // if (chainId === 97) {
-    //   setWrongChain(false);
-    // }
+    setWrongChain(false);
   }
 
   function toggleModal() {
@@ -224,7 +237,8 @@ function WalletConnectButton() {
                     type="button"
                     className="inline-flex justify-center w-full px-4 py-2 pt-2 mt-1 text-base font-medium text-black bg-transparent border rounded-md shadow-sm hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:text-sm"
                     onClick={() => {
-                      setOpen(false), disconnect();
+                      setOpen(false);
+                      disconnect();
                     }}
                   >
                     Disconnect

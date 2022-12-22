@@ -1,3 +1,5 @@
+import { ethers } from "ethers";
+
 const staking = [
   {
     id: 1,
@@ -13,7 +15,14 @@ const staking = [
   },
 ];
 
-export function Unstaking() {
+interface Stake {
+  // id: number;
+  // amount: ethers.BigNumber;
+  // locked_date: string;
+  // locked_time: string;
+}
+
+export function Unstaking({ stakes }: { stakes: any[] }) {
   return (
     <div className="w-full">
       <div className="mt-8 overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:-mx-6 md:mx-0 md:rounded-lg">
@@ -41,16 +50,16 @@ export function Unstaking() {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {staking.map((stake) => (
-              <tr key={stake.id}>
+            {stakes.map((stake) => (
+              <tr key={stake?.weight}>
                 <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-6 lg:pl-8">
-                  {stake.amount}
+                  {stake?.numTokens?.toNumber()}
                 </td>
                 <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
-                  {stake.locked_date}
+                  {stake?.weight?.toString()}
                 </td>
                 <td className="hidden px-3 py-4 text-sm text-gray-500 whitespace-nowrap md:block ">
-                  {stake.locked_time}
+                  {stake?.weight}
                 </td>
                 <td className="relative py-4 pl-3 pr-4 text-sm font-medium text-right whitespace-nowrap sm:pr-6 lg:pr-8">
                   <button className="text-indigo-600 hover:text-indigo-900">
