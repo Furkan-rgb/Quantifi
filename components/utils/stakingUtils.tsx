@@ -1,3 +1,12 @@
+import { BigNumber, ethers } from "ethers";
+
+export interface StakingProps {
+  balance: ethers.BigNumber;
+  stake: (amount: number, lockUpDays: number) => void;
+  amount: number;
+  lockUpDays: number;
+}
+
 export function getStakingMultiplier(lockUpDays: number) {
   if (lockUpDays >= 7 && lockUpDays < 30) {
     return 1;

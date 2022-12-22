@@ -1,82 +1,160 @@
-import { ArrowDownIcon } from "@heroicons/react/20/solid";
 import { useWeb3React } from "@web3-react/core";
 import { ChartOptions } from "chart.js";
-import { ethers } from "ethers";
+import { ethers, BigNumber } from "ethers";
 import { useEffect, useState } from "react";
 import Linechart from "../components/Dashboard/Linechart";
 import Staking from "../components/Dividends/Staking";
 import { Unstaking } from "../components/Dividends/Unstaking";
 import Proposals from "../components/Governance/Proposals";
 import qntfiABI from "../components/abi/qntfi.json";
+import Spinner from "../components/animations/Spinner";
+import Notification, { NotificationContent } from "../components/Notification";
+import { timeout } from "../components/utils/timeout";
 
 // our-domain.com/governance
 function GovernancePage() {
+  const [notificationStatus, setNotificationStatus] =
+    useState<NotificationContent["status"]>("info");
+  const [notificationMessage, setNotificationMessage] = useState<string>("");
+  const [notificationTitle, setNotificationTitle] = useState<string>("");
   const [currentTab, setCurrentTab] = useState<string>("deposit");
   const [loading, setLoading] = useState<boolean>(false);
-  const [inputValue, setInputValue] = useState<string>("");
+  const [inputValue, setInputValue] = useState<number>(0);
   const [outputValue, setOutputValue] = useState<string>();
   const [swapButtonText, setSwapButtonText] = useState<string>("Loading...");
+  const [lockUpDays, setLockUpDays] = useState<number>(0);
   const { library, chainId, account, active, error, setError, connector } = useWeb3React();
-  const [qntfiInfo, setQntfiInfo] = useState<any>([]);
-  function classNames(...classes: string[]) {
-    return classes.filter(Boolean).join(" ");
-  }
+  const [qntfiInfo, setQntfiInfo] = useState<{
+    address: string;
+    tokenName: string;
+    qntfiBalance: ethers.BigNumber;
+    allowance: ethers.BigNumber;
+    numStakes: number;
+    stakes: any[];
+    qntfiStaked: ethers.BigNumber;
+  }>({
+    address: "",
+    tokenName: "QNTFI",
+    qntfiBalance: ethers.BigNumber.from(0),
+    allowance: ethers.BigNumber.from(0),
+    numStakes: 0,
+    stakes: [],
+    qntfiStaked: ethers.BigNumber.from(0),
+  });
+
   const QNTFI = new ethers.Contract(
-    "0xB45482c80BE748620153B2A66ED3794A74EBde3b",
+    "0x0781B099a57B1ebCaF1c1D72A2dC72Aa5773d3B5",
     qntfiABI,
     library
   );
 
+  const [showNotification, setNotificationShow] = useState(false);
+  function changeNotificationContent(
+    title: NotificationContent["title"],
+    message: NotificationContent["message"],
+    status: NotificationContent["status"]
+  ) {
+    setNotificationTitle(title);
+    setNotificationMessage(message);
+    setNotificationStatus(status);
+  }
+
   // Sets the contract values
   async function _setContractInfo() {
     setLoading(true);
+    if (!account) return;
     try {
       setQntfiInfo({
         address: QNTFI.address,
         tokenName: "QNTFI",
         qntfiBalance: await QNTFI.balanceOf(account),
         allowance: await QNTFI.allowance(account, QNTFI.address),
+        numStakes: await QNTFI.numStakes(account),
+        stakes: await QNTFI.stakes(account, qntfiInfo.numStakes),
+        qntfiStaked: await QNTFI.tokensStaked(account),
       });
     } catch (error) {
-      console.error("Couldn't set contract info: " + error);
+      console.error("Couldn't set contract info1: " + error);
     } finally {
+      console.log(qntfiInfo);
       setLoading(false);
     }
   }
+
+  async function stakeQNTFI(amount: number, days: number) {
+    if (!amount) return;
+    if (!account) return;
+
+    // Check allowance
+    const allowed = await checkAndSetAllowance(amount);
+    if (!allowed) return;
+
+    const QNTFIConnect = QNTFI.connect(library.getSigner());
+    try {
+      // Request stake
+      const tx = await QNTFIConnect.stakeTokens(BigNumber.from(amount), BigNumber.from(days));
+      // In progress
+      changeNotificationContent("In progress", "Staking Requested", "loading");
+      setNotificationShow(true);
+      await tx.wait();
+      // Complete
+      _setContractInfo();
+      changeNotificationContent("Complete", "Staked", "success");
+      await timeout(2000);
+      setNotificationShow(false);
+    } catch (error) {
+      changeNotificationContent("Failed", "Staking Failed", "error");
+      console.error("Couldn't stake QNTFI: " + error);
+    }
+  }
+
+  async function checkAndSetAllowance(amount: number) {
+    try {
+      const allowance = await QNTFI.allowance(account, QNTFI.address);
+      // If allowance is less than input value, approve allowance
+      if (allowance.lt(BigNumber.from(amount))) {
+        await approveAllowance();
+      }
+      return true;
+    } catch (error) {
+      console.error("Couldn't check allowance: " + error);
+      return false;
+    }
+  }
+
+  async function approveAllowance() {
+    const QNTFIConnect = QNTFI.connect(library.getSigner());
+    try {
+      // Request approval
+      const transaction = await QNTFIConnect.approve(
+        QNTFI.address,
+        ethers.utils.parseEther("10000000000000")
+      );
+      // In progress
+      changeNotificationContent("In progress", "Approval Requested", "loading");
+      setNotificationShow(true);
+      const receipt = await transaction.wait();
+
+      // Complete
+      changeNotificationContent("Complete", "Approved", "success");
+      console.log(receipt);
+      _setContractInfo();
+
+      // Wait 2 seconds and hide notification
+      await timeout(2000);
+      setNotificationShow(false);
+    } catch (error) {
+      console.error(error);
+      changeNotificationContent("Failed", "Approval was rejected", "error");
+      setNotificationShow(true);
+    }
+  }
+
   // account change -> contract info update
   useEffect(() => {
-    if (account) {
-      _setContractInfo();
-    }
-  }, [account]);
-
-  // Returns swap button with correct body text based on input value
-  function changeSwapButtonText() {
-    if (inputValue == "") {
-      setSwapButtonText("Enter Amount");
-    }
-    if (inputValue !== "") {
-      if (currentTab === "withdrawal") {
-        setSwapButtonText("Swap QIT for QNTFI");
-      } else if (currentTab === "deposit") {
-        setSwapButtonText("Give permission to deposit QIT");
-      } else {
-        setSwapButtonText("Swap QNTFI for QIT");
-      }
-    }
-  }
-
-  function resetOutputValue(_currentTab: string) {
-    if (_currentTab === currentTab) {
-      return;
-    }
-    setOutputValue("");
-  }
-
-  // Keeps track of input value to update swap button text
-  useEffect(() => {
-    changeSwapButtonText();
-  }, [inputValue]);
+    if (!account) return;
+    _setContractInfo();
+  }, [account, active]);
 
   // Line chart stuff
   const labels = new Array(7).fill(0).map((_, i) => `Day ${i + 1}`);
@@ -194,7 +272,12 @@ function GovernancePage() {
         </div>
       </main>
       <div className="pt-12 bg-gray-50 sm:pt-16">
-        <Staking balance={qntfiInfo.qntfiBalance} />
+        <Staking
+          balance={qntfiInfo.qntfiBalance}
+          stake={stakeQNTFI}
+          amount={inputValue}
+          lockUpDays={lockUpDays}
+        />
 
         {/* Title  */}
         <div className="px-4 pt-16 mx-auto max-w-7xl sm:px-6 lg:px-8">
@@ -211,15 +294,21 @@ function GovernancePage() {
             <div className="relative mx-auto max-w-7xl sm:px-6 lg:px-8">
               <div className="max-w-2xl px-2 mx-auto sm:px-0">
                 <dl className="bg-white rounded-lg shadow-md sm:grid sm:grid-cols-2 sm:shadow-lg">
-                  <div className="flex flex-col p-6 text-center border-b border-gray-100 sm:border-0 sm:border-r">
+                  <div className="flex flex-col items-center justify-center p-6 text-center border-b border-gray-100 sm:border-0 sm:border-r">
                     <dt className="order-2 mt-2 text-lg font-medium leading-6 text-gray-500">
                       Total QNTFI staked
                     </dt>
                     <dd className="order-1 text-5xl font-bold tracking-tight text-indigo-600">
-                      12 QNTFI
+                      {loading ? (
+                        <Spinner />
+                      ) : (
+                        (+ethers.utils.formatUnits(qntfiInfo.qntfiStaked, 1)).toString() +
+                        " " +
+                        qntfiInfo.tokenName
+                      )}
                     </dd>
                   </div>
-                  <div className="flex flex-col p-6 text-center border-t border-b border-gray-100 sm:border-0 sm:border-l sm:border-r">
+                  <div className="flex flex-col items-center justify-center p-6 text-center border-t border-b border-gray-100 sm:border-0 sm:border-l sm:border-r">
                     <dt className="order-2 mt-2 text-lg font-medium leading-6 text-gray-500">
                       Your Staked Weight
                     </dt>
@@ -231,7 +320,7 @@ function GovernancePage() {
               </div>
               <div className="flex justify-center w-full">
                 <div className="w-full max-w-2xl">
-                  <Unstaking />
+                  <Unstaking stakes={qntfiInfo.stakes} />
                 </div>
               </div>
             </div>
@@ -250,6 +339,15 @@ function GovernancePage() {
           </div>
         </div>
       </div>
+
+      {/* Notification */}
+      <Notification
+        title={notificationTitle}
+        message={notificationMessage}
+        show={showNotification}
+        status={notificationStatus}
+        setNotificationShow={setNotificationShow}
+      />
     </>
   );
 }
