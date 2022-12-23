@@ -47,7 +47,9 @@ function Staking({ balance, stake }: StakingProps) {
                     {balance.lt(0) ? (
                       "Loading..."
                     ) : (
-                      <span>Available: {(+ethers.utils.formatEther(balance)).toFixed(2)}</span>
+                      <span>
+                        Available: {parseFloat(ethers.utils.formatEther(balance)).toLocaleString()}
+                      </span>
                     )}
                   </label>
 

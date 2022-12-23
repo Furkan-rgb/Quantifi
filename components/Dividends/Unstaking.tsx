@@ -82,7 +82,7 @@ export function Unstaking({
                     <dt className="sr-only">Weight</dt>
                     <dd className="mt-1 text-gray-700 truncate">
                       <ScaleIcon className="inline w-5 h-5 mr-1 text-gray-400" />
-                      {stake?.weight?.toString()}
+                      {parseFloat(stake?.weight?.toString()).toLocaleString()}
                     </dd>
                     <dt className="sr-only sm:hidden">Locked Date</dt>
                     <dd className="mt-1 text-gray-500 truncate sm:hidden">
@@ -97,7 +97,7 @@ export function Unstaking({
                   </dl>
                 </td>
                 <td className="hidden px-3 py-4 text-sm text-gray-500 lg:table-cell">
-                  {stake?.weight?.toString()}
+                  {parseFloat(stake?.weight?.toString()).toLocaleString()}
                 </td>
                 <td className="hidden px-3 py-4 text-sm text-gray-500 sm:table-cell">
                   {new Date(stake?.stakeDate.toNumber() * 1000).toLocaleDateString(undefined, {
