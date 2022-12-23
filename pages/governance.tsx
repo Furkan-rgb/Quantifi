@@ -300,9 +300,7 @@ function GovernancePage() {
                       {loading ? (
                         <Spinner />
                       ) : (
-                        (+ethers.utils.formatUnits(qntfiInfo.qntfiStaked, 1)).toString() +
-                        " " +
-                        qntfiInfo.tokenName
+                        qntfiInfo.qntfiStaked.toString() + " " + qntfiInfo.tokenName
                       )}
                     </dd>
                   </div>
