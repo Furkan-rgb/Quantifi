@@ -29,16 +29,14 @@ function GovernancePage() {
     tokenName: string;
     qntfiBalance: ethers.BigNumber;
     allowance: ethers.BigNumber;
-    numStakes: number;
-    stakes: any[];
+    numStakes: ethers.BigNumber;
     qntfiStaked: ethers.BigNumber;
   }>({
     address: "",
     tokenName: "QNTFI",
-    qntfiBalance: ethers.BigNumber.from(0),
+    qntfiBalance: ethers.BigNumber.from(-1),
     allowance: ethers.BigNumber.from(0),
-    numStakes: 0,
-    stakes: [],
+    numStakes: ethers.BigNumber.from(0),
     qntfiStaked: ethers.BigNumber.from(0),
   });
 
@@ -70,7 +68,6 @@ function GovernancePage() {
         qntfiBalance: await QNTFI.balanceOf(account),
         allowance: await QNTFI.allowance(account, QNTFI.address),
         numStakes: await QNTFI.numStakes(account),
-        stakes: await QNTFI.stakes(account, qntfiInfo.numStakes),
         qntfiStaked: await QNTFI.tokensStaked(account),
       });
     } catch (error) {
@@ -154,6 +151,7 @@ function GovernancePage() {
   useEffect(() => {
     if (!account) return;
     _setContractInfo();
+    console.log(qntfiInfo.numStakes.toNumber());
   }, [account, active]);
 
   // Line chart stuff
@@ -320,7 +318,7 @@ function GovernancePage() {
               </div>
               <div className="flex justify-center w-full">
                 <div className="w-full max-w-2xl">
-                  <Unstaking stakes={qntfiInfo.stakes} />
+                  <Unstaking totalStakes={qntfiInfo.numStakes.toNumber()} getStake={QNTFI.stakes} />
                 </div>
               </div>
             </div>
