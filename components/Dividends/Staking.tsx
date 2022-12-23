@@ -3,6 +3,7 @@ import React, { useEffect } from "react";
 import DatePicker from "../DatePicker";
 import { getStakingMultiplier, StakingProps } from "../../components/utils/stakingUtils";
 import { BigNumber, ethers } from "ethers";
+import Spinner from "../animations/Spinner";
 
 function Staking({ balance, stake }: StakingProps) {
   const [stakeMultiplier, setStakeMultiplier] = React.useState<number>(0);
@@ -43,7 +44,11 @@ function Staking({ balance, stake }: StakingProps) {
                     htmlFor="floating_input"
                     className="absolute top-3 -z-10 origin-[0] -translate-y-6 scale-75 transform text-sm text-gray-300 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:left-0 peer-focus:-translate-y-6 peer-focus:scale-75 peer-focus:font-medium peer-focus:text-blue-600 dark:text-gray-300 peer-focus:dark:text-blue-500"
                   >
-                    Available: {(+ethers.utils.formatEther(balance)).toFixed(2)}
+                    {balance.lt(0) ? (
+                      "Loading..."
+                    ) : (
+                      <span>Available: {(+ethers.utils.formatEther(balance)).toFixed(2)}</span>
+                    )}
                   </label>
 
                   <span className="inline-flex items-center px-3 text-sm text-black border-0 border-b-2 border-gray-300 appearance-none peer focus:border-blue-600 focus:outline-none focus:ring-0 dark:border-gray-600 dark:focus:border-blue-500">
@@ -93,7 +98,7 @@ function Staking({ balance, stake }: StakingProps) {
                   onClick={() => {
                     stake(stakeAmountQNTFI, stakeAmountDays);
                   }}
-                  className="w-full  rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 "
+                  className="w-full rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4  dark:bg-blue-600 dark:hover:bg-blue-700 "
                 >
                   {swapButtonText}
                 </button>
