@@ -152,7 +152,7 @@ function Dashboard() {
   return (
     <div className="min-h-90vh">
       <div className="flex justify-center text-black">
-        <div className="grid self-center grid-cols-2 gap-4 p-3 text-black min-w-fit max-w-7xl">
+        <div className="grid self-center grid-cols-2 gap-4 p-3 pb-6 text-black min-w-fit max-w-7xl">
           {/* Doughnut */}
           <div className="col-span-2 pt-2 bg-white rounded-lg dark:bg-slate-50 sm:col-span-1">
             <div className="flex flex-col items-center justify-center p-4 space-y-4">

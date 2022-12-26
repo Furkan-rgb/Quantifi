@@ -15,6 +15,8 @@ import { timeout } from "../components/utils/timeout";
 function GovernancePage() {
   const [notificationStatus, setNotificationStatus] =
     useState<NotificationContent["status"]>("info");
+  const [totalStakedWeight, setTotalStakedWeight] = useState<number>();
+  const [totalStakedWeightPercentage, setTotalStakedWeightPercentage] = useState<number>();
   const [notificationMessage, setNotificationMessage] = useState<string>("");
   const [notificationTitle, setNotificationTitle] = useState<string>("");
   const [currentTab, setCurrentTab] = useState<string>("deposit");
@@ -31,6 +33,7 @@ function GovernancePage() {
     allowance: ethers.BigNumber;
     numStakes: ethers.BigNumber;
     qntfiStaked: ethers.BigNumber;
+    totalQntfiStaked: ethers.BigNumber;
   }>({
     address: "",
     tokenName: "QNTFI",
@@ -38,6 +41,7 @@ function GovernancePage() {
     allowance: ethers.BigNumber.from(0),
     numStakes: ethers.BigNumber.from(0),
     qntfiStaked: ethers.BigNumber.from(0),
+    totalQntfiStaked: ethers.BigNumber.from(0),
   });
 
   const QNTFI = new ethers.Contract(
@@ -69,11 +73,11 @@ function GovernancePage() {
         allowance: await QNTFI.allowance(account, QNTFI.address),
         numStakes: await QNTFI.numStakes(account),
         qntfiStaked: await QNTFI.tokensStaked(account),
+        totalQntfiStaked: await QNTFI.getTotalStakes(),
       });
     } catch (error) {
-      console.error("Couldn't set contract info1: " + error);
+      console.error("Couldn't set QNTFI contract info: " + error);
     } finally {
-      console.log(qntfiInfo);
       setLoading(false);
     }
   }
@@ -147,12 +151,44 @@ function GovernancePage() {
     }
   }
 
+  async function unstakeQNTFI(arrIndex: number) {
+    if (!account) return;
+    const QNTFIConnect = QNTFI.connect(library.getSigner());
+    try {
+      setNotificationShow(true);
+      // Request unstake
+      const tx = await QNTFIConnect.unstakeTokens(BigNumber.from(arrIndex));
+      // In progress
+      changeNotificationContent("In progress", "Unstaking Requested", "loading");
+      setNotificationShow(true);
+      await tx.wait();
+      // Complete
+      _setContractInfo();
+      changeNotificationContent("Complete", "Unstaked", "success");
+      await timeout(2000);
+      setNotificationShow(false);
+    } catch (error: any) {
+      changeNotificationContent("Failed", "Unstaking Failed", "error");
+      setNotificationShow(true);
+      console.error("Couldn't unstake QNTFI: " + error.message);
+    }
+  }
+
   // account change -> contract info update
   useEffect(() => {
     if (!account) return;
     _setContractInfo();
-    console.log(qntfiInfo.numStakes.toNumber());
   }, [account, active]);
+
+  // Calculate staked weight value
+  useEffect(() => {
+    if (!qntfiInfo.qntfiStaked) return;
+    if (!totalStakedWeight) return;
+    const total =
+      totalStakedWeight /
+      parseFloat(qntfiInfo.totalQntfiStaked.mod(ethers.BigNumber.from(10).pow(6)).toString());
+    setTotalStakedWeightPercentage(total * 100);
+  }, [totalStakedWeight]);
 
   // Line chart stuff
   const labels = new Array(7).fill(0).map((_, i) => `Day ${i + 1}`);
@@ -271,7 +307,7 @@ function GovernancePage() {
       </main>
       <div className="pt-12 bg-gray-50 sm:pt-16">
         <Staking
-          balance={qntfiInfo.qntfiBalance}
+          balance={qntfiInfo.qntfiBalance.sub(qntfiInfo.qntfiStaked)}
           stake={stakeQNTFI}
           amount={inputValue}
           lockUpDays={lockUpDays}
@@ -309,14 +345,23 @@ function GovernancePage() {
                       Your Staked Weight
                     </dt>
                     <dd className="order-1 text-5xl font-bold tracking-tight text-indigo-600">
-                      0.75%
+                      {loading || totalStakedWeightPercentage === undefined ? (
+                        <Spinner />
+                      ) : (
+                        totalStakedWeightPercentage?.toFixed(1) + "%"
+                      )}
                     </dd>
                   </div>
                 </dl>
               </div>
               <div className="flex justify-center w-full">
                 <div className="w-full max-w-2xl">
-                  <Unstaking totalStakes={qntfiInfo.numStakes.toNumber()} getStake={QNTFI.stakes} />
+                  <Unstaking
+                    totalStakes={qntfiInfo.numStakes.toNumber()}
+                    getStake={QNTFI.stakes}
+                    setTotalStakedWeight={setTotalStakedWeight}
+                    unstakeQNTFI={unstakeQNTFI}
+                  />
                 </div>
               </div>
             </div>
@@ -324,7 +369,7 @@ function GovernancePage() {
         </div>
         {/* Proposals */}
         <div className="flex justify-center pb-4 bg-white">
-          <div className="w-full max-w-6xl pb-6 text-center">
+          <div className="w-full max-w-2xl pb-6 text-center">
             <h2
               id="proposals"
               className="mb-4 text-4xl font-bold tracking-tight text-gray-900 -scroll-mt-60 sm:text-5xl"
