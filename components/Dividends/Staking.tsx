@@ -12,6 +12,10 @@ function Staking({ balance, stake }: StakingProps) {
   const [swapButtonText, setSwapButtonText] = React.useState<string>("Stake");
   const [touched, setTouched] = React.useState<boolean>(false);
 
+  useEffect(() => {
+    console.info("Staked: " + balance.mod(ethers.BigNumber.from(10).pow(6).toString()));
+  }, [balance]);
+
   return (
     <div>
       <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
@@ -24,9 +28,9 @@ function Staking({ balance, stake }: StakingProps) {
       <div className="grid grid-cols-3 gap-4">
         {/* Stake */}
         <div className="col-span-3 lg:col-span-3">
-          <div className="flex flex-col items-center justify-start w-full p-4 text-black bg-white sm:mx-auto sm:max-w-sm sm:px-4 md:rounded-lg md:shadow-md">
+          <div className="flex flex-col items-center justify-start w-full p-4 text-black bg-white sm:mx-auto sm:max-w-md sm:px-4 md:rounded-lg md:shadow-md">
             {/* Input */}
-            <div className="w-full max-w-sm my-5">
+            <div className="w-full my-5">
               <form>
                 <div className="relative z-0 flex w-full mb-4 group">
                   <input
@@ -48,7 +52,13 @@ function Staking({ balance, stake }: StakingProps) {
                       "Loading..."
                     ) : (
                       <span>
-                        Available: {parseFloat(ethers.utils.formatEther(balance)).toLocaleString()}
+                        Available:{" "}
+                        {parseFloat(
+                          balance.mod(ethers.BigNumber.from(10).pow(6)).toString()
+                        ).toLocaleString(undefined, {
+                          minimumFractionDigits: 0,
+                          maximumFractionDigits: 6,
+                        })}
                       </span>
                     )}
                   </label>

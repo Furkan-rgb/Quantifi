@@ -13,12 +13,17 @@ interface Stake {
 export function Unstaking({
   totalStakes,
   getStake,
+  setTotalStakedWeight,
+  unstakeQNTFI,
 }: {
   totalStakes: number;
   getStake: (account: string, idx: number) => Promise<Stake>;
+  setTotalStakedWeight: (totalStakedWeight: number) => void;
+  unstakeQNTFI: (id: number) => void;
 }) {
   const [allStakes, setAllStakes] = useState<Stake[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [loadingText, setLoadingText] = useState<string>("Loading stakes");
   const { account } = useWeb3React();
 
   // Get stake details
@@ -29,12 +34,18 @@ export function Unstaking({
     setAllStakes([]);
     const fetchStakes = async () => {
       let stakes = [];
+      let totalWeight = 0;
+      setLoading(true);
       // Loop through all stakes
       for (let i = 0; i < totalStakes; i++) {
+        setLoadingText(`Loading stake ${i + 1} of ${totalStakes}`);
         const stake = await getStake(account, i);
         stakes.push(stake);
+        totalWeight += parseFloat(stake?.weight?.toString());
       }
       setAllStakes(stakes);
+      console.log("Total weight: ", totalWeight);
+      setTotalStakedWeight(totalWeight);
       setLoading(false);
     };
     console.log(allStakes);
@@ -77,7 +88,7 @@ export function Unstaking({
             {allStakes.map((stake, idx) => (
               <tr key={idx}>
                 <td className="w-full py-4 pl-4 pr-3 text-sm font-medium text-gray-900 max-w-0 sm:w-auto sm:max-w-none sm:pl-6">
-                  {stake?.numTokens?.toNumber()}
+                  {stake?.numTokens?.toString()}
                   <dl className="font-normal lg:hidden">
                     <dt className="sr-only">Weight</dt>
                     <dd className="mt-1 text-gray-700 truncate">
@@ -116,7 +127,10 @@ export function Unstaking({
                   })}
                 </td>
                 <td className="py-4 pl-3 pr-4 text-sm font-medium text-right sm:pr-6">
-                  <button className="text-indigo-600 hover:text-indigo-900">
+                  <button
+                    onClick={() => unstakeQNTFI(idx)}
+                    className="text-indigo-600 hover:text-indigo-900"
+                  >
                     Unstake<span className="sr-only"></span>
                   </button>
                 </td>
@@ -124,6 +138,11 @@ export function Unstaking({
             ))}
           </tbody>
         </table>
+        {loading && (
+          <div className="w-full py-2 font-sans antialiased text-center text-slate-600">
+            {loadingText}
+          </div>
+        )}
       </div>
     </div>
   );
