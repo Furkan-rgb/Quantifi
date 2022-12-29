@@ -6,6 +6,7 @@ import govABI from "../../components/abi/governor.json";
 import Notification, { NotificationContent } from "../../components/Notification";
 import { timeout } from "../../components/utils/timeout";
 import Spinner from "../animations/Spinner";
+import { LinkIcon } from "@heroicons/react/24/outline";
 
 // If proposal is open or closed,
 // show voting options or results
@@ -77,6 +78,19 @@ export function VoteAction({
 
   if (voted) {
     return <VoteResults votingOptions={votingOptions} totalVotes={totalVotes} />;
+  }
+
+  if (!account) {
+    return (
+      <div className="flex flex-col items-center justify-center w-full h-64 bg-white">
+        <div className="flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full">
+          <LinkIcon className="w-8 h-8 text-gray-400" />
+        </div>
+        <h3 className="mt-4 text-sm font-medium text-gray-900">
+          Please connect your wallet to vote
+        </h3>
+      </div>
+    );
   }
 
   // If proposal is open, show voting options

@@ -1,4 +1,5 @@
 import { CalendarIcon } from "@heroicons/react/24/outline";
+import { useWeb3React } from "@web3-react/core";
 import { VoteAction } from "./VoteAction";
 
 const votingOptions = [
