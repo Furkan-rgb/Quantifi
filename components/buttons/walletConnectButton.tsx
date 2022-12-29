@@ -10,6 +10,43 @@ import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon, ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import { useRouter } from "next/router";
 
+// TODO: Move this out of the component
+function ConnectButtonContent({
+  hover,
+  active,
+  chainId,
+  account,
+  connector,
+  wrongChain,
+}: {
+  hover: boolean;
+  active: boolean;
+  chainId: number | undefined;
+  account: string | null | undefined;
+  connector: any;
+  wrongChain: boolean;
+}) {
+  if (hover && active) {
+    return <span className="block">Disconnect</span>;
+  }
+
+  if (!active) {
+    return <span className="relative block rounded-md sm:inline">Connect Wallet</span>;
+  }
+
+  if (typeof chainId !== undefined) {
+    if (connector?.supportedChainIds?.includes(chainId!) == true) {
+      return <span className="block">{truncateAddress(account)}</span>;
+    }
+  }
+
+  if (wrongChain) {
+    return <span className="block">Wrong Network</span>;
+  }
+
+  return <span className="block">Undefined</span>;
+}
+
 function WalletConnectButton() {
   const router = useRouter();
   const [connectedBtnHover, setConnectedBtnHover] = useState(false);
@@ -106,40 +143,15 @@ function WalletConnectButton() {
     connectWalletOnPageLoad();
   }, [active]);
 
-  // TODO: Move this out of the component
-  function ConnectButtonContent() {
-    if (connectedBtnHover && active) {
-      return <span className="block">Disconnect</span>;
-    }
-
-    if (!active) {
-      return <span className="relative block rounded-md sm:inline">Connect Wallet</span>;
-    }
-
-    if (typeof chainId !== undefined) {
-      if (connector?.supportedChainIds?.includes(chainId!) == true) {
-        return <span className="block">{truncateAddress(account)}</span>;
-      }
-    }
-
-    if (wrongChain) {
-      return <span className="block">Wrong Network</span>;
-    }
-
-    return <span className="block">Undefined</span>;
-  }
-
-  useEffect(() => {
-    ConnectButtonContent();
-  }, [connectedBtnHover]);
+  useEffect(() => {}, [connectedBtnHover]);
 
   useEffect(() => {
     if (!library) {
       console.log("can't find library");
       return;
     }
+    console.log(library);
     handleNetworkSwitch();
-    ConnectButtonContent();
   }, [account, chainId, active]);
 
   return (
@@ -162,7 +174,14 @@ function WalletConnectButton() {
       >
         {/* Inner button content */}
         <span className="relative block px-2 py-2 text-sm transition-all duration-100 ease-in bg-white rounded-md group-hover:bg-opacity-0 dark:bg-gray-900 sm:inline sm:px-4 sm:py-2 sm:text-base">
-          <ConnectButtonContent />
+          <ConnectButtonContent
+            hover={connectedBtnHover}
+            active={active}
+            chainId={chainId}
+            account={account}
+            connector={connector}
+            wrongChain={wrongChain}
+          />
         </span>
       </button>
       <SelectWalletModal modalOpen={connectModalOpen} toggleModal={toggleModal} />

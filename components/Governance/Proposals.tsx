@@ -101,6 +101,36 @@ const positions = [
     ],
   },
 ];
+function ProposalLabel(props: any) {
+  const currentDate = new Date();
+  if (currentDate < new Date(props.deadline)) {
+    if (currentDate > new Date(props.startime)) {
+      return (
+        <span className="mr-1 inline-flex items-center justify-center rounded-full bg-green-100 px-2 py-0.5 text-sm font-medium text-green-800 md:mt-2 lg:mt-0">
+          Open
+        </span>
+      );
+    } else {
+      return (
+        <span className="mr-1 inline-flex items-center justify-center rounded-full bg-yellow-100 px-2 py-0.5 text-sm font-medium text-yellow-800 md:mt-2 lg:mt-0">
+          Upcoming
+        </span>
+      );
+    }
+  }
+  if (currentDate > new Date(props.deadline)) {
+    return (
+      <span className="mr-1 inline-flex items-center justify-center rounded-full bg-red-100 px-2 py-0.5 text-sm font-medium text-red-800 md:mt-2 lg:mt-0">
+        Closed
+      </span>
+    );
+  }
+  return (
+    <span className="mr-1 inline-flex items-center justify-center rounded-full bg-gray-100 px-2 py-0.5 text-sm font-medium text-gray-800 md:mt-2 lg:mt-0">
+      Unknown
+    </span>
+  );
+}
 
 export default function Proposals() {
   const router = useRouter();
@@ -123,37 +153,6 @@ export default function Proposals() {
   useEffect(() => {
     getProposals();
   }, []);
-
-  function ProposalLabel(props: any) {
-    const currentDate = new Date();
-    if (currentDate < new Date(props.deadline)) {
-      if (currentDate > new Date(props.startime)) {
-        return (
-          <span className="mr-1 inline-flex items-center justify-center rounded-full bg-green-100 px-2 py-0.5 text-sm font-medium text-green-800 md:mt-2 lg:mt-0">
-            Open
-          </span>
-        );
-      } else {
-        return (
-          <span className="mr-1 inline-flex items-center justify-center rounded-full bg-yellow-100 px-2 py-0.5 text-sm font-medium text-yellow-800 md:mt-2 lg:mt-0">
-            Upcoming
-          </span>
-        );
-      }
-    }
-    if (currentDate > new Date(props.deadline)) {
-      return (
-        <span className="mr-1 inline-flex items-center justify-center rounded-full bg-red-100 px-2 py-0.5 text-sm font-medium text-red-800 md:mt-2 lg:mt-0">
-          Closed
-        </span>
-      );
-    }
-    return (
-      <span className="mr-1 inline-flex items-center justify-center rounded-full bg-gray-100 px-2 py-0.5 text-sm font-medium text-gray-800 md:mt-2 lg:mt-0">
-        Unknown
-      </span>
-    );
-  }
 
   return (
     <div className="overflow-hidden bg-white shadow sm:rounded-md">

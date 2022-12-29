@@ -102,17 +102,15 @@ function GovernancePage() {
     }
   }
 
-
   async function unstakeQNTFI(arrIndex: number) {
     if (!account) return;
     const QNTFIConnect = QNTFI.connect(library.getSigner());
     try {
+      changeNotificationContent("In progress", "Unstaking Requested", "loading");
       setNotificationShow(true);
       // Request unstake
       const tx = await QNTFIConnect.unstakeTokens(arrIndex);
       // In progress
-      changeNotificationContent("In progress", "Unstaking Requested", "loading");
-      setNotificationShow(true);
       await tx.wait();
       // Complete
       _setContractInfo();
@@ -135,8 +133,8 @@ function GovernancePage() {
   // Calculate staked weight value
   useEffect(() => {
     if (!qntfiInfo.qntfiStaked) return;
-    if (!totalStakedWeight) return; 
-    setTotalStakedWeightPercentage(+totalStakedWeight / +qntfiInfo.totalQntfiStaked * 100);
+    if (!totalStakedWeight) return;
+    setTotalStakedWeightPercentage((+totalStakedWeight / +qntfiInfo.totalQntfiStaked) * 100);
   }, [totalStakedWeight]);
 
   // Line chart stuff
@@ -285,7 +283,9 @@ function GovernancePage() {
                       {loading ? (
                         <Spinner />
                       ) : (
-                        (+ethers.utils.formatUnits(qntfiInfo.qntfiStaked,18)).toFixed(2) + " " + qntfiInfo.tokenName
+                        (+ethers.utils.formatUnits(qntfiInfo.qntfiStaked, 18)).toFixed(2) +
+                        " " +
+                        qntfiInfo.tokenName
                       )}
                     </dd>
                   </div>
