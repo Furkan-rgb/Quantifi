@@ -13,7 +13,7 @@ function Staking({ balance, stake }: StakingProps) {
   const [touched, setTouched] = React.useState<boolean>(false);
 
   useEffect(() => {
-    console.info("Staked: " + balance.mod(ethers.BigNumber.from(10).pow(6).toString()));
+    console.info("Balance: " + balance.toString());
   }, [balance]);
 
   return (
@@ -52,13 +52,7 @@ function Staking({ balance, stake }: StakingProps) {
                       "Loading..."
                     ) : (
                       <span>
-                        Available:{" "}
-                        {parseFloat(
-                          balance.mod(ethers.BigNumber.from(10).pow(6)).toString()
-                        ).toLocaleString(undefined, {
-                          minimumFractionDigits: 0,
-                          maximumFractionDigits: 6,
-                        })}
+                        Available:{(+ethers.utils.formatUnits(balance,18)).toFixed(2)}
                       </span>
                     )}
                   </label>
