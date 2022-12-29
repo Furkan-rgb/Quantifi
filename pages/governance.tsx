@@ -136,8 +136,7 @@ function GovernancePage() {
   useEffect(() => {
     if (!qntfiInfo.qntfiStaked) return;
     if (!totalStakedWeight) return;
-    const total = totalStakedWeight / qntfiInfo.totalQntfiStaked; 
-    setTotalStakedWeightPercentage(total * 100);
+    setTotalStakedWeightPercentage(totalStakedWeight / qntfiInfo.totalQntfiStaked * 100);
   }, [totalStakedWeight]);
 
   // Line chart stuff
