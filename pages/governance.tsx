@@ -15,7 +15,7 @@ import { timeout } from "../components/utils/timeout";
 function GovernancePage() {
   const [notificationStatus, setNotificationStatus] =
     useState<NotificationContent["status"]>("info");
-  const [totalStakedWeight, setTotalStakedWeight] = useState<number>();
+  const [totalStakedWeight, setTotalStakedWeight] = useState<number>();t
   const [totalStakedWeightPercentage, setTotalStakedWeightPercentage] = useState<number>();
   const [notificationMessage, setNotificationMessage] = useState<string>("");
   const [notificationTitle, setNotificationTitle] = useState<string>("");
@@ -288,7 +288,7 @@ function GovernancePage() {
                       {loading ? (
                         <Spinner />
                       ) : (
-                        ethers.utils.formatEther(qntfiInfo.qntfiStaked)).toFixed(2) + " " + qntfiInfo.tokenName
+                        ethers.utils.formatUnits(qntfiInfo.qntfiStaked,18).toFixed(2) + " " + qntfiInfo.tokenName
                       )}
                     </dd>
                   </div>
