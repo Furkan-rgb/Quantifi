@@ -30,15 +30,13 @@ function GovernancePage() {
     address: string;
     tokenName: string;
     qntfiBalance: ethers.BigNumber;
-    allowance: ethers.BigNumber;
     numStakes: ethers.BigNumber;
     qntfiStaked: ethers.BigNumber;
     totalQntfiStaked: ethers.BigNumber;
   }>({
     address: "",
     tokenName: "QNTFI",
-    qntfiBalance: ethers.BigNumber.from(-1),
-    allowance: ethers.BigNumber.from(0),
+    qntfiBalance: ethers.BigNumber.from(0),
     numStakes: ethers.BigNumber.from(0),
     qntfiStaked: ethers.BigNumber.from(0),
     totalQntfiStaked: ethers.BigNumber.from(0),
@@ -70,7 +68,6 @@ function GovernancePage() {
         address: QNTFI.address,
         tokenName: "QNTFI",
         qntfiBalance: await QNTFI.balanceOf(account),
-        allowance: await QNTFI.allowance(account, QNTFI.address),
         numStakes: await QNTFI.numStakes(account),
         qntfiStaked: await QNTFI.tokensStaked(account),
         totalQntfiStaked: await QNTFI.getTotalStakes(),
@@ -86,14 +83,10 @@ function GovernancePage() {
     if (!amount) return;
     if (!account) return;
 
-    // Check allowance
-    const allowed = await checkAndSetAllowance(amount);
-    if (!allowed) return;
-
     const QNTFIConnect = QNTFI.connect(library.getSigner());
     try {
       // Request stake
-      const tx = await QNTFIConnect.stakeTokens(BigNumber.from(amount), BigNumber.from(days));
+      const tx = await QNTFIConnect.stakeTokens(ethers.utils.parseEther(amount), days);
       // In progress
       changeNotificationContent("In progress", "Staking Requested", "loading");
       setNotificationShow(true);
@@ -109,47 +102,6 @@ function GovernancePage() {
     }
   }
 
-  async function checkAndSetAllowance(amount: number) {
-    try {
-      const allowance = await QNTFI.allowance(account, QNTFI.address);
-      // If allowance is less than input value, approve allowance
-      if (allowance.lt(BigNumber.from(amount))) {
-        await approveAllowance();
-      }
-      return true;
-    } catch (error) {
-      console.error("Couldn't check allowance: " + error);
-      return false;
-    }
-  }
-
-  async function approveAllowance() {
-    const QNTFIConnect = QNTFI.connect(library.getSigner());
-    try {
-      // Request approval
-      const transaction = await QNTFIConnect.approve(
-        QNTFI.address,
-        ethers.utils.parseEther("10000000000000")
-      );
-      // In progress
-      changeNotificationContent("In progress", "Approval Requested", "loading");
-      setNotificationShow(true);
-      const receipt = await transaction.wait();
-
-      // Complete
-      changeNotificationContent("Complete", "Approved", "success");
-      console.log(receipt);
-      _setContractInfo();
-
-      // Wait 2 seconds and hide notification
-      await timeout(2000);
-      setNotificationShow(false);
-    } catch (error) {
-      console.error(error);
-      changeNotificationContent("Failed", "Approval was rejected", "error");
-      setNotificationShow(true);
-    }
-  }
 
   async function unstakeQNTFI(arrIndex: number) {
     if (!account) return;
@@ -157,7 +109,7 @@ function GovernancePage() {
     try {
       setNotificationShow(true);
       // Request unstake
-      const tx = await QNTFIConnect.unstakeTokens(BigNumber.from(arrIndex));
+      const tx = await QNTFIConnect.unstakeTokens(arrIndex);
       // In progress
       changeNotificationContent("In progress", "Unstaking Requested", "loading");
       setNotificationShow(true);
@@ -284,14 +236,14 @@ function GovernancePage() {
             <div className="px-4 sm:px-6 sm:text-center md:mx-auto md:max-w-2xl lg:col-span-6 lg:flex lg:items-center lg:text-left">
               <div>
                 <h1 className="mt-4 text-4xl font-bold tracking-tight text-white sm:text-5xl md:text-6xl">
-                  QNTFI is the governance token
+                  QNTFI: The QuantiFi Governance Token
                 </h1>
                 <p className="mt-3 text-base text-gray-300 sm:mt-5 sm:text-xl lg:text-xl xl:text-2xl">
-                  of the Quantifi Decentralized Investment Fund
+                  Stake, Vote and Earn
                 </p>
                 <div className="flex justify-start sm:justify-center lg:justify-start">
                   <button className="mt-8 flex items-center justify-center rounded-lg bg-gradient-to-r from-[#4FC0FF] via-[#6977EE] to-[#FF6098] px-8 py-3 text-base font-medium text-white transition-all duration-75 ease-in hover:opacity-80 md:py-4 md:px-10 md:text-lg">
-                    <a href="#">Get started</a>
+                    <a href="#">Buy QNTFI on Pancakeswap</a>
                   </button>
                 </div>
               </div>
@@ -336,7 +288,7 @@ function GovernancePage() {
                       {loading ? (
                         <Spinner />
                       ) : (
-                        qntfiInfo.qntfiStaked.toString() + " " + qntfiInfo.tokenName
+                        ethers.utils.formatEther(qntfiInfo.qntfiStaked)).toFixed(2) + " " + qntfiInfo.tokenName
                       )}
                     </dd>
                   </div>
