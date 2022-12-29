@@ -137,7 +137,7 @@ function GovernancePage() {
     if (!qntfiInfo.qntfiStaked) return;
     if (!totalStakedWeight) return;
     const total =
-    totalStakedWeight / qntfiInfo.totalQntfiStaked
+    totalStakedWeight / qntfiInfo.totalQntfiStaked;
     setTotalStakedWeightPercentage(total * 100);
   }, [totalStakedWeight]);
 
