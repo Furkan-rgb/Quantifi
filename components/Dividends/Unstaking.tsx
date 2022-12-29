@@ -44,11 +44,9 @@ export function Unstaking({
         totalWeight += parseFloat(stake?.weight?.toString());
       }
       setAllStakes(stakes);
-      console.log("Total weight: ", totalWeight);
       setTotalStakedWeight(totalWeight);
       setLoading(false);
     };
-    console.log(allStakes);
     fetchStakes();
   }, [totalStakes, getStake, account]);
 
@@ -88,12 +86,11 @@ export function Unstaking({
             {allStakes.map((stake, idx) => (
               <tr key={idx}>
                 <td className="w-full py-4 pl-4 pr-3 text-sm font-medium text-gray-900 max-w-0 sm:w-auto sm:max-w-none sm:pl-6">
-                  {stake?.numTokens?.toString()}
+                {(+ethers.utils.formatUnits(stake.numTokens,18)).toFixed(2)}
                   <dl className="font-normal lg:hidden">
                     <dt className="sr-only">Weight</dt>
                     <dd className="mt-1 text-gray-700 truncate">
                       <ScaleIcon className="inline w-5 h-5 mr-1 text-gray-400" />
-                      {parseFloat(stake?.weight?.toString()).toLocaleString()}
                     </dd>
                     <dt className="sr-only sm:hidden">Locked Date</dt>
                     <dd className="mt-1 text-gray-500 truncate sm:hidden">
@@ -108,7 +105,7 @@ export function Unstaking({
                   </dl>
                 </td>
                 <td className="hidden px-3 py-4 text-sm text-gray-500 lg:table-cell">
-                  {parseFloat(stake?.weight?.toString()).toLocaleString()}
+                  {(+ethers.utils.formatUnits(stake.weight,18)).toFixed(2)}
                 </td>
                 <td className="hidden px-3 py-4 text-sm text-gray-500 sm:table-cell">
                   {new Date(stake?.stakeDate.toNumber() * 1000).toLocaleDateString(undefined, {
