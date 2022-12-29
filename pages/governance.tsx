@@ -15,7 +15,7 @@ import { timeout } from "../components/utils/timeout";
 function GovernancePage() {
   const [notificationStatus, setNotificationStatus] =
     useState<NotificationContent["status"]>("info");
-  const [totalStakedWeight, setTotalStakedWeight] = useState<number>();t
+  const [totalStakedWeight, setTotalStakedWeight] = useState<number>();
   const [totalStakedWeightPercentage, setTotalStakedWeightPercentage] = useState<number>();
   const [notificationMessage, setNotificationMessage] = useState<string>("");
   const [notificationTitle, setNotificationTitle] = useState<string>("");
