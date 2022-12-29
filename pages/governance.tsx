@@ -288,7 +288,7 @@ function GovernancePage() {
                       {loading ? (
                         <Spinner />
                       ) : (
-                        ethers.utils.formatUnits(qntfiInfo.qntfiStaked,18).toFixed(2) + " " + qntfiInfo.tokenName
+                        ethers.utils.formatUnits(qntfiInfo.qntfiStaked,18) + " " + qntfiInfo.tokenName
                       )}
                     </dd>
                   </div>
