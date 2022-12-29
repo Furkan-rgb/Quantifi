@@ -92,7 +92,7 @@ export default function VotersList() {
                 </thead>
                 <tbody className="bg-white">
                   {voters.map((voter, voterIdx) => (
-                    <tr key={voter.address}>
+                    <tr key={voterIdx}>
                       <td
                         className={classNames(
                           voterIdx !== voters.length - 1 ? "border-b border-gray-200" : "",
