@@ -86,7 +86,7 @@ function GovernancePage() {
     const QNTFIConnect = QNTFI.connect(library.getSigner());
     try {
       // Request stake
-      const tx = await QNTFIConnect.stakeTokens(ethers.utils.parseEther(amount), days);
+      const tx = await QNTFIConnect.stakeTokens(ethers.utils.parseEther(amount.toString()), days);
       // In progress
       changeNotificationContent("In progress", "Staking Requested", "loading");
       setNotificationShow(true);
