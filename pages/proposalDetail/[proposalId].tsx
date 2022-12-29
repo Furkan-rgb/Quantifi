@@ -1,5 +1,4 @@
 import { ArrowUpIcon, CalendarIcon, ChevronLeftIcon } from "@heroicons/react/24/outline";
-import { useWeb3React } from "@web3-react/core";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
@@ -104,9 +103,8 @@ export default function proposalDetail() {
                 <p>Loading...</p>
               </div>
             ) : (
-              <VotingSection proposalState={proposalState} proposalId={proposalId!} />
+              <VotingSection proposalState={proposalState} proposalId={proposalId} />
             )}
-            <VotingSection proposalState={proposalState} proposalId={proposalId!} />
           </div>
         </div>
         {/* Section 3 */}
