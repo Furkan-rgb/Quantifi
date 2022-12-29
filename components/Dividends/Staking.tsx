@@ -1,126 +1,347 @@
-import { ArrowDownIcon } from "@heroicons/react/24/outline";
-import React, { useEffect } from "react";
-import DatePicker from "../DatePicker";
-import { getStakingMultiplier, StakingProps } from "../../components/utils/stakingUtils";
-import { BigNumber, ethers } from "ethers";
-import Spinner from "../animations/Spinner";
+import { useWeb3React } from "@web3-react/core";
+import { ChartOptions } from "chart.js";
+import { ethers, BigNumber } from "ethers";
+import { useEffect, useState } from "react";
+import Linechart from "../components/Dashboard/Linechart";
+import Staking from "../components/Dividends/Staking";
+import { Unstaking } from "../components/Dividends/Unstaking";
+import Proposals from "../components/Governance/Proposals";
+import qntfiABI from "../components/abi/qntfi.json";
+import Spinner from "../components/animations/Spinner";
+import Notification, { NotificationContent } from "../components/Notification";
+import { timeout } from "../components/utils/timeout";
 
-function Staking({ balance, stake }: StakingProps) {
-  const [stakeMultiplier, setStakeMultiplier] = React.useState<number>(0);
-  const [stakeAmountQNTFI, setStakeAmountQNTFI] = React.useState<number>(0);
-  const [stakeAmountDays, setStakeAmountDays] = React.useState<number>(0);
-  const [swapButtonText, setSwapButtonText] = React.useState<string>("Stake");
-  const [touched, setTouched] = React.useState<boolean>(false);
+// our-domain.com/governance
+function GovernancePage() {
+  const [notificationStatus, setNotificationStatus] =
+    useState<NotificationContent["status"]>("info");
+  const [totalStakedWeight, setTotalStakedWeight] = useState<number>();
+  const [totalStakedWeightPercentage, setTotalStakedWeightPercentage] = useState<number>();
+  const [notificationMessage, setNotificationMessage] = useState<string>("");
+  const [notificationTitle, setNotificationTitle] = useState<string>("");
+  const [currentTab, setCurrentTab] = useState<string>("deposit");
+  const [loading, setLoading] = useState<boolean>(false);
+  const [inputValue, setInputValue] = useState<number>(0);
+  const [outputValue, setOutputValue] = useState<string>();
+  const [swapButtonText, setSwapButtonText] = useState<string>("Loading...");
+  const [lockUpDays, setLockUpDays] = useState<number>(0);
+  const { library, chainId, account, active, error, setError, connector } = useWeb3React();
+  const [qntfiInfo, setQntfiInfo] = useState<{
+    address: string;
+    tokenName: string;
+    qntfiBalance: ethers.BigNumber;
+    numStakes: ethers.BigNumber;
+    qntfiStaked: ethers.BigNumber;
+    totalQntfiStaked: ethers.BigNumber;
+  }>({
+    address: "",
+    tokenName: "QNTFI",
+    qntfiBalance: ethers.BigNumber.from(0),
+    numStakes: ethers.BigNumber.from(0),
+    qntfiStaked: ethers.BigNumber.from(0),
+    totalQntfiStaked: ethers.BigNumber.from(0),
+  });
 
+  const QNTFI = new ethers.Contract(
+    "0x0781B099a57B1ebCaF1c1D72A2dC72Aa5773d3B5",
+    qntfiABI,
+    library
+  );
+
+  const [showNotification, setNotificationShow] = useState(false);
+  function changeNotificationContent(
+    title: NotificationContent["title"],
+    message: NotificationContent["message"],
+    status: NotificationContent["status"]
+  ) {
+    setNotificationTitle(title);
+    setNotificationMessage(message);
+    setNotificationStatus(status);
+  }
+
+  // Sets the contract values
+  async function _setContractInfo() {
+    setLoading(true);
+    if (!account) return;
+    try {
+      setQntfiInfo({
+        address: QNTFI.address,
+        tokenName: "QNTFI",
+        qntfiBalance: await QNTFI.balanceOf(account),
+        numStakes: await QNTFI.numStakes(account),
+        qntfiStaked: await QNTFI.tokensStaked(account),
+        totalQntfiStaked: await QNTFI.getTotalStakes(),
+      });
+    } catch (error) {
+      console.error("Couldn't set QNTFI contract info: " + error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function stakeQNTFI(amount: number, days: number) {
+    if (!amount) return;
+    if (!account) return;
+
+    const QNTFIConnect = QNTFI.connect(library.getSigner());
+    try {
+      // Request stake
+      const tx = await QNTFIConnect.stakeTokens(ethers.utils.parseEther(amount.toString()), days);
+      // In progress
+      changeNotificationContent("In progress", "Staking Requested", "loading");
+      setNotificationShow(true);
+      await tx.wait();
+      // Complete
+      _setContractInfo();
+      changeNotificationContent("Complete", "Staked", "success");
+      await timeout(2000);
+      setNotificationShow(false);
+    } catch (error) {
+      changeNotificationContent("Failed", "Staking Failed", "error");
+      console.error("Couldn't stake QNTFI: " + error);
+    }
+  }
+
+
+  async function unstakeQNTFI(arrIndex: number) {
+    if (!account) return;
+    const QNTFIConnect = QNTFI.connect(library.getSigner());
+    try {
+      setNotificationShow(true);
+      // Request unstake
+      const tx = await QNTFIConnect.unstakeTokens(arrIndex);
+      // In progress
+      changeNotificationContent("In progress", "Unstaking Requested", "loading");
+      setNotificationShow(true);
+      await tx.wait();
+      // Complete
+      _setContractInfo();
+      changeNotificationContent("Complete", "Unstaked", "success");
+      await timeout(2000);
+      setNotificationShow(false);
+    } catch (error: any) {
+      changeNotificationContent("Failed", "Unstaking Failed", "error");
+      setNotificationShow(true);
+      console.error("Couldn't unstake QNTFI: " + error.message);
+    }
+  }
+
+  // account change -> contract info update
   useEffect(() => {
-    console.info("Staked: " + balance.mod(ethers.BigNumber.from(10).pow(6).toString()));
-  }, [balance]);
+    if (!account) return;
+    _setContractInfo();
+  }, [account, active]);
+
+  // Calculate staked weight value
+  useEffect(() => {
+    if (!qntfiInfo.qntfiStaked) return;
+    if (!totalStakedWeight) return;
+    const total =
+    totalStakedWeight / qntfiInfo.totalQntfiStaked
+    setTotalStakedWeightPercentage(total * 100);
+  }, [totalStakedWeight]);
+
+  // Line chart stuff
+  const labels = new Array(7).fill(0).map((_, i) => `Day ${i + 1}`);
+  const lineChartData = {
+    labels: labels,
+    datasets: [
+      {
+        label: "My First Dataset",
+        data: [65, 59, 80, 81, 56, 55, 40],
+        fill: false,
+        borderColor: "rgb(75, 192, 192)",
+        tension: 0.4,
+        pointRadius: 0,
+      },
+    ],
+  };
+
+  const lineChartConfig: ChartOptions<"line"> = {
+    responsive: true,
+    scales: {
+      y: {
+        ticks: {
+          display: false,
+          color: "white",
+        },
+        beginAtZero: true,
+        grid: {
+          display: false,
+        },
+      },
+      x: {
+        grid: {
+          display: false,
+        },
+        ticks: {
+          color: "white",
+        },
+      },
+    },
+    plugins: {
+      legend: {
+        display: false,
+      },
+      tooltip: {
+        mode: "index",
+        intersect: false,
+      },
+      title: {
+        font: {
+          weight: "medium",
+        },
+        color: "white",
+        display: true,
+        text: "QNTFI Price History",
+      },
+    },
+  };
+
+  const dividendsContent = {
+    title: "Dividends",
+    QNTFIToken: [
+      { title: "Current Price", value: "2.57 USDT", type: "statistic" },
+      { title: "Total Staked", value: "12%", type: "statistic" },
+      {
+        title: "Price History",
+        value: <Linechart data={lineChartData} config={lineChartConfig} />,
+        type: "chart",
+      },
+    ],
+    YourDividends: [
+      { title: "Next Dividend", value: "20220824T000000+0200", type: "date" },
+      { title: "Claimable Dividends", value: "0.00 USDT", type: "statistic" },
+      { title: "Claim", value: true, type: "toggle" },
+    ],
+    NextDividend: [
+      {
+        title: "Current Period",
+        value: { from: "20220701T000000+0200", until: "20220930T000000+0200" },
+        type: "date",
+      },
+      { title: "Fees Collected", value: "25 USDT", type: "statistic" },
+      { title: "Dividend Ex-Date", value: "20220616T000000+0200", type: "date" },
+      { title: "Claimable After", value: "20220414T000000+0200", type: "date" },
+    ],
+    DividendHistory: [],
+  };
 
   return (
-    <div>
-      <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="mb-4 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
-            Stake QNTFI
-          </h2>
-        </div>
-      </div>
-      <div className="grid grid-cols-3 gap-4">
-        {/* Stake */}
-        <div className="col-span-3 lg:col-span-3">
-          <div className="flex flex-col items-center justify-start w-full p-4 text-black bg-white sm:mx-auto sm:max-w-md sm:px-4 md:rounded-lg md:shadow-md">
-            {/* Input */}
-            <div className="w-full my-5">
-              <form>
-                <div className="relative z-0 flex w-full mb-4 group">
-                  <input
-                    onChange={(e) => {
-                      setStakeAmountQNTFI(e.target.valueAsNumber);
-                    }}
-                    type="number"
-                    name="floating_input"
-                    id="floating_input"
-                    className="peer block w-full appearance-none border-0 border-b-2 border-gray-300 bg-transparent py-2.5 px-0 text-sm text-black focus:border-blue-600 focus:outline-none focus:ring-0 dark:border-gray-600 dark:focus:border-blue-500"
-                    placeholder=" "
-                    required
-                  />
-                  <label
-                    htmlFor="floating_input"
-                    className="absolute top-3 -z-10 origin-[0] -translate-y-6 scale-75 transform text-sm text-gray-300 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:left-0 peer-focus:-translate-y-6 peer-focus:scale-75 peer-focus:font-medium peer-focus:text-blue-600 dark:text-gray-300 peer-focus:dark:text-blue-500"
-                  >
-                    {balance.lt(0) ? (
-                      "Loading..."
-                    ) : (
-                      <span>
-                        Available:{" "}
-                        {parseFloat(
-                          balance.mod(ethers.BigNumber.from(10).pow(6)).toString()
-                        ).toLocaleString(undefined, {
-                          minimumFractionDigits: 0,
-                          maximumFractionDigits: 6,
-                        })}
-                      </span>
-                    )}
-                  </label>
-
-                  <span className="inline-flex items-center px-3 text-sm text-black border-0 border-b-2 border-gray-300 appearance-none peer focus:border-blue-600 focus:outline-none focus:ring-0 dark:border-gray-600 dark:focus:border-blue-500">
-                    QNTFI
-                  </span>
+    <>
+      <main className="mt-16 sm:my-24">
+        <div className="mx-auto max-w-7xl">
+          <div className="lg:grid lg:grid-cols-12 lg:gap-8">
+            <div className="px-4 sm:px-6 sm:text-center md:mx-auto md:max-w-2xl lg:col-span-6 lg:flex lg:items-center lg:text-left">
+              <div>
+                <h1 className="mt-4 text-4xl font-bold tracking-tight text-white sm:text-5xl md:text-6xl">
+                  QNTFI: The QuantiFi Governance Token
+                </h1>
+                <p className="mt-3 text-base text-gray-300 sm:mt-5 sm:text-xl lg:text-xl xl:text-2xl">
+                  Stake, Vote and Earn
+                </p>
+                <div className="flex justify-start sm:justify-center lg:justify-start">
+                  <button className="mt-8 flex items-center justify-center rounded-lg bg-gradient-to-r from-[#4FC0FF] via-[#6977EE] to-[#FF6098] px-8 py-3 text-base font-medium text-white transition-all duration-75 ease-in hover:opacity-80 md:py-4 md:px-10 md:text-lg">
+                    <a href="#">Buy QNTFI on Pancakeswap</a>
+                  </button>
                 </div>
-                <div className="pb-2">
-                  <div>
-                    <div className="relative z-0 flex w-full mb-4 group">
-                      <input
-                        onChange={(e) => {
-                          if (e.target.valueAsNumber > 0) {
-                            setStakeAmountDays(e.target.valueAsNumber);
-                          }
-                          setTouched(true);
-                        }}
-                        type="number"
-                        name="floating_input"
-                        id="floating_input"
-                        className="peer block w-full appearance-none border-0 border-b-2 border-gray-300 bg-transparent py-2.5 px-0 text-sm text-black focus:border-blue-600 focus:outline-none focus:ring-0 dark:border-gray-600  dark:focus:border-blue-500"
-                        placeholder=" "
-                        required
-                        min={7}
-                      />{" "}
-                      <label
-                        htmlFor="floating_input"
-                        className="absolute top-3 -z-10 origin-[0] -translate-y-6 scale-75 transform text-sm text-gray-300 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:left-0 peer-focus:-translate-y-6 peer-focus:scale-75 peer-focus:font-medium peer-focus:text-blue-600 dark:text-gray-300 peer-focus:dark:text-blue-500"
-                      >
-                        Days to stake
-                      </label>
-                      <span className="inline-flex items-center px-3 text-sm text-black border-0 border-b-2 border-gray-300 appearance-none peer focus:border-blue-600 focus:outline-none focus:ring-0 dark:border-gray-600 dark:focus:border-blue-500">
-                        Days
-                      </span>
-                    </div>
-                    {touched && stakeAmountDays < 7 && (
-                      <p className="visible font-light text-red-700 peer-invalid:visible">
-                        Minimum days to stake is: 7 Days
-                      </p>
-                    )}
-                  </div>
-                </div>
-                <div className="mb-4">
-                  Staking Multiplier: {getStakingMultiplier(stakeAmountDays)}x
-                </div>
-                <button
-                  type="button"
-                  onClick={() => {
-                    stake(stakeAmountQNTFI, stakeAmountDays);
-                  }}
-                  className="w-full rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4  dark:bg-blue-600 dark:hover:bg-blue-700 "
-                >
-                  {swapButtonText}
-                </button>
-              </form>
+              </div>
+            </div>
+            {/* Linechart */}
+            <div className="mt-16 sm:mt-24 lg:col-span-6 lg:mt-0">
+              <div className="px-4 pb-4 sm:mx-auto sm:w-full sm:max-w-lg sm:overflow-hidden">
+                <Linechart data={lineChartData} config={lineChartConfig} />
+              </div>
             </div>
           </div>
         </div>
+      </main>
+      <div className="pt-12 bg-gray-50 sm:pt-16">
+        <Staking
+          balance={qntfiInfo.qntfiBalance.sub(qntfiInfo.qntfiStaked)}
+          stake={stakeQNTFI}
+          amount={inputValue}
+          lockUpDays={lockUpDays}
+        />
+
+        {/* Title  */}
+        <div className="px-4 pt-16 mx-auto max-w-7xl sm:px-6 lg:px-8">
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 className="mb-4 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
+              Your staked QNTFI
+            </h2>
+          </div>
+        </div>
+        {/* Table and Info */}
+        <div className="pb-12 bg-white sm:pb-16">
+          <div className="relative">
+            <div className="absolute inset-0 h-1/2 bg-gray-50" />
+            <div className="relative mx-auto max-w-7xl sm:px-6 lg:px-8">
+              <div className="max-w-2xl px-2 mx-auto sm:px-0">
+                <dl className="bg-white rounded-lg shadow-md sm:grid sm:grid-cols-2 sm:shadow-lg">
+                  <div className="flex flex-col items-center justify-center p-6 text-center border-b border-gray-100 sm:border-0 sm:border-r">
+                    <dt className="order-2 mt-2 text-lg font-medium leading-6 text-gray-500">
+                      Total QNTFI staked
+                    </dt>
+                    <dd className="order-1 text-5xl font-bold tracking-tight text-indigo-600">
+                      {loading ? (
+                        <Spinner />
+                      ) : (
+                        (+ethers.utils.formatUnits(qntfiInfo.qntfiStaked,18)).toFixed(2) + " " + qntfiInfo.tokenName
+                      )}
+                    </dd>
+                  </div>
+                  <div className="flex flex-col items-center justify-center p-6 text-center border-t border-b border-gray-100 sm:border-0 sm:border-l sm:border-r">
+                    <dt className="order-2 mt-2 text-lg font-medium leading-6 text-gray-500">
+                      Your Staked Weight
+                    </dt>
+                    <dd className="order-1 text-5xl font-bold tracking-tight text-indigo-600">
+                      {loading || totalStakedWeightPercentage === undefined ? (
+                        <Spinner />
+                      ) : (
+                        totalStakedWeightPercentage?.toFixed(3) + "%"
+                      )}
+                    </dd>
+                  </div>
+                </dl>
+              </div>
+              <div className="flex justify-center w-full">
+                <div className="w-full max-w-2xl">
+                  <Unstaking
+                    totalStakes={qntfiInfo.numStakes.toNumber()}
+                    getStake={QNTFI.stakes}
+                    setTotalStakedWeight={setTotalStakedWeight}
+                    unstakeQNTFI={unstakeQNTFI}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {/* Proposals */}
+        <div className="flex justify-center pb-4 bg-white">
+          <div className="w-full max-w-2xl pb-6 text-center">
+            <h2
+              id="proposals"
+              className="mb-4 text-4xl font-bold tracking-tight text-gray-900 -scroll-mt-60 sm:text-5xl"
+            >
+              Proposals
+            </h2>
+            <Proposals />
+          </div>
+        </div>
       </div>
-    </div>
+
+      {/* Notification */}
+      <Notification
+        title={notificationTitle}
+        message={notificationMessage}
+        show={showNotification}
+        status={notificationStatus}
+        setNotificationShow={setNotificationShow}
+      />
+    </>
   );
 }
 
-export default Staking;
+export default GovernancePage;
