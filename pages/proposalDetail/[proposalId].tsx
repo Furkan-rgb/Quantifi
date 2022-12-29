@@ -99,7 +99,14 @@ export default function proposalDetail() {
           </div>
           <div className="w-full px-6">
             {/* Need Context Provider here for voting function sharing */}
-            <VotingSection proposalState={proposalState} proposalId={proposalId} />
+            {proposalId === undefined ? (
+              <div className="flex justify-center">
+                <p>Loading...</p>
+              </div>
+            ) : (
+              <VotingSection proposalState={proposalState} proposalId={proposalId!} />
+            )}
+            <VotingSection proposalState={proposalState} proposalId={proposalId!} />
           </div>
         </div>
         {/* Section 3 */}
