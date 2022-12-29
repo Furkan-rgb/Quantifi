@@ -15,7 +15,7 @@ import { timeout } from "../components/utils/timeout";
 function GovernancePage() {
   const [notificationStatus, setNotificationStatus] =
     useState<NotificationContent["status"]>("info");
-  const [totalStakedWeight, setTotalStakedWeight] = useState<ethers.BigNumber>();
+  const [totalStakedWeight, setTotalStakedWeight] = useState<number>(0);
   const [totalStakedWeightPercentage, setTotalStakedWeightPercentage] = useState<number>();
   const [notificationMessage, setNotificationMessage] = useState<string>("");
   const [notificationTitle, setNotificationTitle] = useState<string>("");
@@ -137,7 +137,7 @@ function GovernancePage() {
     if (!qntfiInfo.qntfiStaked) return;
     if (!totalStakedWeight) return;
     const total =
-totalStakedWeight / qntfiInfo.totalQntfiStaked; 
+totalStakedWeight / parseFloat(qntfiInfo.totalQntfiStaked); 
     setTotalStakedWeightPercentage(total * 100);
   }, [totalStakedWeight]);
 
