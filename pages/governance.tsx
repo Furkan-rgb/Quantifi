@@ -15,7 +15,7 @@ import { timeout } from "../components/utils/timeout";
 function GovernancePage() {
   const [notificationStatus, setNotificationStatus] =
     useState<NotificationContent["status"]>("info");
-  const [totalStakedWeight, setTotalStakedWeight] = useState<BigNumber>(ethers.BigNumber.from(0));
+  const [totalStakedWeight, setTotalStakedWeight] = useState<number>(0);
   const [totalStakedWeightPercentage, setTotalStakedWeightPercentage] = useState<number>();
   const [notificationMessage, setNotificationMessage] = useState<string>("");
   const [notificationTitle, setNotificationTitle] = useState<string>("");
@@ -135,8 +135,8 @@ function GovernancePage() {
   // Calculate staked weight value
   useEffect(() => {
     if (!qntfiInfo.qntfiStaked) return;
-    if (!totalStakedWeight) return;
-    setTotalStakedWeightPercentage(totalStakedWeight / qntfiInfo.totalQntfiStaked * 100);
+    if (!totalStakedWeight) return; 
+    setTotalStakedWeightPercentage(+totalStakedWeight / +qntfiInfo.totalQntfiStaked * 100);
   }, [totalStakedWeight]);
 
   // Line chart stuff
