@@ -137,8 +137,7 @@ function GovernancePage() {
     if (!qntfiInfo.qntfiStaked) return;
     if (!totalStakedWeight) return;
     const total =
-      totalStakedWeight /
-      parseFloat(qntfiInfo.totalQntfiStaked.mod(ethers.BigNumber.from(10).pow(6)).toString());
+    totalStakedWeight / qntfiInfo.totalQntfiStaked
     setTotalStakedWeightPercentage(total * 100);
   }, [totalStakedWeight]);
 
@@ -288,7 +287,7 @@ function GovernancePage() {
                       {loading ? (
                         <Spinner />
                       ) : (
-                        ethers.utils.formatUnits(qntfiInfo.qntfiStaked,18) + " " + qntfiInfo.tokenName
+                        (+ethers.utils.formatUnits(qntfiInfo.qntfiStaked,18)).toFixed(2) + " " + qntfiInfo.tokenName
                       )}
                     </dd>
                   </div>
@@ -300,7 +299,7 @@ function GovernancePage() {
                       {loading || totalStakedWeightPercentage === undefined ? (
                         <Spinner />
                       ) : (
-                        totalStakedWeightPercentage?.toFixed(1) + "%"
+                        totalStakedWeightPercentage?.toFixed(3) + "%"
                       )}
                     </dd>
                   </div>
