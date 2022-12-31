@@ -7,8 +7,8 @@ export function VoteResults({
 }) {
   return (
     <div>
-      {votingOptions.map((option: any) => (
-        <>
+      {votingOptions.map((option: any, idx: any) => (
+        <div key={idx}>
           <div className="relative p-4 my-4 overflow-hidden border border-gray-200 rounded-lg hover:border-indigo-500">
             <div
               style={{ transform: `scaleX(${option.votes / totalVotes})` }}
@@ -22,7 +22,7 @@ export function VoteResults({
               </div>
             </div>
           </div>
-        </>
+        </div>
       ))}
     </div>
   );

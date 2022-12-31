@@ -1,3 +1,6 @@
+import { useEffect, useState } from "react";
+import { truncateAddress } from "../utils";
+
 const voters = [
   {
     address: "0x1f0...8cEE",
@@ -61,8 +64,35 @@ function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function VotersList() {
-// { voters }: { voters: voters[] }
+export default function VotersList({ proposalId }: { proposalId: string }) {
+  const [loading, setLoading] = useState(false);
+  const [votersData, setVotersData] = useState<[]>();
+
+  async function getProposals() {
+    if (!proposalId) {
+      return;
+    }
+    try {
+      setLoading(true);
+      const res = await fetch(
+        `https://rgtestnet.pythonanywhere.com/api/v1/qit/votes/${proposalId}`,
+        {}
+      );
+      const data = await res.json();
+      setVotersData(data.votes);
+      console.log(data.votes);
+      setLoading(false);
+      console.log(votersData);
+    } catch (err) {
+      console.error(err);
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    getProposals();
+  }, [proposalId]);
+
   return (
     <div className="px-4 pt-6 bg-gray-200 sm:rounded-lg sm:px-6 sm:shadow-lg lg:px-8">
       <div className="sm:flex sm:items-center">
@@ -98,7 +128,7 @@ export default function VotersList() {
                   </tr>
                 </thead>
                 <tbody className="bg-white">
-                  {voters.map((voter, voterIdx) => (
+                  {votersData?.map((voter, voterIdx) => (
                     <tr key={voterIdx}>
                       <td
                         className={classNames(
@@ -106,7 +136,7 @@ export default function VotersList() {
                           "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8"
                         )}
                       >
-                        {voter.address}
+                        {truncateAddress(voter[0])}
                       </td>
                       <td
                         className={classNames(
@@ -114,7 +144,7 @@ export default function VotersList() {
                           "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8"
                         )}
                       >
-                        {voter.option}
+                        {voter[2]}
                       </td>
                       <td
                         className={classNames(
@@ -122,7 +152,7 @@ export default function VotersList() {
                           "hidden whitespace-nowrap px-3 py-4 text-sm text-gray-500 sm:table-cell"
                         )}
                       >
-                        {voter.stake}
+                        {parseInt(voter[1], 2)}
                       </td>
                     </tr>
                   ))}
