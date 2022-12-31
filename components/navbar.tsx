@@ -50,8 +50,8 @@ export default function Navbar() {
     },
     {
       name: "Docs",
-      href: "Https://joel-lowe.gitbook.io/quantifi",
-      current: router.pathname == "Https://joel-lowe.gitbook.io/quantifi" ? true : false,
+      href: "https://quantifi.gitbook.io/docs",
+      current: router.pathname == "https://quantifi.gitbook.io/docs" ? true : false,
     },
   ];
 
