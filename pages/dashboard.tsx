@@ -157,7 +157,7 @@ function Dashboard() {
             <div className="flex flex-col items-center justify-center p-4 space-y-4">
               {/* Title */}
               <div className="flex flex-col justify-center ">
-                <div className="text-center text-gray-500">QNTFI Staking</div>
+                <div className="text-center text-gray-500">QNTFI Supply</div>
                 <div className="text-2xl subpixel-antialiased font-medium text-center">
                 </div>
               </div>
