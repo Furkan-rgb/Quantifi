@@ -140,7 +140,7 @@ export function Unstaking({
             </tbody>
           )}
         </table>
-        {loading && (
+        {loading && account && (
           <div className="w-full py-2 font-sans antialiased text-center text-slate-600">
             {loadingText}
           </div>
