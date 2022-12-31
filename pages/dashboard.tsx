@@ -9,7 +9,7 @@ import { formatCurrency } from "../components/utils/formatter";
 type dashboardData = {
   averageHolding: number;
   dailyPriceDates: priceDate[];
-  monthlyPriceDates: priceDate[];
+  qntfiUnlocking: priceDate[];
   netDeposits: number;
   numInvestors: number;
   profits: object;
@@ -83,11 +83,11 @@ function Dashboard() {
 
     // Barchart
     setBarData({
-      labels: qitData?.monthlyPriceDates.map((item) => item.date),
+      labels: qitData?.qntfiUnlocking.map((item) => item.date),
       datasets: [
         {
-          label: "Price of QIT",
-          data: qitData?.monthlyPriceDates.map((i) => i.price),
+          label: "QNTFI Unlocking",
+          data: qitData?.qntfiUnlocking.map((i) => i.amount),
           backgroundColor: [
             "rgba(220, 218, 251)",
             "rgba(253, 147, 128)",
@@ -121,7 +121,7 @@ function Dashboard() {
       legend: { display: false },
       title: {
         display: true,
-        text: "Price of QIT",
+        text: "QNTFI Unlocking (mil)",
       },
     },
   };
@@ -157,7 +157,7 @@ function Dashboard() {
             <div className="flex flex-col items-center justify-center p-4 space-y-4">
               {/* Title */}
               <div className="flex flex-col justify-center ">
-                <div className="text-center text-gray-500">QNTFI Supply (Millions)</div>
+                <div className="text-center text-gray-500">QNTFI Supply (mil)</div>
                 <div className="text-2xl subpixel-antialiased font-medium text-center">
                 </div>
               </div>
