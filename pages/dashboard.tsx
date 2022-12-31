@@ -9,10 +9,11 @@ import { formatCurrency } from "../components/utils/formatter";
 type dashboardData = {
   averageHolding: number;
   dailyPriceDates: priceDate[];
-  monthlyPriceDates: priceDate[];
-  netDeposits: number;
-  numInvestors: number;
-  profits: object;
+  qntfiUnlocking: amountDate[];
+  qntfiHolders: number;
+  qitHolders: number;
+  profits: amountDate;
+  averageStakeLength:number;
 };
 
 type priceDate = {
@@ -20,8 +21,12 @@ type priceDate = {
   price: number;
 };
 
+type amountDate = {
+  date: string;
+  amount: number;
+};
+
 function Dashboard() {
-  const totalValueLocked = 609428342;
 
   const [qitData, setQitData] = useState<dashboardData>();
   const [chartDate, setChartDate] = useState(7);
@@ -84,11 +89,11 @@ function Dashboard() {
 
     // Barchart
     setBarData({
-      labels: qitData?.monthlyPriceDates.map((item) => item.date),
+      labels: qitData?.qntfiUnlocking.map((item) => item.date),
       datasets: [
         {
-          label: "Price of QIT",
-          data: qitData?.monthlyPriceDates.map((i) => i.price),
+          label: "QNTFI Unlocking",
+          data: qitData?.qntfiUnlocking.map((i) => i.amount),
           backgroundColor: [
             "rgba(220, 218, 251)",
             "rgba(253, 147, 128)",
@@ -122,7 +127,7 @@ function Dashboard() {
       legend: { display: false },
       title: {
         display: true,
-        text: "Price of QIT",
+        text: "QNTFI Unlocking (mil)",
       },
     },
   };
@@ -158,9 +163,8 @@ function Dashboard() {
             <div className="flex flex-col items-center justify-center p-4 space-y-4">
               {/* Title */}
               <div className="flex flex-col justify-center ">
-                <div className="text-center text-gray-500">Current Total Value Locked</div>
+                <div className="text-center text-gray-500">QNTFI Supply (mil)</div>
                 <div className="text-2xl subpixel-antialiased font-medium text-center">
-                  {formatCurrency(totalValueLocked, "USD")} UST
                 </div>
               </div>
               <Doughnut />
@@ -202,20 +206,20 @@ function Dashboard() {
                 {/* Nr of investors */}
                 <div className="flex flex-col items-center justify-center w-full col-span-1 px-4 py-5 overflow-hidden text-center bg-white rounded-lg shadow h-fit dark:bg-slate-50 sm:flex sm:flex-col sm:p-6">
                   <dt className="text-sm font-medium text-gray-500 text-clip">
-                    {"Number of Investors"}
+                    {"Holders of QNTFI"}
                   </dt>
                   <dd className="mt-1 text-xl font-semibold tracking-tight text-gray-900 sm:text-3xl">
-                    {qitData?.numInvestors}
+                    {qitData?.qntfiHolders}
                   </dd>
                 </div>
 
                 {/* Avg investment into fund */}
                 <div className="flex flex-col items-center justify-center w-full col-span-1 px-4 py-5 overflow-hidden text-center bg-white rounded-lg shadow h-fit dark:bg-slate-50 sm:flex sm:flex-col sm:p-6">
                   <dt className="text-sm font-medium text-gray-500 text-clip">
-                    {"Avg. Investment into Fund"}
+                    {"Average Stake Length (days)"}
                   </dt>
                   <dd className="mt-1 text-xl font-semibold tracking-tight text-gray-900 sm:text-3xl">
-                    {qitData?.averageHolding}
+                    {qitData?.averageStakeLength}
                   </dd>
                 </div>
               </div>

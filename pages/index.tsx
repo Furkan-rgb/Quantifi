@@ -48,7 +48,7 @@ function HomePage() {
                   {/* Get started button */}
                   <div>
                     <button className="flex h-full w-full items-center justify-center rounded-lg bg-gradient-to-r from-[#4FC0FF] via-[#6977EE] to-[#FF6098] px-8 py-3 text-base font-medium text-white transition-all duration-75 ease-in hover:opacity-80 md:py-4 md:px-10 md:text-lg">
-                      <a href="#">Get started</a>
+                      <a href="qit-fund">Get started</a>
                     </button>
                   </div>
 
@@ -103,7 +103,7 @@ function HomePage() {
           {/* Glowing buttons, need to stay together */}
           <div className="flex items-center justify-center mt-5 max-h-16">
             <motion.button className="items-center w-8/12 text-2xl text-center btnAnimated font-lg h-14 rounded-2xl">
-              <div className="z-10">Get started</div>
+              <div className="z-10"><a href="qit-fund">Get started</a></div>
             </motion.button>
           </div>
         </div>

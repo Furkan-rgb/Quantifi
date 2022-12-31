@@ -143,8 +143,8 @@ function GovernancePage() {
     labels: labels,
     datasets: [
       {
-        label: "My First Dataset",
-        data: [65, 59, 80, 81, 56, 55, 40],
+        label: "QNTFI Prices",
+        data: [0.2,0.22,0.21,0.24,0.25,0.24,0.27],
         fill: false,
         borderColor: "rgb(75, 192, 192)",
         tension: 0.4,
@@ -192,35 +192,6 @@ function GovernancePage() {
         text: "QNTFI Price History",
       },
     },
-  };
-
-  const dividendsContent = {
-    title: "Dividends",
-    QNTFIToken: [
-      { title: "Current Price", value: "2.57 USDT", type: "statistic" },
-      { title: "Total Staked", value: "12%", type: "statistic" },
-      {
-        title: "Price History",
-        value: <Linechart data={lineChartData} config={lineChartConfig} />,
-        type: "chart",
-      },
-    ],
-    YourDividends: [
-      { title: "Next Dividend", value: "20220824T000000+0200", type: "date" },
-      { title: "Claimable Dividends", value: "0.00 USDT", type: "statistic" },
-      { title: "Claim", value: true, type: "toggle" },
-    ],
-    NextDividend: [
-      {
-        title: "Current Period",
-        value: { from: "20220701T000000+0200", until: "20220930T000000+0200" },
-        type: "date",
-      },
-      { title: "Fees Collected", value: "25 USDT", type: "statistic" },
-      { title: "Dividend Ex-Date", value: "20220616T000000+0200", type: "date" },
-      { title: "Claimable After", value: "20220414T000000+0200", type: "date" },
-    ],
-    DividendHistory: [],
   };
 
   return (
