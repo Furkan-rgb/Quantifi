@@ -9,15 +9,21 @@ import { formatCurrency } from "../components/utils/formatter";
 type dashboardData = {
   averageHolding: number;
   dailyPriceDates: priceDate[];
-  qntfiUnlocking: priceDate[];
-  netDeposits: number;
-  numInvestors: number;
-  profits: object;
+  qntfiUnlocking: amountDate[];
+  qntfiHolders: number;
+  qitHolders: number;
+  profits: amountDate;
+  averageStakeLength:number;
 };
 
 type priceDate = {
   date: string;
   price: number;
+};
+
+type amountDate = {
+  date: string;
+  amount: number;
 };
 
 function Dashboard() {
@@ -200,20 +206,20 @@ function Dashboard() {
                 {/* Nr of investors */}
                 <div className="flex flex-col items-center justify-center w-full col-span-1 px-4 py-5 overflow-hidden text-center bg-white rounded-lg shadow h-fit dark:bg-slate-50 sm:flex sm:flex-col sm:p-6">
                   <dt className="text-sm font-medium text-gray-500 text-clip">
-                    {"Number of Investors"}
+                    {"Holders of QNTFI"}
                   </dt>
                   <dd className="mt-1 text-xl font-semibold tracking-tight text-gray-900 sm:text-3xl">
-                    {qitData?.numInvestors}
+                    {qitData?.qntfiHolders}
                   </dd>
                 </div>
 
                 {/* Avg investment into fund */}
                 <div className="flex flex-col items-center justify-center w-full col-span-1 px-4 py-5 overflow-hidden text-center bg-white rounded-lg shadow h-fit dark:bg-slate-50 sm:flex sm:flex-col sm:p-6">
                   <dt className="text-sm font-medium text-gray-500 text-clip">
-                    {"Avg. Investment into Fund"}
+                    {"Average Stake Length (days)"}
                   </dt>
                   <dd className="mt-1 text-xl font-semibold tracking-tight text-gray-900 sm:text-3xl">
-                    {qitData?.averageHolding}
+                    {qitData?.averageStakeLength}
                   </dd>
                 </div>
               </div>
