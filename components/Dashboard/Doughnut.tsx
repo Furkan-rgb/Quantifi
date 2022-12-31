@@ -7,15 +7,16 @@ import { formatCurrency } from "../utils/formatter";
 function DoughnutChart() {
   // Center of doughnut chart
 
-  const totalDeposit = 60113801;
-  const totalCollateral = 2314474;
+  const vested = 85;
+  const totalStaked = 15;
+  const circulating = 100;
   const dataDoughnut = {
-    labels: ["Total Deposit", "Total Collateral"],
+    labels: ["Vested", "Staked","Circulating"],
     datasets: [
       {
-        label: "Total Value Locked",
-        data: [totalDeposit, totalCollateral],
-        backgroundColor: ["rgb(59, 87, 155)", "rgb(135, 151, 199)"],
+        label: "Token Allocations",
+        data: [vested, totalStaked,circulating],
+        backgroundColor: ["rgb(59, 87, 155)", "rgb(135, 151, 199)","rgb(75, 187, 55)",],
         borderColor: ["rgb(78, 101, 166)", "rgb(159, 172, 213)"],
         hoverOffset: 4,
       },
@@ -61,7 +62,7 @@ function DoughnutChart() {
           ctx.textBaseline = "middle";
           ctx.fillStyle = dataset?.borderColor[index];
           ctx.fillText(
-            formatCurrency(dataset.data[index], "USD"),
+            dataset.data[index],
             xLine + extraLine + plusFivePx,
             yLine
           );

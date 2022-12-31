@@ -11,18 +11,13 @@ function Footer() {
           </a>
         </li>
         <li>
-          <a href="#" className="ml-4 hover:underline md:mr-6">
+          <a href="https://docs.google.com/document/d/e/2PACX-1vTx6CS93yu6it2CiAQ0dbNQ4mlYYeHUJz6fziuUXDbdAf8PKMytUODkcJwQfjgObt521aBmbtyhmda0/pub" className="ml-4 hover:underline md:mr-6">
             Whitepaper
           </a>
         </li>
         <li>
-          <a href="#" className="ml-4 hover:underline md:mr-6">
+          <a href="https://quantifi.gitbook.io/docs" className="ml-4 hover:underline md:mr-6">
             Documentation
-          </a>
-        </li>
-        <li>
-          <a href="#" className="ml-4 hover:underline md:mr-6">
-            Forum
           </a>
         </li>
       </ul>
@@ -47,17 +42,6 @@ function Footer() {
         >
           <FaTelegramPlane />
           <span className="sr-only">Telegram page</span>
-        </a>
-        <a
-          href="https://github.com/"
-          className="text-gray-400 hover:text-gray-900 dark:hover:text-white"
-        >
-          <FaGithub />
-          <span className="sr-only">GitHub account</span>
-        </a>
-        <a href="#" className="text-gray-400 hover:text-gray-900 dark:hover:text-white">
-          <IoMdSettings />
-          <span className="sr-only">Settings</span>
         </a>
       </div>
     </footer>
