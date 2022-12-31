@@ -51,69 +51,38 @@ function DividendsPage() {
       </div>
       <div className="flex justify-center p-6 bg-white">
         <div className="grid w-full min-h-screen grid-cols-12 gap-4 text-center sm:max-w-7xl">
-          <h2 className="col-span-12 mt-0 mb-6 text-3xl font-semibold text-start">QNTFI Token</h2>
-          <div className="col-span-4 p-4 bg-white rounded-lg shadow-lg">
-            <span className="block">Current Price of QNTFI</span>
-            <span className="block">2.49 USDT</span>
-          </div>
-          <div className="col-span-4 bg-white rounded-lg shadow-lg">
-            <span className="block">Current Price of QNTFI</span>
-            <span className="block">2.49 USDT</span>
-          </div>
-          <div className="col-span-4 p-4 bg-white rounded-lg shadow-lg">Placeholder</div>
           <h1 className="col-span-12 mt-0 mb-6 text-3xl font-semibold text-start">
-            Your Dividends
+            Upcoming Dividend
           </h1>
           <div className="col-span-4 bg-white rounded-lg shadow-lg">
-            <span className="block">Current Price of QNTFI</span>
-            <span className="block">2.49 USDT</span>
+            <span className="block">Total Value</span>
+            <span className="block">200.3 USDT</span>
           </div>
           <div className="col-span-4 bg-white rounded-lg shadow-lg">
-            <span className="block">Current Price of QNTFI</span>
-            <span className="block">2.49 USDT</span>
+            <span className="block">Eligibility</span>
+            <span className="block">Stake QNTFI before 10:00 UTC on 31/01/2023</span>
           </div>
           <div className="col-span-4 bg-white rounded-lg shadow-lg">
-            <span className="block">Current Price of QNTFI</span>
-            <span className="block">2.49 USDT</span>
+            <span className="block">Claimed</span>
+            <span className="block">0.00 USDT</span>
           </div>
-          <h1 className="col-span-12 mt-0 mb-6 text-3xl font-semibold text-start">Next Dividend</h1>
-
+          <h1 className="col-span-12 mt-0 mb-6 text-3xl font-semibold text-start">Your Claimable Dividends</h1>
           <div className="col-span-3 bg-white rounded-lg shadow-lg">
-            <span className="block">Current Price of QNTFI</span>
-            <span className="block">2.49 USDT</span>
-          </div>
-          <div className="col-span-3 bg-white rounded-lg shadow-lg">
-            <span className="block">Current Price of QNTFI</span>
-            <span className="block">2.49 USDT</span>
+            <span className="block">Eligibility</span>
+            <span className="block">Currently Eligible for Dividend on 31/01/2023</span>
           </div>
           <div className="col-span-3 bg-white rounded-lg shadow-lg">
-            <span className="block">Current Price of QNTFI</span>
-            <span className="block">2.49 USDT</span>
+            <span className="block">Share of Dividend</span>
+            <span className="block">120.10 (59.4%)</span>
           </div>
           <div className="col-span-3 bg-white rounded-lg shadow-lg">
-            <span className="block">Current Price of QNTFI</span>
-            <span className="block">2.49 USDT</span>
+            <span className="block">Claim Dividend</span>
+            <span className="block">Currently Unavailable</span>
           </div>
           <h1 className="col-span-12 mt-0 mb-6 text-3xl font-semibold text-start">
             Dividend History
           </h1>
-
-          <div className="col-span-3 bg-white rounded-lg shadow-lg">
-            <span className="block">Current Price of QNTFI</span>
-            <span className="block">2.49 USDT</span>
-          </div>
-          <div className="col-span-3 bg-white rounded-lg shadow-lg">
-            <span className="block">Current Price of QNTFI</span>
-            <span className="block">2.49 USDT</span>
-          </div>
-          <div className="col-span-3 bg-white rounded-lg shadow-lg">
-            <span className="block">Current Price of QNTFI</span>
-            <span className="block">2.49 USDT</span>
-          </div>
-          <div className="col-span-3 bg-white rounded-lg shadow-lg">
-            <span className="block">Current Price of QNTFI</span>
-            <span className="block">2.49 USDT</span>
-          </div>
+          <p>No previous dividends</p>
         </div>
       </div>
     </>
