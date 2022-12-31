@@ -21,7 +21,6 @@ type priceDate = {
 };
 
 function Dashboard() {
-  const totalValueLocked = 609428342;
 
   const [qitData, setQitData] = useState<dashboardData>();
   const [chartDate, setChartDate] = useState(7);
@@ -158,9 +157,8 @@ function Dashboard() {
             <div className="flex flex-col items-center justify-center p-4 space-y-4">
               {/* Title */}
               <div className="flex flex-col justify-center ">
-                <div className="text-center text-gray-500">Current Total Value Locked</div>
+                <div className="text-center text-gray-500">QNTFI Staking</div>
                 <div className="text-2xl subpixel-antialiased font-medium text-center">
-                  {formatCurrency(totalValueLocked, "USD")} UST
                 </div>
               </div>
               <Doughnut />
