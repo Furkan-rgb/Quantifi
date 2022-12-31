@@ -62,7 +62,7 @@ function DoughnutChart() {
           ctx.textBaseline = "middle";
           ctx.fillStyle = dataset?.borderColor[index];
           ctx.fillText(
-            formatCurrency(dataset.data[index], "USD"),
+            dataset.data[index],
             xLine + extraLine + plusFivePx,
             yLine
           );
