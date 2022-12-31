@@ -82,62 +82,77 @@ export function Unstaking({
               </th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {allStakes.map((stake, idx) => (
-              <tr key={idx}>
-                <td className="w-full py-4 pl-4 pr-3 text-sm font-medium text-gray-900 max-w-0 sm:w-auto sm:max-w-none sm:pl-6">
-                {(+ethers.utils.formatUnits(stake.numTokens,18)).toFixed(2)}
-                  <dl className="font-normal lg:hidden">
-                    <dt className="sr-only">Weight</dt>
-                    <dd className="mt-1 text-gray-700 truncate">
-                      <ScaleIcon className="inline w-5 h-5 mr-1 text-gray-400" />
-                    </dd>
-                    <dt className="sr-only sm:hidden">Locked Date</dt>
-                    <dd className="mt-1 text-gray-500 truncate sm:hidden">
-                      <LockClosedIcon className="inline w-5 h-5 mr-1 text-gray-400" />
-                      {new Date(stake?.stakeDate.toNumber() * 1000).toLocaleDateString(undefined, {
-                        weekday: "short",
-                        year: "numeric",
-                        month: "short",
-                        day: "numeric",
-                      })}
-                    </dd>
-                  </dl>
-                </td>
-                <td className="hidden px-3 py-4 text-sm text-gray-500 lg:table-cell">
-                  {(+ethers.utils.formatUnits(stake.weight,18)).toFixed(2)}
-                </td>
-                <td className="hidden px-3 py-4 text-sm text-gray-500 sm:table-cell">
-                  {new Date(stake?.stakeDate.toNumber() * 1000).toLocaleDateString(undefined, {
-                    weekday: "short",
-                    year: "numeric",
-                    month: "short",
-                    day: "numeric",
-                  })}
-                </td>
-                <td className="px-3 py-4 text-sm text-gray-500">
-                  {new Date(stake?.unlockDate.toNumber() * 1000).toLocaleDateString(undefined, {
-                    weekday: "long",
-                    year: "numeric",
-                    month: "short",
-                    day: "numeric",
-                  })}
-                </td>
-                <td className="py-4 pl-3 pr-4 text-sm font-medium text-right sm:pr-6">
-                  <button
-                    onClick={() => unstakeQNTFI(idx)}
-                    className="text-indigo-600 hover:text-indigo-900"
-                  >
-                    Unstake<span className="sr-only"></span>
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
+          {account && (
+            <tbody className="bg-white divide-y divide-gray-200">
+              {allStakes.map((stake, idx) => (
+                <tr key={idx}>
+                  <td className="w-full py-4 pl-4 pr-3 text-sm font-medium text-gray-900 max-w-0 sm:w-auto sm:max-w-none sm:pl-6">
+                    {(+ethers.utils.formatUnits(stake.numTokens, 18)).toFixed(2)}
+                    <dl className="font-normal lg:hidden">
+                      <dt className="sr-only">Weight</dt>
+                      <dd className="mt-1 text-gray-700 truncate">
+                        <ScaleIcon className="inline w-5 h-5 mr-1 text-gray-400" />
+                      </dd>
+                      <dt className="sr-only sm:hidden">Locked Date</dt>
+                      <dd className="mt-1 text-gray-500 truncate sm:hidden">
+                        <LockClosedIcon className="inline w-5 h-5 mr-1 text-gray-400" />
+                        {new Date(stake?.stakeDate.toNumber() * 1000).toLocaleDateString(
+                          undefined,
+                          {
+                            weekday: "short",
+                            year: "numeric",
+                            month: "short",
+                            day: "numeric",
+                          }
+                        )}
+                      </dd>
+                    </dl>
+                  </td>
+                  <td className="hidden px-3 py-4 text-sm text-gray-500 lg:table-cell">
+                    {(+ethers.utils.formatUnits(stake.weight, 18)).toFixed(2)}
+                  </td>
+                  <td className="hidden px-3 py-4 text-sm text-gray-500 sm:table-cell">
+                    {new Date(stake?.stakeDate.toNumber() * 1000).toLocaleDateString(undefined, {
+                      weekday: "short",
+                      year: "numeric",
+                      month: "short",
+                      day: "numeric",
+                    })}
+                  </td>
+                  <td className="px-3 py-4 text-sm text-gray-500">
+                    {new Date(stake?.unlockDate.toNumber() * 1000).toLocaleDateString(undefined, {
+                      weekday: "long",
+                      year: "numeric",
+                      month: "short",
+                      day: "numeric",
+                    })}
+                  </td>
+                  <td className="py-4 pl-3 pr-4 text-sm font-medium text-right sm:pr-6">
+                    <button
+                      onClick={() => unstakeQNTFI(idx)}
+                      className="text-indigo-600 hover:text-indigo-900"
+                    >
+                      Unstake<span className="sr-only"></span>
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          )}
         </table>
         {loading && (
           <div className="w-full py-2 font-sans antialiased text-center text-slate-600">
             {loadingText}
+          </div>
+        )}
+        {!loading && allStakes.length === 0 && (
+          <div className="w-full py-2 font-sans antialiased text-center text-slate-600">
+            No stakes found
+          </div>
+        )}
+        {!account && (
+          <div className="w-full py-2 font-sans antialiased text-center text-slate-600">
+            Connect your wallet to view your stakes
           </div>
         )}
       </div>
