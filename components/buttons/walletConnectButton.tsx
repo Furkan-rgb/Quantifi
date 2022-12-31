@@ -125,6 +125,8 @@ function WalletConnectButton() {
   }
 
   const connectWalletOnPageLoad = async () => {
+    console.log("Route: " + router.route);
+    console.log(localStorage?.getItem("provider"));
     if (router.route === "/") {
       return;
     }
@@ -140,10 +142,9 @@ function WalletConnectButton() {
 
   // When reloading the page, connect to the last used wallet
   useEffect(() => {
+    console.log("useEffect");
     connectWalletOnPageLoad();
-  }, [active]);
-
-  useEffect(() => {}, [connectedBtnHover]);
+  }, [active, chainId, account]);
 
   useEffect(() => {
     if (!library) {
@@ -152,7 +153,8 @@ function WalletConnectButton() {
     }
     console.log(library);
     handleNetworkSwitch();
-  }, [account, chainId, active]);
+    connectWalletOnPageLoad();
+  }, [account, chainId, active, library]);
 
   return (
     <>
