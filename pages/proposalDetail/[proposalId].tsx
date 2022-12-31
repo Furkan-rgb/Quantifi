@@ -109,7 +109,13 @@ export default function proposalDetail() {
         </div>
         {/* Section 3 */}
         <div className="col-span-2 bg-white sm:col-span-1">
-          <VotersList />
+          {proposalId === undefined ? (
+            <div className="flex justify-center">
+              <p>Loading...</p>
+            </div>
+          ) : (
+            <VotersList proposalId={proposalId?.toString()} />
+          )}
         </div>
       </div>
     </div>

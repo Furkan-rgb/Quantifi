@@ -144,6 +144,7 @@ export default function Proposals() {
       const res = await fetch(`https://rgtestnet.pythonanywhere.com/api/v1/qit/votes`, {});
       const data = await res.json();
       setProposalsData(data.votes);
+      console.log(data.votes);
       setLoading(false);
       console.log(proposalsData);
     } catch (err) {
