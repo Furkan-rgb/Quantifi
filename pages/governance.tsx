@@ -144,7 +144,7 @@ function GovernancePage() {
     datasets: [
       {
         label: "QNTFI Prices",
-        data: [0.2,0.22,0.21,0.24,0.25,0.24,0.27],
+        data: [0.2, 0.22, 0.21, 0.24, 0.25, 0.24, 0.27],
         fill: false,
         borderColor: "rgb(75, 192, 192)",
         tension: 0.4,
@@ -248,27 +248,42 @@ function GovernancePage() {
                 <dl className="bg-white rounded-lg shadow-md sm:grid sm:grid-cols-2 sm:shadow-lg">
                   <div className="flex flex-col items-center justify-center p-6 text-center border-b border-gray-100 sm:border-0 sm:border-r">
                     <dt className="order-2 mt-2 text-lg font-medium leading-6 text-gray-500">
-                      Total QNTFI staked
+                      {account && "Your total QNTFI staked"}
                     </dt>
                     <dd className="order-1 text-5xl font-bold tracking-tight text-indigo-600">
                       {loading ? (
                         <Spinner height={32} width={32} />
                       ) : (
-                        (+ethers.utils.formatUnits(qntfiInfo.qntfiStaked, 18)).toFixed(2) +
-                        " " +
-                        qntfiInfo.tokenName
+                        <>
+                          {!account && (
+                            <div className="w-full py-2 font-sans text-lg antialiased font-normal text-center text-slate-600">
+                              Connect your wallet to view your stakes
+                            </div>
+                          )}
+                          {account &&
+                            (+ethers.utils.formatUnits(qntfiInfo.qntfiStaked, 18)).toFixed(2) +
+                              " " +
+                              qntfiInfo.tokenName}
+                        </>
                       )}
                     </dd>
                   </div>
                   <div className="flex flex-col items-center justify-center p-6 text-center border-t border-b border-gray-100 sm:border-0 sm:border-l sm:border-r">
                     <dt className="order-2 mt-2 text-lg font-medium leading-6 text-gray-500">
-                      Your Staked Weight
+                      {account && "Your Staked Weight"}
                     </dt>
                     <dd className="order-1 text-5xl font-bold tracking-tight text-indigo-600">
                       {loading || totalStakedWeightPercentage === undefined ? (
                         <Spinner height={32} width={32} />
                       ) : (
-                        totalStakedWeightPercentage?.toFixed(3) + "%"
+                        <>
+                          {!account && (
+                            <div className="w-full py-2 font-sans text-lg antialiased font-normal text-center text-slate-600">
+                              Connect your wallet to view your staked weight
+                            </div>
+                          )}
+                          {account && totalStakedWeightPercentage?.toFixed(3) + "%"}
+                        </>
                       )}
                     </dd>
                   </div>
