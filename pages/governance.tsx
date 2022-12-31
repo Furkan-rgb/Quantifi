@@ -252,7 +252,7 @@ function GovernancePage() {
                     </dt>
                     <dd className="order-1 text-5xl font-bold tracking-tight text-indigo-600">
                       {loading ? (
-                        <Spinner />
+                        <Spinner height={32} width={32} />
                       ) : (
                         (+ethers.utils.formatUnits(qntfiInfo.qntfiStaked, 18)).toFixed(2) +
                         " " +
@@ -266,7 +266,7 @@ function GovernancePage() {
                     </dt>
                     <dd className="order-1 text-5xl font-bold tracking-tight text-indigo-600">
                       {loading || totalStakedWeightPercentage === undefined ? (
-                        <Spinner />
+                        <Spinner height={32} width={32} />
                       ) : (
                         totalStakedWeightPercentage?.toFixed(3) + "%"
                       )}

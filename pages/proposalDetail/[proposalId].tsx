@@ -14,6 +14,7 @@ export default function proposalDetail() {
   const router = useRouter();
   const query = router.query;
   const [proposalState, setProposalState] = useState<Proposal["state"]>();
+  const [voted, setVoted] = useState<boolean>();
   const [proposalId, setProposalId] = useState<Proposal["id"]>();
 
   useEffect(() => {
@@ -26,13 +27,12 @@ export default function proposalDetail() {
       )
     );
     setProposalId(+query?.proposalId!);
-
     console.log(proposalState);
   }, [router, proposalState]);
 
   return (
     <div className="flex justify-center min-h-screen bg-white">
-      <div className="grid w-full grid-flow-row grid-cols-2 gap-4 pt-4 pb-8 max-w-7xl auto-rows-max">
+      <div className="grid w-full grid-flow-row grid-cols-2 gap-4 pt-4 pb-8 max-w-7xl auto-rows-max sm:px-8">
         {/* Top section */}
         <div className="col-span-2 p-4 h-max sm:pl-0">
           <div className=" lg:w-1/2 xl:pr-16">

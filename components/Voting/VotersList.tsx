@@ -51,11 +51,18 @@ const voters = [
   },
 ];
 
+interface voters {
+  address: string;
+  option: string;
+  stake: string;
+}
+
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 
 export default function VotersList() {
+// { voters }: { voters: voters[] }
   return (
     <div className="px-4 pt-6 bg-gray-200 sm:rounded-lg sm:px-6 sm:shadow-lg lg:px-8">
       <div className="sm:flex sm:items-center">
