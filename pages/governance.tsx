@@ -137,92 +137,6 @@ function GovernancePage() {
     setTotalStakedWeightPercentage((+totalStakedWeight / +qntfiInfo.totalQntfiStaked) * 100);
   }, [totalStakedWeight]);
 
-  // Line chart stuff
-  const labels = new Array(7).fill(0).map((_, i) => `Day ${i + 1}`);
-  const lineChartData = {
-    labels: labels,
-    datasets: [
-      {
-        label: "My First Dataset",
-        data: [65, 59, 80, 81, 56, 55, 40],
-        fill: false,
-        borderColor: "rgb(75, 192, 192)",
-        tension: 0.4,
-        pointRadius: 0,
-      },
-    ],
-  };
-
-  const lineChartConfig: ChartOptions<"line"> = {
-    responsive: true,
-    scales: {
-      y: {
-        ticks: {
-          display: false,
-          color: "white",
-        },
-        beginAtZero: true,
-        grid: {
-          display: false,
-        },
-      },
-      x: {
-        grid: {
-          display: false,
-        },
-        ticks: {
-          color: "white",
-        },
-      },
-    },
-    plugins: {
-      legend: {
-        display: false,
-      },
-      tooltip: {
-        mode: "index",
-        intersect: false,
-      },
-      title: {
-        font: {
-          weight: "medium",
-        },
-        color: "white",
-        display: true,
-        text: "QNTFI Price History",
-      },
-    },
-  };
-
-  const dividendsContent = {
-    title: "Dividends",
-    QNTFIToken: [
-      { title: "Current Price", value: "2.57 USDT", type: "statistic" },
-      { title: "Total Staked", value: "12%", type: "statistic" },
-      {
-        title: "Price History",
-        value: <Linechart data={lineChartData} config={lineChartConfig} />,
-        type: "chart",
-      },
-    ],
-    YourDividends: [
-      { title: "Next Dividend", value: "20220824T000000+0200", type: "date" },
-      { title: "Claimable Dividends", value: "0.00 USDT", type: "statistic" },
-      { title: "Claim", value: true, type: "toggle" },
-    ],
-    NextDividend: [
-      {
-        title: "Current Period",
-        value: { from: "20220701T000000+0200", until: "20220930T000000+0200" },
-        type: "date",
-      },
-      { title: "Fees Collected", value: "25 USDT", type: "statistic" },
-      { title: "Dividend Ex-Date", value: "20220616T000000+0200", type: "date" },
-      { title: "Claimable After", value: "20220414T000000+0200", type: "date" },
-    ],
-    DividendHistory: [],
-  };
-
   return (
     <>
       <main className="mt-16 sm:my-24">
@@ -244,11 +158,14 @@ function GovernancePage() {
               </div>
             </div>
             {/* Linechart */}
-            <div className="mt-16 sm:mt-24 lg:col-span-6 lg:mt-0">
-              <div className="px-4 pb-4 sm:mx-auto sm:w-full sm:max-w-lg sm:overflow-hidden">
-                <Linechart data={lineChartData} config={lineChartConfig} />
-              </div>
-            </div>
+                <div className="flex flex-col items-center justify-center w-full col-span-1 px-4 py-5 overflow-hidden text-center bg-white rounded-lg shadow h-fit dark:bg-slate-50 sm:flex sm:flex-col sm:p-6">
+                  <dt className="text-sm font-medium text-gray-500 text-clip">
+                    {"Average Stake Length (days)"}
+                  </dt>
+                  <dd className="mt-1 text-xl font-semibold tracking-tight text-gray-900 sm:text-3xl">
+                    {3}
+                  </dd>
+                </div>
           </div>
         </div>
       </main>
