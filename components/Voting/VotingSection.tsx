@@ -39,7 +39,6 @@ export function VotingSection({
       <VoteAction
         votingOptions={votingOptions}
         proposalState={proposalState}
-        voted={false}
         proposalId={proposalId}
       />
     );

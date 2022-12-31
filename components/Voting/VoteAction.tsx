@@ -1,6 +1,6 @@
 import { useWeb3React } from "@web3-react/core";
 import { ethers } from "ethers";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { VoteResults } from "./VoteResults";
 import govABI from "../../components/abi/governor.json";
 import Notification, { NotificationContent } from "../../components/Notification";
@@ -13,12 +13,10 @@ import { LinkIcon } from "@heroicons/react/24/outline";
 export function VoteAction({
   votingOptions,
   proposalState,
-  voted,
   proposalId,
 }: {
   votingOptions: any;
   proposalState: string;
-  voted: boolean;
   proposalId: number;
 }) {
   const [voteOption, setVoteOption] = useState();
@@ -30,8 +28,9 @@ export function VoteAction({
   const [loading, setLoading] = useState(false);
   const totalVotes = votingOptions.reduce((a: any, b: { votes: any }) => a + (b.votes || 0), 0);
   const { library, account } = useWeb3React();
+  const [voted, setVoted] = useState();
 
-  const GOV = new ethers.Contract("0xb9bb7147fcd291c876e96205f3559eda3ac366ea", govABI, library);
+  const GOV = new ethers.Contract("0x76c8e44e944167bdf79625e01431beb4fa832a42", govABI, library);
 
   function changeNotificationContent(
     title: NotificationContent["title"],
@@ -42,6 +41,19 @@ export function VoteAction({
     setNotificationMessage(message);
     setNotificationStatus(status);
   }
+
+  async function checkIfVoted() {
+    if (!account) return;
+    console.log("Loading: " + voted);
+    const GOVConnect = GOV.connect(library.getSigner());
+    console.log("Checking if voted");
+    const hasVoted = await GOVConnect.hasVoted(proposalId, account);
+    console.log("Has voted: " + hasVoted);
+    setVoted(hasVoted);
+  }
+  useEffect(() => {
+    checkIfVoted();
+  }, [account]);
 
   async function vote(voteOption: number) {
     console.log("voteOnProposal");
@@ -79,6 +91,15 @@ export function VoteAction({
   // If user has voted, show results
   if (voted) {
     return <VoteResults votingOptions={votingOptions} totalVotes={totalVotes} />;
+  }
+
+  if (voted === undefined && account) {
+    return (
+      <div className="flex flex-col items-center justify-center w-full h-64 bg-white">
+        <span className="mb-2">Checking vote status...</span>
+        <Spinner height={64} width={64} />
+      </div>
+    );
   }
 
   if (!account) {

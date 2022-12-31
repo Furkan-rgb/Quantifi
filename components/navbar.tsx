@@ -88,9 +88,9 @@ export default function Navbar() {
                         key={item.name}
                         href={item.href}
                         className={`${
-                          item.current ? " text-white" : "text-gray-300  hover:text-white"
+                          item.current ? " text-white" : "text-gray-400  hover:text-white"
                         }
-                            inline-block px-3 py-2 text-sm font-medium after:block after:origin-center after:scale-x-0  after:border-b-2 after:transition-all after:duration-500 after:ease-in-out hover:after:scale-x-100 hover:after:border-[#415697] 
+                        inline-block px-3 py-2 text-sm font-medium subpixel-antialiased after:block after:origin-center after:scale-x-0  after:border-b-2 after:transition-all after:duration-500 after:ease-in-out hover:after:scale-x-100 hover:after:border-[#415697] 
                           `}
                         aria-current={item.current ? "page" : undefined}
                       >

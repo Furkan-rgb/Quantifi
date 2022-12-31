@@ -14,6 +14,7 @@ export default function proposalDetail() {
   const router = useRouter();
   const query = router.query;
   const [proposalState, setProposalState] = useState<Proposal["state"]>();
+  const [voted, setVoted] = useState<boolean>();
   const [proposalId, setProposalId] = useState<Proposal["id"]>();
 
   useEffect(() => {
@@ -26,7 +27,6 @@ export default function proposalDetail() {
       )
     );
     setProposalId(+query?.proposalId!);
-
     console.log(proposalState);
   }, [router, proposalState]);
 
