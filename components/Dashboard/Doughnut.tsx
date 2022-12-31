@@ -7,14 +7,14 @@ import { formatCurrency } from "../utils/formatter";
 function DoughnutChart() {
   // Center of doughnut chart
 
-  const totalDeposit = 60113801;
-  const totalCollateral = 2314474;
+  const totalUnstaked = 185000000;
+  const totalStaked = 15000000;
   const dataDoughnut = {
-    labels: ["Total Deposit", "Total Collateral"],
+    labels: ["Staked", "Unstaked"],
     datasets: [
       {
         label: "Total Value Locked",
-        data: [totalDeposit, totalCollateral],
+        data: [totalUnstaked, totalStaked],
         backgroundColor: ["rgb(59, 87, 155)", "rgb(135, 151, 199)"],
         borderColor: ["rgb(78, 101, 166)", "rgb(159, 172, 213)"],
         hoverOffset: 4,
