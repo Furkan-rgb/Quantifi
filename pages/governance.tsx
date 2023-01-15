@@ -43,7 +43,7 @@ function GovernancePage() {
   });
 
   const QNTFI = new ethers.Contract(
-    "0x0781B099a57B1ebCaF1c1D72A2dC72Aa5773d3B5",
+    "0x506abE228305e35e24b0019C69728f0A5c32A206",
     qntfiABI,
     library
   );
