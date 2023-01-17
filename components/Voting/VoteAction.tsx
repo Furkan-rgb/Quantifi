@@ -30,7 +30,7 @@ export function VoteAction({
   const { library, account } = useWeb3React();
   const [voted, setVoted] = useState();
 
-  const GOV = new ethers.Contract("0x76c8e44e944167bdf79625e01431beb4fa832a42", govABI, library);
+  const GOV = new ethers.Contract("0x506abE228305e35e24b0019C69728f0A5c32A206", govABI, library);
 
   function changeNotificationContent(
     title: NotificationContent["title"],
