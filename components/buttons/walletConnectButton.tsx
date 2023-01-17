@@ -10,7 +10,6 @@ import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon, ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import { useRouter } from "next/router";
 
-// TODO: Move this out of the component
 function ConnectButtonContent({
   hover,
   active,
@@ -104,11 +103,13 @@ function WalletConnectButton() {
     console.log("button click");
     // If theres no web3 wallet connected, open the modal
     if (!active) {
+      // If the modal is already open, close it
       if (connectModalOpen) {
         setConnectModalOpen(false);
       } else {
         setConnectModalOpen(true);
       }
+      // If theres a web3 wallet connected, disconnect it
     } else if (active) {
       console.log("disconnecting");
       disconnect();

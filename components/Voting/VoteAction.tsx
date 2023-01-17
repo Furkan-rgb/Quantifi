@@ -47,6 +47,7 @@ export function VoteAction({
     console.log("Loading: " + voted);
     const GOVConnect = GOV.connect(library.getSigner());
     console.log("Checking if voted");
+    console.log("Proposal ID", proposalId);
     const hasVoted = await GOVConnect.hasVoted(proposalId, account);
     console.log("Has voted: " + hasVoted);
     setVoted(hasVoted);
