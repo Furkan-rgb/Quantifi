@@ -28,7 +28,7 @@ export function VoteAction({
   const [loading, setLoading] = useState(false);
   const totalVotes = votingOptions.reduce((a: any, b: { votes: any }) => a + (b.votes || 0), 0);
   const { library, account } = useWeb3React();
-  const [voted, setVoted] = useState();
+  const [voted, setVoted] = useState<boolean | null | undefined>();
 
   const GOV = new ethers.Contract("0x506abE228305e35e24b0019C69728f0A5c32A206", govABI, library);
 
@@ -43,7 +43,11 @@ export function VoteAction({
   }
 
   async function checkIfVoted() {
+    console.log("Checking if voted");
     if (!account) return;
+    console.log("Account: " + account);
+    // if (!proposalId) return;
+    console.log("Proposal ID: " + proposalId);
     console.log("Loading: " + voted);
     const GOVConnect = GOV.connect(library.getSigner());
     console.log("Checking if voted");
@@ -52,9 +56,12 @@ export function VoteAction({
     console.log("Has voted: " + hasVoted);
     setVoted(hasVoted);
   }
+
   useEffect(() => {
+    console.info("Checking if voted function call");
     checkIfVoted();
-  }, [account]);
+    console.log("Proposal Id is here", proposalId);
+  }, [account, proposalId]);
 
   async function vote(voteOption: number) {
     console.log("voteOnProposal");
@@ -71,9 +78,6 @@ export function VoteAction({
       const tx = await GOVConnect.voteOnProposal(proposalId, voteOption);
       await tx.wait();
       changeNotificationContent("Success", "Vote Submitted", "success");
-      await timeout(2000);
-      setNotificationShow(false);
-      setLoading(false);
     } catch (error) {
       changeNotificationContent("Error", "Vote not submitted", "error");
       setNotificationShow(true);
@@ -81,20 +85,27 @@ export function VoteAction({
       console.error(error);
       await timeout(2000);
       setNotificationShow(false);
+    } finally {
+      await timeout(2000);
+      setNotificationShow(false);
+      setLoading(false);
+      checkIfVoted();
     }
   }
 
   // If proposal is closed, show results
   if (proposalState === "closed") {
-    return <VoteResults votingOptions={votingOptions} totalVotes={totalVotes} />;
+    return <VoteResults votingOptions={votingOptions} proposalId={proposalId.toString()} />;
   }
 
   // If user has voted, show results
   if (voted) {
-    return <VoteResults votingOptions={votingOptions} totalVotes={totalVotes} />;
+    return <VoteResults votingOptions={votingOptions} proposalId={proposalId.toString()} />;
   }
 
+  // If checking whether user has voted, show loading
   if (voted === undefined && account) {
+    console.log("Voted or not:", voted);
     return (
       <div className="flex flex-col items-center justify-center w-full h-64 bg-white">
         <span className="mb-2">Checking vote status...</span>
@@ -103,6 +114,7 @@ export function VoteAction({
     );
   }
 
+  // If no account, show connect wallet message
   if (!account) {
     return (
       <div className="flex flex-col items-center justify-center w-full h-64 bg-white">

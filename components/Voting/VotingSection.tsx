@@ -7,13 +7,11 @@ const votingOptions = [
     id: 1,
     name: "Yes",
     description: "I support this proposal",
-    votes: 23,
   },
   {
     id: 2,
     name: "No",
     description: "I do not support this proposal",
-    votes: 12,
   },
 ];
 
@@ -35,6 +33,7 @@ export function VotingSection({
     );
   }
   if (proposalState === "open" || proposalState === "closed") {
+    console.log("Voting Action has pId: ", proposalId);
     return (
       <VoteAction
         votingOptions={votingOptions}

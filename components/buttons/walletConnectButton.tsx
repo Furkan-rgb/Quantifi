@@ -90,7 +90,7 @@ function WalletConnectButton() {
   }
 
   function handleNetworkSwitch() {
-    console.log(chainId);
+    console.log("Current Chain Id: ", chainId);
     // 56 mainnnet 97 testnet
     if (chainId !== 97) {
       setWrongChain(true);
@@ -121,13 +121,12 @@ function WalletConnectButton() {
       deactivate();
       localStorage.removeItem("provider");
     } catch (e) {
-      console.log(e);
+      console.log("Error disconnecting: ", e);
     }
   }
 
   const connectWalletOnPageLoad = async () => {
-    console.log("Route: " + router.route);
-    console.log(localStorage?.getItem("provider"));
+    console.log("Provider is:", localStorage?.getItem("provider"));
     if (router.route === "/") {
       return;
     }
@@ -143,7 +142,6 @@ function WalletConnectButton() {
 
   // When reloading the page, connect to the last used wallet
   useEffect(() => {
-    console.log("useEffect");
     connectWalletOnPageLoad();
   }, [active, chainId, account]);
 
@@ -152,7 +150,6 @@ function WalletConnectButton() {
       console.log("can't find library");
       return;
     }
-    console.log(library);
     handleNetworkSwitch();
     connectWalletOnPageLoad();
   }, [account, chainId, active, library]);

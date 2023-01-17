@@ -25,7 +25,7 @@ function GovernancePage() {
   const [outputValue, setOutputValue] = useState<string>();
   const [swapButtonText, setSwapButtonText] = useState<string>("Loading...");
   const [lockUpDays, setLockUpDays] = useState<number>(0);
-  const { library, chainId, account, active, error, setError, connector } = useWeb3React();
+  const { library, account, active } = useWeb3React();
   const [qntfiInfo, setQntfiInfo] = useState<{
     address: string;
     tokenName: string;
@@ -128,7 +128,7 @@ function GovernancePage() {
   useEffect(() => {
     if (!account) return;
     _setContractInfo();
-  }, [account, active]);
+  }, [account, active, library]);
 
   // Calculate staked weight value
   useEffect(() => {
