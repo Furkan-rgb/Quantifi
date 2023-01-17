@@ -10,7 +10,6 @@ import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon, ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import { useRouter } from "next/router";
 
-// TODO: Move this out of the component
 function ConnectButtonContent({
   hover,
   active,
@@ -91,7 +90,7 @@ function WalletConnectButton() {
   }
 
   function handleNetworkSwitch() {
-    console.log(chainId);
+    console.log("Current Chain Id: ", chainId);
     // 56 mainnnet 97 testnet
     if (chainId !== 97) {
       setWrongChain(true);
@@ -104,11 +103,13 @@ function WalletConnectButton() {
     console.log("button click");
     // If theres no web3 wallet connected, open the modal
     if (!active) {
+      // If the modal is already open, close it
       if (connectModalOpen) {
         setConnectModalOpen(false);
       } else {
         setConnectModalOpen(true);
       }
+      // If theres a web3 wallet connected, disconnect it
     } else if (active) {
       console.log("disconnecting");
       disconnect();
@@ -120,13 +121,12 @@ function WalletConnectButton() {
       deactivate();
       localStorage.removeItem("provider");
     } catch (e) {
-      console.log(e);
+      console.log("Error disconnecting: ", e);
     }
   }
 
   const connectWalletOnPageLoad = async () => {
-    console.log("Route: " + router.route);
-    console.log(localStorage?.getItem("provider"));
+    console.log("Provider is:", localStorage?.getItem("provider"));
     if (router.route === "/") {
       return;
     }
@@ -142,7 +142,6 @@ function WalletConnectButton() {
 
   // When reloading the page, connect to the last used wallet
   useEffect(() => {
-    console.log("useEffect");
     connectWalletOnPageLoad();
   }, [active, chainId, account]);
 
@@ -151,7 +150,6 @@ function WalletConnectButton() {
       console.log("can't find library");
       return;
     }
-    console.log(library);
     handleNetworkSwitch();
     connectWalletOnPageLoad();
   }, [account, chainId, active, library]);

@@ -13,7 +13,7 @@ type dashboardData = {
   qntfiHolders: number;
   qitHolders: number;
   profits: amountDate;
-  averageStakeLength:number;
+  averageStakeLength: number;
 };
 
 type priceDate = {
@@ -27,7 +27,6 @@ type amountDate = {
 };
 
 function Dashboard() {
-
   const [qitData, setQitData] = useState<dashboardData>();
   const [chartDate, setChartDate] = useState(7);
   const [lineData, setLineData] = useState<ChartData<"line">>({
@@ -87,7 +86,7 @@ function Dashboard() {
       ],
     });
 
-    // Barchart
+    // Barchart data
     setBarData({
       labels: qitData?.qntfiUnlocking.map((item) => item.date),
       datasets: [
@@ -131,6 +130,7 @@ function Dashboard() {
       },
     },
   };
+  
   const dailyPriceConfig: ChartOptions<"line"> = {
     responsive: true,
     elements: {
@@ -164,8 +164,7 @@ function Dashboard() {
               {/* Title */}
               <div className="flex flex-col justify-center ">
                 <div className="text-center text-gray-500">QNTFI Supply (mil)</div>
-                <div className="text-2xl subpixel-antialiased font-medium text-center">
-                </div>
+                <div className="text-2xl subpixel-antialiased font-medium text-center"></div>
               </div>
               <Doughnut />
             </div>
@@ -176,7 +175,7 @@ function Dashboard() {
               <div className="grid gap-3 ">
                 <div className="p-4 bg-white rounded-lg h-fit dark:bg-slate-50">
                   {barData.datasets[0].data.length !== 0 ? (
-                    <Barchart data={barData} config={config}></Barchart>
+                    <Barchart data={barData} config={config} />
                   ) : (
                     <div className="flex items-center justify-center w-full h-full">
                       <svg

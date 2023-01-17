@@ -1,3 +1,5 @@
+import { useWeb3React } from "@web3-react/core";
+import { ethers } from "ethers";
 import { useEffect, useState } from "react";
 import { truncateAddress } from "../utils";
 
@@ -80,11 +82,11 @@ export default function VotersList({ proposalId }: { proposalId: string }) {
       );
       const data = await res.json();
       setVotersData(data.votes);
-      console.log(data.votes);
+      console.log("Voters data:", data.votes);
       setLoading(false);
       console.log(votersData);
     } catch (err) {
-      console.error(err);
+      console.error("Vote Error:", (err as any).data?.message);
       setLoading(false);
     }
   }
@@ -152,7 +154,7 @@ export default function VotersList({ proposalId }: { proposalId: string }) {
                           "hidden whitespace-nowrap px-3 py-4 text-sm text-gray-500 sm:table-cell"
                         )}
                       >
-                        {parseInt(voter[1], 2)}
+                        {+ethers.utils.formatUnits(voter[1], "wei")}
                       </td>
                     </tr>
                   ))}
