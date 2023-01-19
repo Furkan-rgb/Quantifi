@@ -154,7 +154,7 @@ export default function VotersList({ proposalId }: { proposalId: string }) {
                           "hidden whitespace-nowrap px-3 py-4 text-sm text-gray-500 sm:table-cell"
                         )}
                       >
-                        {+ethers.utils.formatUnits(voter[1], "wei")}
+                        {+ethers.utils.formatUnits(voter[1], 18)}
                       </td>
                     </tr>
                   ))}
