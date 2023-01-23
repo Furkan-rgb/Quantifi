@@ -3,7 +3,7 @@ import { IoMdSettings } from "react-icons/io";
 
 function Footer() {
   return (
-    <footer className="p-4 mt-auto bg-transparent bg-black border-t border-indigo-500 rounded-tl-lg rounded-tr-lg shadow md:flex md:items-center md:justify-between md:p-6">
+    <footer className="p-4 mt-auto bg-transparent bg-black border-t border-indigo-500 shadow md:flex md:items-center md:justify-between md:p-6">
       <ul className="flex flex-wrap items-center justify-center mt-3 text-sm text-gray-500 dark:text-gray-400 sm:mt-0">
         <li>
           <a href="#" className="ml-4 hover:underline md:mr-6 ">
@@ -11,7 +11,10 @@ function Footer() {
           </a>
         </li>
         <li>
-          <a href="https://docs.google.com/document/d/e/2PACX-1vTx6CS93yu6it2CiAQ0dbNQ4mlYYeHUJz6fziuUXDbdAf8PKMytUODkcJwQfjgObt521aBmbtyhmda0/pub" className="ml-4 hover:underline md:mr-6">
+          <a
+            href="https://docs.google.com/document/d/e/2PACX-1vTx6CS93yu6it2CiAQ0dbNQ4mlYYeHUJz6fziuUXDbdAf8PKMytUODkcJwQfjgObt521aBmbtyhmda0/pub"
+            className="ml-4 hover:underline md:mr-6"
+          >
             Whitepaper
           </a>
         </li>
