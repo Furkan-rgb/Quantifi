@@ -70,12 +70,13 @@ function WalletConnectButton() {
         console.log(err);
         setError(err.message);
         if (err.code === 4902) {
+          console.log("Adding network");
           try {
-            await library.provider.request({
+            await library?.provider?.request({
               method: "wallet_addEthereumChain",
               params: [
                 {
-                  ...networkParams["bsc"],
+                  ...networkParams["tbsc"],
                 },
               ],
             });
