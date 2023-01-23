@@ -8,6 +8,7 @@ import { ArrowDownIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { Transition } from "@headlessui/react";
 import Notification, { NotificationContent } from "../components/Notification";
 import Spinner from "../components/animations/Spinner";
+import LiquiditySwapCard from "../components/swap/LiquiditySwapCard";
 
 function MyPage() {
   const [showNotification, setNotificationShow] = useState(false);
@@ -20,6 +21,7 @@ function MyPage() {
     address: ethers.Contract["address"];
     tokenName: string;
     qitbalance: ethers.BigNumber;
+    usdtbalance: ethers.BigNumber;
     allowance: ethers.BigNumber;
     lockupEnds: number;
     pendingWithdrawals: ethers.BigNumber;
@@ -27,6 +29,7 @@ function MyPage() {
     address: "-",
     tokenName: "QIT",
     qitbalance: BigNumber.from(0),
+    usdtbalance: BigNumber.from(0),
     allowance: BigNumber.from(0),
     lockupEnds: 0,
     pendingWithdrawals: BigNumber.from(0),
@@ -197,6 +200,7 @@ function MyPage() {
         address: QIT.address,
         tokenName: "QIT",
         qitbalance: await QIT.balanceOf(account),
+        usdtbalance: await ERC20.balanceOf(account),
         allowance: await ERC20.allowance(account, QIT.address),
         lockupEnds: await QIT.withdrawalLockTime(account),
         pendingWithdrawals: await QIT.pendingWithdrawals(account),
@@ -376,12 +380,12 @@ function MyPage() {
 
         {/* Information text */}
         <div className="bg-gray-800">
-          <div className="px-4 py-16 mx-auto max-w-7xl sm:py-24 sm:px-6 lg:flex lg:justify-between lg:px-8">
+          <div className="max-w-6xl px-4 py-16 mx-auto sm:py-24 sm:px-6 lg:flex lg:justify-between lg:px-8">
             <div className="max-w-2xl">
               <h1 className="text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl">
                 About the Fund
               </h1>
-              <p className="mt-5 text-gray-400 text-md sm:text-xl">
+              <p className="mt-5 text-gray-400 text-md flex-nowrap sm:text-xl">
                 The Quantifi Investor Fund offers managed exposure to a wide array of
                 cryptocurrencies on the BNB Blockchain. The fund prioritizes low drawdown and is
                 directed by a sophisticated quantitative investment model (see{" "}
@@ -417,120 +421,19 @@ function MyPage() {
 
         {/* Swap */}
         <div className="flex justify-center">
-          <div className="flex flex-col items-center justify-start w-full max-w-md px-4 my-10 text-black ">
-            {/* Tab Section */}
-            <div className="grid grid-cols-2 text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:border-gray-700 dark:text-gray-400">
-              <div className="col-span-1">
-                <button
-                  onClick={() => {
-                    setCurrentTab("deposit");
-                    resetOutputValue("deposit");
-                  }}
-                  className={`${
-                    currentTab == "deposit"
-                      ? "active inline-block  rounded-t-lg  border-b-2  border-gray-100 p-4 text-gray-100"
-                      : "inline-block rounded-t-lg  p-4 "
-                  } w-full text-center font-normal transition duration-200 ease-in-out`}
-                >
-                  <div
-                    className={`${
-                      currentTab == "deposit" ? "-translate-y-1" : ""
-                    } transition duration-200 ease-in-out`}
-                  >
-                    Deposit
-                  </div>
-                </button>
-              </div>
-              <div className="col-span-1">
-                <button
-                  onClick={() => {
-                    setCurrentTab("withdrawal");
-                    resetOutputValue("withdrawal");
-                  }}
-                  className={`${
-                    currentTab == "withdrawal"
-                      ? "active inline-block  rounded-t-lg  border-b-2  border-gray-100 p-4 text-gray-100"
-                      : "inline-block rounded-t-lg  p-4 "
-                  } w-full text-center font-normal transition duration-200 ease-in-out`}
-                >
-                  <div
-                    className={`${
-                      currentTab == "withdrawal" ? "-translate-y-1" : ""
-                    } transition duration-200 ease-in-out`}
-                  >
-                    Withdrawal
-                  </div>
-                </button>
-              </div>
-            </div>
-            {/* End Tab Section */}
-
-            {/* Input */}
-            <div className="w-full my-5">
-              <form>
-                <div className="relative z-0 flex w-full mb-6 group">
-                  <input
-                    onChange={(e) => {
-                      setInputValue(e.target.value);
-                      currentTab === "deposit"
-                        ? getDepositValue(e.target.value)
-                        : getWithdrawalValue(e.target.value);
-                    }}
-                    type="number"
-                    name="floating_input"
-                    id="floating_input"
-                    className="peer block w-full appearance-none border-0 border-b-2 border-gray-300 bg-transparent py-2.5 px-0 text-sm text-gray-300 focus:border-blue-600 focus:outline-none focus:ring-0 dark:border-gray-600 dark:text-white dark:focus:border-blue-500"
-                    placeholder=" "
-                    required
-                  />
-                  <label
-                    htmlFor="floating_input"
-                    className="absolute top-3 -z-10 origin-[0] -translate-y-6 scale-75 transform text-sm text-gray-300 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:left-0 peer-focus:-translate-y-6 peer-focus:scale-75 peer-focus:font-medium peer-focus:text-blue-600 dark:text-gray-300 peer-focus:dark:text-blue-500"
-                  >
-                    From
-                  </label>
-
-                  <span className="inline-flex items-center px-3 text-sm text-white border-0 border-b-2 border-gray-300 appearance-none peer focus:border-blue-600 focus:outline-none focus:ring-0 dark:border-gray-600 dark:focus:border-blue-500">
-                    {currentTab == "withdrawal" ? contractInfo?.tokenName : "USDT"}
-                  </span>
-                </div>
-                <div className="flex justify-center">
-                  <ArrowDownIcon className="w-5 h-5 text-gray-400" />
-                </div>
-
-                {/* Output */}
-                <div className="relative z-0 flex w-full mb-6 group">
-                  <input
-                    type="number"
-                    name="floating_output"
-                    id="floating_output"
-                    className="peer block w-full appearance-none border-0 border-b-2 border-gray-300 bg-transparent py-2.5 px-0 text-sm text-gray-300 focus:border-blue-600 focus:outline-none focus:ring-0 dark:border-gray-600 dark:text-white dark:focus:border-blue-500"
-                    placeholder=" "
-                    disabled
-                  />
-                  <label
-                    htmlFor="floating_output"
-                    className="absolute top-3 -z-10 origin-[0] -translate-y-6 scale-75 transform text-sm text-gray-300 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:left-0 peer-focus:-translate-y-6 peer-focus:scale-75 peer-focus:font-medium peer-focus:text-blue-600 dark:text-gray-300 peer-focus:dark:text-blue-500"
-                  >
-                    To {outputValue}
-                  </label>
-
-                  <span className="inline-flex items-center px-3 text-sm text-white border-0 border-b-2 border-gray-300 appearance-none peer focus:border-blue-600 focus:outline-none focus:ring-0 dark:border-gray-600 dark:focus:border-blue-500">
-                    {currentTab == "deposit" ? "QIT" : "USDT"}
-                  </span>
-                </div>
-                <button
-                  onClick={() => {
-                    swapOrApprove();
-                  }}
-                  type="button"
-                  className="w-full  rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 "
-                >
-                  {swapButtonText}
-                </button>
-              </form>
-            </div>
-          </div>
+          <LiquiditySwapCard
+            currentTab={currentTab}
+            setCurrentTab={setCurrentTab}
+            resetOutputValue={resetOutputValue}
+            swapButtonText={swapButtonText}
+            setInputValue={setInputValue}
+            outputValue={outputValue}
+            getDepositValue={getDepositValue}
+            getWithdrawalValue={getWithdrawalValue}
+            swapOrApprove={swapOrApprove}
+            QITBalance={(+ethers.utils.formatUnits(contractInfo.qitbalance, 6)).toFixed(2)}
+            USDTBalance={(+ethers.utils.formatEther(contractInfo.usdtbalance)).toFixed(2)}
+          />
         </div>
       </div>
 
