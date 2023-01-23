@@ -69,6 +69,7 @@ function MyPage() {
     const number = parseInt(value, 10);
     if (value !== "" || number == 0) {
       try {
+        setOutputValue("Loading...");
         const n = ethers.utils.parseUnits(value, 6);
         const wd = await QIT.getWithdrawalReturn(n);
         setOutputValue((+ethers.utils.formatUnits(wd, 18)).toFixed(2));
@@ -84,16 +85,19 @@ function MyPage() {
     if (value !== "" || number == 0) {
       if (number >= minDeposit) {
         try {
+          setOutputValue("Loading...");
           const n = ethers.utils.parseEther(value);
           const deposit = await QIT.getDepositReturn(n);
           setOutputValue((+ethers.utils.formatUnits(deposit, 6)).toFixed(2));
         } catch (error) {
           console.log(error);
         }
+      } else {
+        //TODO: Change to red and show Min Deposit = $x
+        //console.log("Input is less than minDeposit");
+        setOutputValue("Min deposit is " + minDeposit);
       }
     } else {
-      //TODO: Change to red and show Min Deposit = $x
-      //console.log("Input is less than minDeposit");
       setOutputValue("0");
     }
   }
