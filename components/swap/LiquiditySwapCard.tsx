@@ -97,7 +97,7 @@ function SwapCard({
         <form>
           {/* Top section */}
           {/* From */}
-          <div className="flex justify-between p-2 pb-0 bg-gray-600 rounded-t-md">
+          <div className="flex justify-between p-2 pb-0 -mb-1 bg-gray-600 rounded-t-md">
             <label className="text-sm text-gray-300 ">From</label>
             <label className="text-sm text-gray-300 ">
               Balance:{" "}
@@ -191,7 +191,7 @@ function SwapCard({
           </div>
 
           {/* Output */}
-          <div className="flex justify-between p-2 pb-0 mt-4 bg-gray-600 rounded-t-md">
+          <div className="flex justify-between p-2 pb-0 mt-4 -mb-1 bg-gray-600 rounded-t-md">
             <label className="text-sm text-gray-300 ">To</label>
           </div>
           <div className="relative z-0 flex w-full mb-6 bg-gray-600 group rounded-b-md">
@@ -245,7 +245,7 @@ function SwapCard({
               swapOrApprove();
             }}
             type="button"
-            className="w-full  rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 "
+            className="w-full rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 "
           >
             {swapButtonText}
           </button>
