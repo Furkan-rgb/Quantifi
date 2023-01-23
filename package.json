@@ -50,7 +50,6 @@
     "web3-react": "^5.0.5"
   },
   "devDependencies": {
-    "@tailwindcss/typography": "^0.5.9",
     "@types/node": "18.7.6",
     "@types/react": "18.0.17",
     "@types/react-dom": "18.0.6",
