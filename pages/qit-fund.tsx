@@ -75,6 +75,8 @@ function MyPage() {
       } catch (error) {
         console.log(error);
       }
+    } else {
+      setOutputValue("0");
     }
   }
   async function getDepositValue(value: string) {
@@ -88,10 +90,11 @@ function MyPage() {
         } catch (error) {
           console.log(error);
         }
-      } else {
-        //TODO: Change to red and show Min Deposit = $x
-        //console.log("Input is less than minDeposit");
       }
+    } else {
+      //TODO: Change to red and show Min Deposit = $x
+      //console.log("Input is less than minDeposit");
+      setOutputValue("0");
     }
   }
 
