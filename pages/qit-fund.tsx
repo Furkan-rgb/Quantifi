@@ -433,6 +433,7 @@ function MyPage() {
             setCurrentTab={setCurrentTab}
             resetOutputValue={resetOutputValue}
             swapButtonText={swapButtonText}
+            inputValue={inputValue}
             setInputValue={setInputValue}
             outputValue={outputValue}
             getDepositValue={getDepositValue}
