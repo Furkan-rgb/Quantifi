@@ -97,7 +97,7 @@ function SwapCard({
         <form>
           {/* Top section */}
           {/* From */}
-          <div className="flex justify-between p-2 pb-0 -mb-1 bg-gray-600 rounded-t-md">
+          <div className="flex justify-between p-2 pb-1 -mb-1 bg-gray-600 rounded-t-md">
             <label className="text-sm text-gray-300 ">From</label>
             <label className="text-sm text-gray-300 ">
               Balance:{" "}
@@ -191,7 +191,7 @@ function SwapCard({
           </div>
 
           {/* Output */}
-          <div className="flex justify-between p-2 pb-0 mt-4 -mb-1 bg-gray-600 rounded-t-md">
+          <div className="flex justify-between p-2 pb-1 mt-4 -mb-1 bg-gray-600 rounded-t-md">
             <label className="text-sm text-gray-300 ">To</label>
           </div>
           <div className="relative z-0 flex w-full mb-6 bg-gray-600 group rounded-b-md">
