@@ -246,7 +246,7 @@ function MyPage() {
   }
   // Keeps track of input value to update swap button text
   useEffect(() => {
-    changeSwapButtonText();
+    return () => changeSwapButtonText();
   }, [inputValue, contractInfo.allowance]);
 
   function resetOutputValue(_currentTab: string) {
