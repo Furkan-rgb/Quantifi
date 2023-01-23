@@ -6,6 +6,7 @@ import Image from "next/image";
 function SwapCard({
   currentTab,
   setCurrentTab,
+  inputValue,
   setInputValue,
   resetOutputValue,
   outputValue,
@@ -18,6 +19,7 @@ function SwapCard({
 }: {
   currentTab: string;
   setCurrentTab: Function;
+  inputValue: string | undefined;
   setInputValue: Function;
   resetOutputValue: Function;
   outputValue: string | undefined;
@@ -134,11 +136,24 @@ function SwapCard({
               className="peer block w-full appearance-none items-center border-0 border-b-0 border-gray-300 bg-transparent py-2.5 px-0 pl-2 text-sm text-gray-300 focus:border-blue-600 focus:outline-none focus:ring-0 dark:border-gray-600 dark:text-white dark:focus:border-blue-500"
               placeholder=" "
               required
+              value={inputValue}
             />
 
             <span className="inline-flex items-center px-3 text-sm text-white border-0 border-b-0 border-gray-300 appearance-none peer whitespace-nowrap focus:border-blue-600 focus:outline-none focus:ring-0 dark:border-gray-600 dark:focus:border-blue-500">
+              <button
+                className="mr-1 text-xs opacity-75 hover:opacity-100"
+                type="button"
+                onClick={() => {
+                  currentTab === "deposit" ? setInputValue(USDTBalance) : setInputValue(QITBalance);
+                  currentTab === "deposit"
+                    ? getDepositValue(USDTBalance)
+                    : getWithdrawalValue(QITBalance);
+                }}
+              >
+                max
+              </button>
               {currentTab == "withdrawal" ? (
-                <Image src="/icons/quantifi_icon.png" width={24} height={29} />
+                <Image src="/quantifi_icon.png" width={24} height={29} />
               ) : (
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -197,7 +212,7 @@ function SwapCard({
 
             <span className="inline-flex items-center px-3 text-sm text-white border-0 border-b-0 border-gray-300 appearance-none peer whitespace-nowrap focus:border-blue-600 focus:outline-none focus:ring-0 dark:border-gray-600 dark:focus:border-blue-50">
               {currentTab == "deposit" ? (
-                <Image src="/icons/quantifi_icon.png" width={24} height={29} />
+                <Image src="/quantifi_icon.png" width={24} height={29} />
               ) : (
                 // <USDTIcon width="22px" />
                 <svg
