@@ -31,7 +31,7 @@ function SwapCard({
   QITBalance: number | string;
 }) {
   return (
-    <div className="flex flex-col items-center justify-start w-full max-w-md px-4 my-10 text-black bg-gray-800 rounded-md">
+    <div className="flex flex-col items-center justify-start w-full max-w-md px-4 my-10 text-black bg-gray-800 sm:rounded-md">
       {/* Header */}
       <div className="w-full prose">
         <h3 className="flex items-center justify-start w-full mt-4 mb-0 text-gray-50">
