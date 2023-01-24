@@ -6,6 +6,42 @@ import Footer from "../components/footer";
 import { ethers } from "ethers";
 import { Web3ReactProvider } from "@web3-react/core";
 
+// Wagmi & RainbowKit imports
+import "@rainbow-me/rainbowkit/styles.css";
+import { getDefaultWallets, RainbowKitProvider } from "@rainbow-me/rainbowkit";
+import { configureChains, createClient, WagmiConfig } from "wagmi";
+import { bsc, bscTestnet } from "wagmi/chains";
+import { publicProvider } from "wagmi/providers/public";
+import { infuraProvider } from "wagmi/providers/infura";
+import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
+
+const { chains, provider } = configureChains(
+  [bsc, bscTestnet],
+  [
+    jsonRpcProvider({
+      rpc: (chain) => ({
+        // BSC Mainnet
+        // `https://damp-fabled-resonance.bsc.discover.quiknode.pro/a6e1aa97c7173e264dfb91711955d76bf970f0e9/`
+        http: `https://data-seed-prebsc-1-s3.binance.org:8545`,
+      }),
+      priority: 0,
+    }),
+    infuraProvider({ apiKey: process.env.INFURA_KEY as string, priority: 1 }),
+    publicProvider({ priority: 2 }),
+  ]
+);
+
+const { connectors } = getDefaultWallets({
+  appName: "QuantiFi",
+  chains,
+});
+
+const wagmiClient = createClient({
+  autoConnect: true,
+  connectors,
+  provider,
+});
+
 const getLibrary = (provider: ethers.providers.ExternalProvider) => {
   return new ethers.providers.Web3Provider(provider);
 };
@@ -13,11 +49,15 @@ const getLibrary = (provider: ethers.providers.ExternalProvider) => {
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <Web3ReactProvider getLibrary={getLibrary}>
-      <div className="min-h-screen bg-qdark">
-        <Navbar />
-        <Component {...pageProps} />
-        <Footer />
-      </div>
+      <WagmiConfig client={wagmiClient}>
+        <RainbowKitProvider chains={chains}>
+          <div className="min-h-screen bg-qdark">
+            <Navbar />
+            <Component {...pageProps} />
+            <Footer />
+          </div>
+        </RainbowKitProvider>
+      </WagmiConfig>
     </Web3ReactProvider>
   );
 }

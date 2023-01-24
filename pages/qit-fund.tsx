@@ -10,6 +10,11 @@ import Notification, { NotificationContent } from "../components/Notification";
 import Spinner from "../components/animations/Spinner";
 import LiquiditySwapCard from "../components/swap/LiquiditySwapCard";
 
+import { useAccount, useProvider, useSigner } from "wagmi";
+import { fetchSigner } from "@wagmi/core";
+
+import { timeout } from "../components/utils/timeout";
+
 function MyPage() {
   const [showNotification, setNotificationShow] = useState(false);
   const [currentTab, setCurrentTab] = useState<string>("deposit");
@@ -45,23 +50,38 @@ function MyPage() {
   const [loading, setLoading] = useState<boolean>(false); // loading state for button
 
   const { library, chainId, account, active, error, setError, connector } = useWeb3React();
+  const { data: signer, isError, isLoading, isFetched } = useSigner();
+  const { address, isConnecting, isDisconnected, isConnected } = useAccount();
+  const provider = useProvider();
 
-  const QIT = new ethers.Contract("0x4C4470D0B9c0dD92B25Be1D2fB5181cdA7e6E3f7", myPageAbi, library);
+  const QIT = new ethers.Contract(
+    "0x4C4470D0B9c0dD92B25Be1D2fB5181cdA7e6E3f7",
+    myPageAbi,
+    provider
+  );
   const ERC20 = new ethers.Contract(
     "0xEcAD8721BA48dBdc0eac431D68A0b140F07c0801",
     erc20ABI,
-    library
+    provider
   );
-  function classNames(...classes: string[]) {
-    return classes.filter(Boolean).join(" ");
-  }
 
-  async function getHoldingValue(_address: string) {
-    try {
-      const _holdingValue = await QIT.getHoldingValue(_address);
-      setHoldingValue(_holdingValue.toString());
-    } catch (error) {
-      console.error("Couldn't get holdingValue" + error);
+  async function getHoldingValue() {
+    if (isConnecting) {
+      console.log("Connecting...");
+      return;
+    }
+    if (isDisconnected) {
+      console.log("Disconnected");
+      return;
+    }
+    if (isConnected) {
+      console.log("Connected", address);
+      try {
+        const _holdingValue = await QIT.getHoldingValue(address);
+        setHoldingValue(_holdingValue.toString());
+      } catch (error) {
+        console.error("Couldn't get holdingValue: " + error);
+      }
     }
   }
 
@@ -114,11 +134,13 @@ function MyPage() {
 
   // Logic to determine if user can swap or needs approval first
   async function swapOrApprove() {
+    const signer = await fetchSigner();
     // DEPOSITS
-    if (currentTab == "deposit" && inputValue !== "") {
+    if (currentTab == "deposit" && inputValue !== "" && signer) {
       if (contractInfo.allowance.toBigInt() < ethers.utils.parseEther(inputValue).toBigInt()) {
-        const ERC20connect = ERC20.connect(library.getSigner());
+        const ERC20connect = ERC20.connect(signer);
         try {
+          console.log("Approving");
           // Approving
           const transaction = await ERC20connect.approve(
             QIT.address,
@@ -136,15 +158,16 @@ function MyPage() {
         } catch (error) {
           changeNotificationContent("Failed", "Approval was rejected", "error");
           setNotificationShow(true);
-
           console.log("Wallet transaction did not complete");
         }
         // update after completion
       } else {
-        const QITconnect = QIT.connect(library.getSigner());
+        const QITconnect = QIT.connect(signer);
         try {
+          console.log("Depositing");
           // Depositing
           const transaction = await QITconnect.depositToFund(ethers.utils.parseEther(inputValue));
+          console.log(transaction);
           changeNotificationContent("In progress", "Deposit Requested", "loading");
           setNotificationShow(true);
           const receipt = await transaction.wait();
@@ -161,41 +184,8 @@ function MyPage() {
           console.log("Unable to complete Deposit");
         }
       }
-    }
-    function timeout(delay: number) {
-      return new Promise((res) => setTimeout(res, delay));
-    }
-
-    // WITHDRAWALS
-    if (currentTab == "withdrawal") {
-      if (
-        contractInfo.qitbalance > BigNumber.from(0) &&
-        inputValue !== "" &&
-        Date.now() / 1000 > contractInfo.lockupEnds
-      ) {
-        if (ethers.utils.parseEther(inputValue).toBigInt() > 0) {
-          const QITconnect = QIT.connect(library.getSigner());
-          try {
-            const transaction = await QITconnect.requestWithdrawal(
-              ethers.utils.parseUnits(inputValue, 6)
-            );
-            changeNotificationContent("In progress", "Withdrawal Requested", "loading");
-            setNotificationShow(true);
-            const receipt = await transaction.wait();
-
-            changeNotificationContent("Complete", "Withdrawal was successful", "success");
-            console.log(receipt);
-
-            await timeout(2000);
-            setNotificationShow(false);
-            _setContractInfo();
-          } catch (error: any) {
-            changeNotificationContent("Failed", "Withdrawal was rejected", "error");
-            setNotificationShow(true);
-            console.log("User rejected transaction");
-          }
-        }
-      }
+    } else {
+      console.log("No signer");
     }
   }
 
@@ -206,11 +196,11 @@ function MyPage() {
       setContractInfo({
         address: QIT.address,
         tokenName: "QIT",
-        qitbalance: await QIT.balanceOf(account),
-        usdtbalance: await ERC20.balanceOf(account),
-        allowance: await ERC20.allowance(account, QIT.address),
-        lockupEnds: await QIT.withdrawalLockTime(account),
-        pendingWithdrawals: await QIT.pendingWithdrawals(account),
+        qitbalance: await QIT.balanceOf(address),
+        usdtbalance: await ERC20.balanceOf(address),
+        allowance: await ERC20.allowance(address, QIT.address),
+        lockupEnds: await QIT.withdrawalLockTime(address),
+        pendingWithdrawals: await QIT.pendingWithdrawals(address),
       });
     } catch (error) {
       console.error("Couldn't set QIT contract info: " + error);
@@ -218,18 +208,20 @@ function MyPage() {
       setLoading(false);
     }
 
-    if (account !== null || account !== undefined) {
-      await getHoldingValue(account!);
+    if (isConnected) {
+      await getHoldingValue();
+    } else if (isConnecting) {
+      console.log("Connecting account");
     } else {
-      console.log("No account");
+      console.log("Not connected");
     }
   }
   // account change -> contract info update
   useEffect(() => {
-    if (account) {
+    if (address) {
       _setContractInfo();
     }
-  }, [account]);
+  }, [address]);
 
   // Returns swap button with correct body text based on input value
   function changeSwapButtonText() {
