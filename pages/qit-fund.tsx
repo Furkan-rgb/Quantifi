@@ -50,7 +50,7 @@ function MyPage() {
   const [loading, setLoading] = useState<boolean>(false); // loading state for button
 
   const { library, chainId, account, active, error, setError, connector } = useWeb3React();
-  const { data: signer, isError, isLoading, isFetched } = useSigner();
+
   const { address, isConnecting, isDisconnected, isConnected } = useAccount();
   const provider = useProvider();
 
@@ -140,6 +140,7 @@ function MyPage() {
       if (contractInfo.allowance.toBigInt() < ethers.utils.parseEther(inputValue).toBigInt()) {
         const ERC20connect = ERC20.connect(signer);
         try {
+          setLoading(true);
           console.log("Approving");
           // Approving
           const transaction = await ERC20connect.approve(
@@ -159,21 +160,24 @@ function MyPage() {
           changeNotificationContent("Failed", "Approval was rejected", "error");
           setNotificationShow(true);
           console.log("Wallet transaction did not complete");
+        } finally {
+          setLoading(false);
         }
         // update after completion
       } else {
         const QITconnect = QIT.connect(signer);
         try {
+          setLoading(true);
           console.log("Depositing");
           // Depositing
           const transaction = await QITconnect.depositToFund(ethers.utils.parseEther(inputValue));
-          console.log(transaction);
+          console.log("Transaction: ", transaction);
           changeNotificationContent("In progress", "Deposit Requested", "loading");
           setNotificationShow(true);
           const receipt = await transaction.wait();
 
           changeNotificationContent("Complete", "Deposit was successful", "success");
-          console.log(receipt);
+          console.log("Receipt: ", receipt);
 
           await timeout(2000);
           setNotificationShow(false);
@@ -182,6 +186,8 @@ function MyPage() {
           changeNotificationContent("Failed", "Deposit was rejected", "error");
           setNotificationShow(true);
           console.log("Unable to complete Deposit");
+        } finally {
+          setLoading(false);
         }
       }
     } else {
@@ -245,8 +251,8 @@ function MyPage() {
   }
   // Keeps track of input value to update swap button text
   useEffect(() => {
-    return () => changeSwapButtonText();
-  }, [inputValue, contractInfo.allowance]);
+    changeSwapButtonText();
+  }, [inputValue, contractInfo.allowance, currentTab]);
 
   function resetOutputValue(_currentTab: string) {
     if (_currentTab === currentTab) {
@@ -421,6 +427,7 @@ function MyPage() {
         {/* Swap */}
         <div className="flex justify-center">
           <LiquiditySwapCard
+            loading={loading}
             currentTab={currentTab}
             setCurrentTab={setCurrentTab}
             resetOutputValue={resetOutputValue}

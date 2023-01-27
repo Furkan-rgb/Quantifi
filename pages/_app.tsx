@@ -50,7 +50,12 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <Web3ReactProvider getLibrary={getLibrary}>
       <WagmiConfig client={wagmiClient}>
-        <RainbowKitProvider chains={chains}>
+        <RainbowKitProvider
+          chains={chains}
+          appInfo={{
+            learnMoreUrl: "https://quantifi.gitbook.io/docs/about-quantifi/welcome-to-quantifi",
+          }}
+        >
           <div className="min-h-screen bg-qdark">
             <Navbar />
             <Component {...pageProps} />
