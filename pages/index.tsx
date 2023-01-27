@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import Carousel from "../components/carousel";
 import useOnScreen from "../hooks/useOnScreen";
 import { motion } from "framer-motion";
+import { useRouter } from "next/router";
 
 // home page
 function HomePage() {
@@ -14,6 +15,7 @@ function HomePage() {
   const lastRefValue = useOnScreen(lastRef);
 
   const videoRef = useRef<HTMLVideoElement>(null);
+  const router = useRouter();
 
   useEffect(() => {
     if (!isCarouselRef) setCarouselRef(carouselRefValue);
@@ -88,12 +90,8 @@ function HomePage() {
       </div>
 
       {/* Join us section */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        className="flex items-start justify-center py-32 motion-safe:animate-fadeIn min-h-fit snap-start bg-slate-50"
-      >
-        <div className="mx-2 text-center text-gray-900 dark:text-gray-900">
+      <div className="flex items-center justify-center py-32 align-middle motion-safe:animate-fadeIn min-h-fit snap-start bg-slate-50">
+        <div className="mx-2 text-center text-gray-900 align-middle dark:text-gray-900">
           <h1 className="text-4xl font-bold tracking-tight sm:text-5xl sm:tracking-tight md:text-6xl md:tracking-tight">
             <span className="block">Are you ready to join us?</span>
           </h1>
@@ -101,13 +99,21 @@ function HomePage() {
             <span className="mr-0">Find out more about QuantiFi.</span>
           </div>
           {/* Glowing buttons, need to stay together */}
-          <div className="flex items-center justify-center mt-5 max-h-16">
-            <motion.button className="items-center w-8/12 text-2xl text-center btnAnimated font-lg h-14 rounded-2xl">
-              <div className="z-10"><a href="qit-fund">Get started</a></div>
-            </motion.button>
+          <div className="mt-5 max-h-16">
+            <button
+              className="w-8/12 text-2xl prose btnAnimated font-lg h-14 rounded-2xl"
+              onClick={(e) => {
+                e.preventDefault();
+                router.push("/qit-fund");
+              }}
+            >
+              <div className="z-10 flex items-center justify-center w-full h-full">
+                <div>Get started</div>
+              </div>
+            </button>
           </div>
         </div>
-      </motion.div>
+      </div>
     </>
   );
 }
