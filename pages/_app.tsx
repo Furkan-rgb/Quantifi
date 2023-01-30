@@ -8,28 +8,36 @@ import { Web3ReactProvider } from "@web3-react/core";
 
 // Wagmi & RainbowKit imports
 import "@rainbow-me/rainbowkit/styles.css";
-import { getDefaultWallets, RainbowKitProvider } from "@rainbow-me/rainbowkit";
+import { Chain, getDefaultWallets, RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { configureChains, createClient, WagmiConfig } from "wagmi";
 import { bsc, bscTestnet } from "wagmi/chains";
 import { publicProvider } from "wagmi/providers/public";
 import { infuraProvider } from "wagmi/providers/infura";
 import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
 
-const { chains, provider } = configureChains(
-  [bsc, bscTestnet],
-  [
-    jsonRpcProvider({
-      rpc: (chain) => ({
-        // BSC Mainnet
-        // `https://damp-fabled-resonance.bsc.discover.quiknode.pro/a6e1aa97c7173e264dfb91711955d76bf970f0e9/`
-        http: `https://data-seed-prebsc-1-s3.binance.org:8545`,
-      }),
-      priority: 0,
+const defaultChains: Chain[] = [
+  {
+    ...bsc,
+    iconUrl: "/Binance-Icon-Logo.svg",
+  },
+  {
+    ...bscTestnet,
+    iconUrl: "/Binance-Icon-Logo.svg",
+  },
+];
+
+const { chains, provider } = configureChains(defaultChains, [
+  jsonRpcProvider({
+    rpc: (chain) => ({
+      // BSC Mainnet
+      // `https://damp-fabled-resonance.bsc.discover.quiknode.pro/a6e1aa97c7173e264dfb91711955d76bf970f0e9/`
+      http: `https://data-seed-prebsc-1-s3.binance.org:8545`,
     }),
-    infuraProvider({ apiKey: process.env.INFURA_KEY as string, priority: 1 }),
-    publicProvider({ priority: 2 }),
-  ]
-);
+    priority: 0,
+  }),
+  infuraProvider({ apiKey: process.env.INFURA_KEY as string, priority: 1 }),
+  publicProvider({ priority: 2 }),
+]);
 
 const { connectors } = getDefaultWallets({
   appName: "QuantiFi",
