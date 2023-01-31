@@ -1,9 +1,8 @@
 import { Disclosure, Transition } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useRouter } from "next/router";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useState, useRef } from "react";
 import WalletConnectButton from "./buttons/walletConnectButton";
-import { useRef } from "react";
 import { CustomConnectButton } from "./buttons/CustomConnectButton";
 
 function classNames(...classes: string[]) {
