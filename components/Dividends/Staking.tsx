@@ -7,8 +7,8 @@ import Spinner from "../animations/Spinner";
 
 function Staking({ balance, stake }: StakingProps) {
   const [stakeMultiplier, setStakeMultiplier] = useState<number>(0);
-  const [stakeAmountQNTFI, setStakeAmountQNTFI] = useState<number>();
-  const [stakeAmountDays, setStakeAmountDays] = useState<number>();
+  const [stakeAmountQNTFI, setStakeAmountQNTFI] = useState<number | null>(null);
+  const [stakeAmountDays, setStakeAmountDays] = useState<number | null>(null);
   const [swapButtonText, setSwapButtonText] = useState<string>("Stake");
   const [touched, setTouched] = useState<boolean>(false);
 
@@ -19,7 +19,7 @@ function Staking({ balance, stake }: StakingProps) {
   }, [balance]);
 
   async function handleStake() {
-    if (stakeAmountQNTFI === undefined || stakeAmountDays === undefined) {
+    if (stakeAmountQNTFI === null || stakeAmountDays === null) {
       console.log("stakeAmountQNTFI or stakeAmountDays is undefined");
       return;
     }
@@ -40,8 +40,8 @@ function Staking({ balance, stake }: StakingProps) {
       console.log("error staking: ", e);
     } finally {
       console.log("done stake request");
-      setStakeAmountDays(undefined);
-      setStakeAmountQNTFI(undefined);
+      setStakeAmountDays(null);
+      setStakeAmountQNTFI(null);
       setTouched(false);
       setLoading(false);
       console.log("loading", loading);
@@ -69,7 +69,7 @@ function Staking({ balance, stake }: StakingProps) {
                     onChange={(e) => {
                       setStakeAmountQNTFI(e.target.valueAsNumber);
                     }}
-                    value={stakeAmountQNTFI}
+                    value={stakeAmountQNTFI || ""}
                     type="number"
                     name="floating_input"
                     id="floating_input"
@@ -96,17 +96,17 @@ function Staking({ balance, stake }: StakingProps) {
                     <div className="relative z-0 flex w-full mb-4 group">
                       <input
                         onChange={(e) => {
-                          if (e.target.valueAsNumber > 0) {
+                          if (e.target.valueAsNumber >= 0) {
                             setStakeAmountDays(e.target.valueAsNumber);
                           } else {
-                            setStakeAmountDays(undefined);
+                            setStakeAmountDays(null);
                           }
                           setTouched(true);
                         }}
                         type="number"
                         name="floating_input"
                         id="floating_input"
-                        value={stakeAmountDays}
+                        value={stakeAmountDays || ""}
                         className="peer block w-full appearance-none border-0 border-b-2 border-gray-300 bg-transparent py-2.5 px-0 text-sm text-black focus:border-blue-600 focus:outline-none focus:ring-0 dark:border-gray-600  dark:focus:border-blue-500"
                         required
                       />{" "}
