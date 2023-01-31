@@ -85,6 +85,7 @@ function GovernancePage() {
       console.error("Couldn't set QNTFI contract info: " + error);
     } finally {
       setLoading(false);
+      console.log(qntfiInfo);
     }
   }
 
@@ -145,10 +146,13 @@ function GovernancePage() {
 
   // Calculate staked weight value
   useEffect(() => {
+    console.log("Contract info", qntfiInfo);
     if (!qntfiInfo.qntfiStaked) return;
-    if (!totalStakedWeight) return;
-    setTotalStakedWeightPercentage((+totalStakedWeight / +qntfiInfo.totalQntfiStaked) * 100);
-  }, [totalStakedWeight]);
+    // if (!totalStakedWeight) return;
+    if (!qntfiInfo.totalQntfiStaked || qntfiInfo.totalQntfiStaked.isZero()) return;
+    setTotalStakedWeightPercentage((+qntfiInfo.qntfiStaked / +qntfiInfo.totalQntfiStaked) * 100);
+    console.log("weight", stakedWeight);
+  }, [totalStakedWeight, qntfiInfo]);
 
   // Line chart stuff
   const labels = new Array(7).fill(0).map((_, i) => `Day ${i + 1}`);
@@ -208,27 +212,28 @@ function GovernancePage() {
   };
 
   function TotalQNTFIStaked() {
-    if (isDisconnected) {
-      setQNTFIStaked("Connect your wallet to view your stakes");
-    }
-    if (isConnected) {
-      setQNTFIStaked((+ethers.utils.formatUnits(qntfiInfo.qntfiStaked, 18)).toFixed(2) + " QNTFI");
-    }
+    // if (isDisconnected) {
+    //   setQNTFIStaked("Connect your wallet to view your stakes");
+    // }
+    // if (isConnected) {
+
+    setQNTFIStaked((+ethers.utils.formatUnits(qntfiInfo.qntfiStaked, 18)).toFixed(2) + " QNTFI");
+    // }
   }
 
   function StakedWeight() {
-    if (isDisconnected) {
-      setStakedWeight("Connect your wallet to view your stakes");
-    }
-    if (isConnected) {
-      setStakedWeight(totalStakedWeightPercentage?.toFixed(3) + "%");
-    }
+    // if (isDisconnected) {
+    //   setStakedWeight("Connect your wallet to view your stakes");
+    // }
+    // if (isConnected) {
+    setStakedWeight(totalStakedWeightPercentage?.toFixed(3) + "%");
+    // }
   }
 
   useEffect(() => {
     TotalQNTFIStaked();
     StakedWeight();
-  }, [qntfiInfo.qntfiStaked, loading, isConnected, isDisconnected, totalStakedWeightPercentage]);
+  }, [qntfiInfo, loading, isConnected, isDisconnected, totalStakedWeightPercentage]);
 
   return (
     <>
@@ -347,15 +352,15 @@ function GovernancePage() {
   );
 }
 
-GovernancePage.getInitialProps = async () => {
-  return {
-    isConnecting: false,
-    isDisconnected: false,
-    isConnected: false,
-    qntfiInfo: {
-      qntfiStaked: 0,
-    },
-  };
-};
+// GovernancePage.getInitialProps = async () => {
+//   return {
+//     isConnecting: false,
+//     isDisconnected: false,
+//     isConnected: false,
+//     qntfiInfo: {
+//       qntfiStaked: 0,
+//     },
+//   };
+// };
 
 export default GovernancePage;

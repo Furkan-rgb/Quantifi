@@ -11,7 +11,7 @@ interface Proposal {
   description: string;
   id: number;
   title: string;
-};
+}
 
 const positions = [
   {
@@ -146,7 +146,6 @@ export default function Proposals() {
       setProposalsData(data.votes);
       console.log(data.votes);
       setLoading(false);
-      console.log(proposalsData);
     } catch (err) {
       console.error(err);
       setLoading(false);
