@@ -212,22 +212,15 @@ function GovernancePage() {
   };
 
   function TotalQNTFIStaked() {
-    // if (isDisconnected) {
-    //   setQNTFIStaked("Connect your wallet to view your stakes");
-    // }
-    // if (isConnected) {
-
-    setQNTFIStaked((+ethers.utils.formatUnits(qntfiInfo.qntfiStaked, 18)).toFixed(2) + " QNTFI");
-    // }
+    setQNTFIStaked(
+      (+ethers.utils.formatUnits(qntfiInfo.qntfiStaked, 18)).toLocaleString(undefined, {
+        minimumFractionDigits: 3,
+      })
+    );
   }
 
   function StakedWeight() {
-    // if (isDisconnected) {
-    //   setStakedWeight("Connect your wallet to view your stakes");
-    // }
-    // if (isConnected) {
     setStakedWeight(totalStakedWeightPercentage?.toFixed(3) + "%");
-    // }
   }
 
   useEffect(() => {
@@ -295,7 +288,7 @@ function GovernancePage() {
                       {loading || totalStakedWeightPercentage === undefined ? (
                         <Spinner height={32} width={32} />
                       ) : (
-                        QNTFIStaked
+                        QNTFIStaked?.toLocaleString()
                       )}
                     </dd>
                   </div>
