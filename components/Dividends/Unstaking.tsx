@@ -32,11 +32,6 @@ export function Unstaking({
   const [isReady, setIsReady] = useState(false);
   useEffect(() => setIsReady(true), []);
 
-  async function unstake(id: number) {
-    await unstakeQNTFI(id);
-    updateTotalStakes();
-  }
-
   // Get stake details
   useEffect(() => {
     if (isDisconnected) return;
@@ -51,9 +46,13 @@ export function Unstaking({
       // Loop through all stakes
       for (let i = 0; i < totalStakes; i++) {
         setLoadingText(`Loading stake ${i + 1} of ${totalStakes}`);
-        const stake = await getStake(address!, i);
-        stakes.push(stake);
-        totalWeight += parseFloat(stake?.weight?.toString());
+        try {
+          const stake = await getStake(address!, i);
+          stakes.push(stake);
+          totalWeight += parseFloat(stake?.weight?.toString());
+        } catch (e) {
+          console.log(e);
+        }
       }
       setAllStakes(stakes);
       setTotalStakedWeight(totalWeight);
@@ -141,7 +140,7 @@ export function Unstaking({
                   </td>
                   <td className="py-4 pl-3 pr-4 text-sm font-medium text-right sm:pr-6">
                     <button
-                      onClick={() => unstake(idx)}
+                      onClick={() => unstakeQNTFI(idx)}
                       className="text-indigo-600 hover:text-indigo-900"
                     >
                       Unstake<span className="sr-only"></span>
