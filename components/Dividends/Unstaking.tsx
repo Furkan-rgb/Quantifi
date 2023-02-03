@@ -13,14 +13,16 @@ interface Stake {
 
 export function Unstaking({
   totalStakes,
+  updateTotalStakes,
   getStake,
   setTotalStakedWeight,
   unstakeQNTFI,
 }: {
   totalStakes: number;
+  updateTotalStakes: () => Promise<void>;
   getStake: (account: string, idx: number) => Promise<Stake>;
   setTotalStakedWeight: (totalStakedWeight: number) => void;
-  unstakeQNTFI: (id: number) => void;
+  unstakeQNTFI: (id: number) => Promise<void>;
 }) {
   const [allStakes, setAllStakes] = useState<Stake[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -29,6 +31,11 @@ export function Unstaking({
 
   const [isReady, setIsReady] = useState(false);
   useEffect(() => setIsReady(true), []);
+
+  async function unstake(id: number) {
+    await unstakeQNTFI(id);
+    updateTotalStakes();
+  }
 
   // Get stake details
   useEffect(() => {
@@ -53,7 +60,7 @@ export function Unstaking({
       setLoading(false);
     };
     fetchStakes();
-  }, [totalStakes, getStake, address]);
+  }, [totalStakes, address]);
 
   return (
     <div className="w-full">
@@ -134,7 +141,7 @@ export function Unstaking({
                   </td>
                   <td className="py-4 pl-3 pr-4 text-sm font-medium text-right sm:pr-6">
                     <button
-                      onClick={() => unstakeQNTFI(idx)}
+                      onClick={() => unstake(idx)}
                       className="text-indigo-600 hover:text-indigo-900"
                     >
                       Unstake<span className="sr-only"></span>

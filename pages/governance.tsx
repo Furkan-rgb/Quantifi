@@ -16,6 +16,11 @@ import { fetchSigner } from "@wagmi/core";
 
 // our-domain.com/governance
 function GovernancePage() {
+  const [ready, setReady] = useState<boolean>(false);
+  useEffect(() => {
+    setReady(true);
+  }, []);
+
   const [notificationStatus, setNotificationStatus] =
     useState<NotificationContent["status"]>("info");
   const [totalStakedWeight, setTotalStakedWeight] = useState<number>(0);
@@ -130,7 +135,9 @@ function GovernancePage() {
       await timeout(2000);
       setNotificationShow(false);
     } catch (error: any) {
-      changeNotificationContent("Failed", "Unstaking Failed", "error");
+      if (error.message.includes("Unlock time not yet reached")) {
+        changeNotificationContent("Failed", "Unlock time not yet reached", "error");
+      } else changeNotificationContent("Failed", "Unstaking Failed", "error");
       setNotificationShow(true);
       console.error("Couldn't unstake QNTFI: " + error.message);
     }
@@ -219,6 +226,18 @@ function GovernancePage() {
     );
   }
 
+  async function updateTotalStakes() {
+    if (isDisconnected) return;
+    try {
+      setQntfiInfo({
+        ...qntfiInfo,
+        totalQntfiStaked: await QNTFI.getTotalStakes(),
+      });
+    } catch (error) {
+      console.error("Couldn't update total stakes: " + error);
+    }
+  }
+
   function StakedWeight() {
     setStakedWeight(totalStakedWeightPercentage?.toFixed(3) + "%");
   }
@@ -257,79 +276,94 @@ function GovernancePage() {
           </div>
         </div>
       </main>
-      <div className="pt-12 bg-gray-50 sm:pt-16">
-        <Staking
-          balance={qntfiInfo.qntfiBalance.sub(qntfiInfo.qntfiStaked)}
-          stake={stakeQNTFI}
-          amount={inputValue}
-          lockUpDays={lockUpDays}
-        />
 
-        {/* Title  */}
-        <div className="px-4 pt-16 mx-auto max-w-7xl sm:px-6 lg:px-8">
-          <div className="max-w-4xl mx-auto text-center">
-            <h2 className="mb-4 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
-              Your staked QNTFI
-            </h2>
+      {ready && isConnected ? (
+        <div className="pt-12 bg-gray-50 sm:pt-16 ">
+          <Staking
+            balance={qntfiInfo.qntfiBalance.sub(qntfiInfo.qntfiStaked)}
+            stake={stakeQNTFI}
+            amount={inputValue}
+            lockUpDays={lockUpDays}
+          />
+
+          {/* Title  */}
+          <div className="px-4 pt-16 mx-auto max-w-7xl sm:px-6 lg:px-8">
+            <div className="max-w-4xl mx-auto text-center">
+              <h2 className="mb-4 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
+                Your staked QNTFI
+              </h2>
+            </div>
           </div>
-        </div>
-        {/* Table and Info */}
-        <div className="pb-12 bg-white sm:pb-16">
-          <div className="relative">
-            <div className="absolute inset-0 h-1/2 bg-gray-50" />
-            <div className="relative mx-auto max-w-7xl sm:px-6 lg:px-8">
-              <div className="max-w-2xl px-2 mx-auto sm:px-0">
-                <dl className="bg-white rounded-lg shadow-md sm:grid sm:grid-cols-2 sm:shadow-lg">
-                  <div className="flex flex-col items-center justify-center p-6 text-center border-b border-gray-100 sm:border-0 sm:border-r">
-                    <dt className="order-2 mt-2 text-lg font-medium leading-6 text-gray-500">
-                      {!loading && "Your total QNTFI staked"}
-                    </dt>
-                    <dd className="order-1 text-5xl font-bold tracking-tight text-indigo-600">
-                      {loading || totalStakedWeightPercentage === undefined ? (
-                        <Spinner height={32} width={32} />
-                      ) : (
-                        QNTFIStaked?.toLocaleString()
-                      )}
-                    </dd>
+          {/* Table and Info */}
+          <div className="pb-12 bg-white sm:pb-16">
+            <div className="relative">
+              <div className="absolute inset-0 h-1/2 bg-gray-50" />
+              <div className="relative mx-auto max-w-7xl sm:px-6 lg:px-8">
+                <div className="max-w-2xl px-2 mx-auto sm:px-0">
+                  <dl className="bg-white rounded-lg shadow-md sm:grid sm:grid-cols-2 sm:shadow-lg">
+                    <div className="flex flex-col items-center justify-center p-6 text-center border-b border-gray-100 sm:border-0 sm:border-r">
+                      <dt className="order-2 mt-2 text-lg font-medium leading-6 text-gray-500">
+                        {!loading && "Your total QNTFI staked"}
+                      </dt>
+                      <dd className="order-1 text-5xl font-bold tracking-tight text-indigo-600">
+                        {loading || totalStakedWeightPercentage === undefined ? (
+                          <Spinner height={32} width={32} />
+                        ) : (
+                          QNTFIStaked?.toLocaleString()
+                        )}
+                      </dd>
+                    </div>
+                    <div className="flex flex-col items-center justify-center p-6 text-center border-t border-b border-gray-100 sm:border-0 sm:border-l sm:border-r">
+                      <dt className="order-2 mt-2 text-lg font-medium leading-6 text-gray-500">
+                        {!loading && "Your staked weight"}
+                      </dt>
+                      <dd className="order-1 text-5xl font-bold tracking-tight text-indigo-600">
+                        {loading || totalStakedWeightPercentage === undefined ? (
+                          <Spinner height={32} width={32} />
+                        ) : (
+                          stakedWeight
+                        )}
+                      </dd>
+                    </div>
+                  </dl>
+                </div>
+                <div className="flex justify-center w-full">
+                  <div className="w-full max-w-2xl">
+                    <Unstaking
+                      totalStakes={+qntfiInfo.numStakes}
+                      updateTotalStakes={updateTotalStakes}
+                      getStake={QNTFI.stakes}
+                      setTotalStakedWeight={setTotalStakedWeight}
+                      unstakeQNTFI={unstakeQNTFI}
+                    />
                   </div>
-                  <div className="flex flex-col items-center justify-center p-6 text-center border-t border-b border-gray-100 sm:border-0 sm:border-l sm:border-r">
-                    <dt className="order-2 mt-2 text-lg font-medium leading-6 text-gray-500">
-                      {!loading && "Your staked weight"}
-                    </dt>
-                    <dd className="order-1 text-5xl font-bold tracking-tight text-indigo-600">
-                      {loading || totalStakedWeightPercentage === undefined ? (
-                        <Spinner height={32} width={32} />
-                      ) : (
-                        stakedWeight
-                      )}
-                    </dd>
-                  </div>
-                </dl>
-              </div>
-              <div className="flex justify-center w-full">
-                <div className="w-full max-w-2xl">
-                  <Unstaking
-                    totalStakes={qntfiInfo.numStakes.toNumber()}
-                    getStake={QNTFI.stakes}
-                    setTotalStakedWeight={setTotalStakedWeight}
-                    unstakeQNTFI={unstakeQNTFI}
-                  />
                 </div>
               </div>
             </div>
           </div>
         </div>
-        {/* Proposals */}
-        <div className="flex justify-center pb-4 bg-white">
-          <div className="w-full max-w-2xl pb-6 text-center">
-            <h2
-              id="proposals"
-              className="mb-4 text-4xl font-bold tracking-tight text-gray-900 -scroll-mt-60 sm:text-5xl"
-            >
-              Proposals
-            </h2>
-            <Proposals />
+      ) : (
+        <div className="py-12 bg-white sm:py-16">
+          <div className="px-4 py-16 mx-auto bg-gray-100 max-w-7xl sm:rounded-md sm:px-6 lg:px-8">
+            <div className="max-w-4xl mx-auto text-center">
+              <h2 className="pb-4 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
+                Connect your wallet to stake QNTFI
+              </h2>
+            </div>
           </div>
+        </div>
+      )}
+
+      {/* Proposals */}
+      <div className="flex justify-center pb-4 bg-white">
+        <div className="w-full max-w-2xl pb-6 text-center">
+          <h2
+            id="proposals"
+            className="mb-4 text-4xl font-bold tracking-tight text-gray-900 -scroll-mt-60 sm:text-5xl"
+          >
+            Proposals
+          </h2>
+          <Proposals />
         </div>
       </div>
 
