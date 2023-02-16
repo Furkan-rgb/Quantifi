@@ -40,6 +40,11 @@ function MyPage() {
     pendingWithdrawals: BigNumber.from(0),
   });
 
+  const [ready, setReady] = useState<boolean>(false);
+  useEffect(() => {
+    setReady(true);
+  }, []);
+
   const [notificationStatus, setNotificationStatus] =
     useState<NotificationContent["status"]>("info");
   const [notificationMessage, setNotificationMessage] = useState<string>("");
@@ -268,8 +273,8 @@ function MyPage() {
       {/* Exchange */}
       <div className="min-h-screen">
         <div className="md:flex md:items-center md:justify-between">
-          <div className="px-4 pt-4 mx-auto max-w-7xl sm:px-6 lg:flex lg:justify-between lg:px-8">
-            <div className="flex-1 min-w-0">
+          <div className="mx-auto max-w-7xl px-4 pt-4 sm:px-6 lg:flex lg:justify-between lg:px-8">
+            <div className="min-w-0 flex-1">
               <h2 className="text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
                 Quantifi Investor Fund
               </h2>
@@ -277,14 +282,14 @@ function MyPage() {
           </div>
         </div>
         {/* Cards */}
-        <div className="flex flex-col items-center justify-center w-full px-4 my-10 sm:flex-row sm:items-start ">
+        <div className="my-10 flex w-full flex-col items-center justify-center px-4 sm:flex-row sm:items-start ">
           {/* Holdings */}
-          <div className="w-full max-w-lg min-h-full px-6 py-4 my-3 overflow-hidden text-gray-900 rounded-lg shadow-lg mx-7 bg-neutral-100 ">
+          <div className="my-3 mx-7 min-h-full w-full max-w-lg overflow-hidden rounded-lg bg-neutral-100 px-6 py-4 text-gray-900 shadow-lg ">
             {/* Title */}
             <div className="mb-2 text-xl font-bold">My Holdings</div>
             <div>
               <div className="flex justify-between">
-                <span className="block py-1 mb-2 mr-2 text-base font-semibold text-gray-700 rounded-full">
+                <span className="mb-2 mr-2 block rounded-full py-1 text-base font-semibold text-gray-700">
                   Tokens
                 </span>
                 <span className="text-right">
@@ -292,7 +297,7 @@ function MyPage() {
                     (+ethers.utils.formatUnits(contractInfo.qitbalance, 6)).toFixed(2)
                   ) : (
                     <svg
-                      className="inline w-4 h-4 mr-1 -ml-1 text-black animate-spin"
+                      className="mr-1 -ml-1 inline h-4 w-4 animate-spin text-black"
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
                       viewBox="0 0 24 24"
@@ -316,8 +321,8 @@ function MyPage() {
                 </span>
               </div>
 
-              <div className="flex justify-between h-full">
-                <span className="block py-1 mb-2 mr-2 text-base font-semibold text-gray-700 rounded-full">
+              <div className="flex h-full justify-between">
+                <span className="mb-2 mr-2 block rounded-full py-1 text-base font-semibold text-gray-700">
                   Value
                 </span>
                 <span className="text-right">
@@ -325,7 +330,7 @@ function MyPage() {
                     (+ethers.utils.formatEther(holdingValue)).toFixed(2)
                   ) : (
                     <svg
-                      className="inline w-4 h-4 mr-1 -ml-1 text-black animate-spin"
+                      className="mr-1 -ml-1 inline h-4 w-4 animate-spin text-black"
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
                       viewBox="0 0 24 24"
@@ -350,7 +355,7 @@ function MyPage() {
               </div>
 
               <div className="flex justify-between">
-                <span className="block py-1 mb-2 mr-2 text-base font-semibold text-gray-700 rounded-full">
+                <span className="mb-2 mr-2 block rounded-full py-1 text-base font-semibold text-gray-700">
                   Change
                 </span>
                 <span className="text-right">12%</span>
@@ -358,21 +363,21 @@ function MyPage() {
             </div>
           </div>
           {/* My Withdrawals */}
-          <div className="w-full h-full max-w-lg px-6 py-4 my-3 overflow-hidden text-gray-900 rounded-lg shadow-lg mx-7 bg-neutral-100 ">
+          <div className="my-3 mx-7 h-full w-full max-w-lg overflow-hidden rounded-lg bg-neutral-100 px-6 py-4 text-gray-900 shadow-lg ">
             {/* Title */}
             <div className="mb-2 text-xl font-bold">My Withdrawals</div>
             <div>
               <div className="flex justify-between">
-                <span className="block py-1 mb-2 mr-2 text-base font-semibold text-gray-700 rounded-full">
+                <span className="mb-2 mr-2 block rounded-full py-1 text-base font-semibold text-gray-700">
                   Withdrawal Lockup Ends
                 </span>
                 <span className="text-right">
-                  {new Date(contractInfo.lockupEnds * 1000).toLocaleString()}
+                  {ready && new Date(contractInfo.lockupEnds * 1000).toLocaleString()}
                 </span>
               </div>
 
               <div className="flex justify-between">
-                <span className="block py-1 mb-2 mr-2 text-base font-semibold text-gray-700 rounded-full">
+                <span className="mb-2 mr-2 block rounded-full py-1 text-base font-semibold text-gray-700">
                   Pending Withdrawals
                 </span>
                 <span className="text-right">
@@ -385,12 +390,12 @@ function MyPage() {
 
         {/* Information text */}
         <div className="bg-gray-800">
-          <div className="max-w-6xl px-4 py-16 mx-auto sm:py-24 sm:px-6 lg:flex lg:justify-between lg:px-8">
+          <div className="mx-auto max-w-6xl px-4 py-16 sm:py-24 sm:px-6 lg:flex lg:justify-between lg:px-8">
             <div className="max-w-2xl">
               <h1 className="text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl">
                 About the Fund
               </h1>
-              <p className="mt-5 text-gray-400 text-md flex-nowrap sm:text-xl">
+              <p className="text-md mt-5 flex-nowrap text-gray-400 sm:text-xl">
                 The Quantifi Investor Fund offers managed exposure to a wide array of
                 cryptocurrencies on the BNB Blockchain. The fund prioritizes low drawdown and is
                 directed by a sophisticated quantitative investment model (see{" "}
@@ -407,7 +412,7 @@ function MyPage() {
                     viewBox="0 0 24 24"
                     strokeWidth={1.5}
                     stroke="currentColor"
-                    className="inline-block w-4 h-4 pl-1"
+                    className="inline-block h-4 w-4 pl-1"
                   >
                     <path
                       strokeLinecap="round"

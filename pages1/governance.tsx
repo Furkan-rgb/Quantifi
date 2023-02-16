@@ -1,7 +1,7 @@
 import { useWeb3React } from "@web3-react/core";
 import { ChartOptions } from "chart.js";
 import { ethers, BigNumber } from "ethers";
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import Linechart from "../components/Dashboard/Linechart";
 import Staking from "../components/Dividends/Staking";
 import { Unstaking } from "../components/Dividends/Unstaking";
@@ -278,7 +278,7 @@ function GovernancePage() {
       </main>
 
       {ready && isConnected ? (
-        <div className="pt-12 bg-gray-50 sm:pt-16 ">
+        <div className="bg-gray-50 pt-12 sm:pt-16 ">
           <Staking
             balance={qntfiInfo.qntfiBalance.sub(qntfiInfo.qntfiStaked)}
             stake={stakeQNTFI}
@@ -287,21 +287,21 @@ function GovernancePage() {
           />
 
           {/* Title  */}
-          <div className="px-4 pt-16 mx-auto max-w-7xl sm:px-6 lg:px-8">
-            <div className="max-w-4xl mx-auto text-center">
+          <div className="mx-auto max-w-7xl px-4 pt-16 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-4xl text-center">
               <h2 className="mb-4 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
                 Your staked QNTFI
               </h2>
             </div>
           </div>
           {/* Table and Info */}
-          <div className="pb-12 bg-white sm:pb-16">
+          <div className="bg-white pb-12 sm:pb-16">
             <div className="relative">
               <div className="absolute inset-0 h-1/2 bg-gray-50" />
               <div className="relative mx-auto max-w-7xl sm:px-6 lg:px-8">
-                <div className="max-w-2xl px-2 mx-auto sm:px-0">
-                  <dl className="bg-white rounded-lg shadow-md sm:grid sm:grid-cols-2 sm:shadow-lg">
-                    <div className="flex flex-col items-center justify-center p-6 text-center border-b border-gray-100 sm:border-0 sm:border-r">
+                <div className="mx-auto max-w-2xl px-2 sm:px-0">
+                  <dl className="rounded-lg bg-white shadow-md sm:grid sm:grid-cols-2 sm:shadow-lg">
+                    <div className="flex flex-col items-center justify-center border-b border-gray-100 p-6 text-center sm:border-0 sm:border-r">
                       <dt className="order-2 mt-2 text-lg font-medium leading-6 text-gray-500">
                         {!loading && "Your total QNTFI staked"}
                       </dt>
@@ -313,7 +313,7 @@ function GovernancePage() {
                         )}
                       </dd>
                     </div>
-                    <div className="flex flex-col items-center justify-center p-6 text-center border-t border-b border-gray-100 sm:border-0 sm:border-l sm:border-r">
+                    <div className="flex flex-col items-center justify-center border-t border-b border-gray-100 p-6 text-center sm:border-0 sm:border-l sm:border-r">
                       <dt className="order-2 mt-2 text-lg font-medium leading-6 text-gray-500">
                         {!loading && "Your staked weight"}
                       </dt>
@@ -327,7 +327,7 @@ function GovernancePage() {
                     </div>
                   </dl>
                 </div>
-                <div className="flex justify-center w-full">
+                <div className="flex w-full justify-center">
                   <div className="w-full max-w-2xl">
                     <Unstaking
                       totalStakes={+qntfiInfo.numStakes}
@@ -343,9 +343,9 @@ function GovernancePage() {
           </div>
         </div>
       ) : (
-        <div className="py-12 bg-white sm:py-16">
-          <div className="px-4 py-16 mx-auto bg-gray-100 max-w-7xl sm:rounded-md sm:px-6 lg:px-8">
-            <div className="max-w-4xl mx-auto text-center">
+        <div className="bg-white py-12 sm:py-16">
+          <div className="mx-auto max-w-7xl bg-gray-100 px-4 py-16 sm:rounded-md sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-4xl text-center">
               <h2 className="pb-4 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
                 Connect your wallet to stake QNTFI
               </h2>
@@ -355,11 +355,11 @@ function GovernancePage() {
       )}
 
       {/* Proposals */}
-      <div className="flex justify-center pb-4 bg-white">
+      <div className="flex justify-center bg-white pb-4">
         <div className="w-full max-w-2xl pb-6 text-center">
           <h2
             id="proposals"
-            className="mb-4 text-4xl font-bold tracking-tight text-gray-900 -scroll-mt-60 sm:text-5xl"
+            className="mb-4 -scroll-mt-60 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl"
           >
             Proposals
           </h2>
