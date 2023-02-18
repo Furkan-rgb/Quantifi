@@ -2,6 +2,7 @@ import { LockClosedIcon, ScaleIcon } from "@heroicons/react/24/outline";
 import { useWeb3React } from "@web3-react/core";
 import { ethers } from "ethers";
 import { useEffect, useState } from "react";
+import { useAccount } from "wagmi";
 
 interface Stake {
   stakeDate: ethers.BigNumber;
@@ -12,23 +13,29 @@ interface Stake {
 
 export function Unstaking({
   totalStakes,
+  updateTotalStakes,
   getStake,
   setTotalStakedWeight,
   unstakeQNTFI,
 }: {
   totalStakes: number;
+  updateTotalStakes: () => Promise<void>;
   getStake: (account: string, idx: number) => Promise<Stake>;
   setTotalStakedWeight: (totalStakedWeight: number) => void;
-  unstakeQNTFI: (id: number) => void;
+  unstakeQNTFI: (id: number) => Promise<void>;
 }) {
   const [allStakes, setAllStakes] = useState<Stake[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [loadingText, setLoadingText] = useState<string>("Loading stakes");
-  const { account } = useWeb3React();
+  const [loadingText, setLoadingText] = useState<string>("Connecting to wallet...");
+  const { address, isConnecting, isDisconnected, isConnected } = useAccount();
+
+  const [isReady, setIsReady] = useState(false);
+  useEffect(() => setIsReady(true), []);
 
   // Get stake details
   useEffect(() => {
-    if (!account) return;
+    if (isDisconnected) return;
+    if (isConnecting) return;
     if (totalStakes === 0) return;
     // Reset stakes to empty array
     setAllStakes([]);
@@ -39,16 +46,20 @@ export function Unstaking({
       // Loop through all stakes
       for (let i = 0; i < totalStakes; i++) {
         setLoadingText(`Loading stake ${i + 1} of ${totalStakes}`);
-        const stake = await getStake(account, i);
-        stakes.push(stake);
-        totalWeight += parseFloat(stake?.weight?.toString());
+        try {
+          const stake = await getStake(address!, i);
+          stakes.push(stake);
+          totalWeight += parseFloat(stake?.weight?.toString());
+        } catch (e) {
+          console.log(e);
+        }
       }
       setAllStakes(stakes);
       setTotalStakedWeight(totalWeight);
       setLoading(false);
     };
     fetchStakes();
-  }, [totalStakes, getStake, account]);
+  }, [totalStakes, address]);
 
   return (
     <div className="w-full">
@@ -82,7 +93,7 @@ export function Unstaking({
               </th>
             </tr>
           </thead>
-          {account && (
+          {isReady && address && (
             <tbody className="bg-white divide-y divide-gray-200">
               {allStakes.map((stake, idx) => (
                 <tr key={idx}>
@@ -140,17 +151,17 @@ export function Unstaking({
             </tbody>
           )}
         </table>
-        {loading && account && (
+        {isReady && loading && isConnected && (
           <div className="w-full py-2 font-sans antialiased text-center text-slate-600">
             {loadingText}
           </div>
         )}
-        {!loading && allStakes.length === 0 && (
+        {isReady && !loading && allStakes.length === 0 && (
           <div className="w-full py-2 font-sans antialiased text-center text-slate-600">
             No stakes found
           </div>
         )}
-        {!account && (
+        {isReady && isDisconnected && (
           <div className="w-full py-2 font-sans antialiased text-center text-slate-600">
             Connect your wallet to view your stakes
           </div>

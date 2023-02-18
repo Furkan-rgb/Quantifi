@@ -2,7 +2,7 @@ import { BigNumber, ethers } from "ethers";
 
 export interface StakingProps {
   balance: ethers.BigNumber;
-  stake: (amount: number, lockUpDays: number) => void;
+  stake: (amount: number, lockUpDays: number) => Promise<void>;
   amount: number;
   lockUpDays: number;
 }

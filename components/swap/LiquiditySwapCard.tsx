@@ -2,8 +2,10 @@ import { ArrowDownIcon } from "@heroicons/react/24/outline";
 import React from "react";
 // import USDTIcon from "../icons/USDTIcon";
 import Image from "next/image";
+import Spinner from "../animations/Spinner";
 
 function SwapCard({
+  loading,
   currentTab,
   setCurrentTab,
   inputValue,
@@ -17,6 +19,7 @@ function SwapCard({
   USDTBalance,
   QITBalance,
 }: {
+  loading: boolean;
   currentTab: string;
   setCurrentTab: Function;
   inputValue: string | undefined;
@@ -100,16 +103,7 @@ function SwapCard({
           <div className="flex justify-between p-2 pb-1 -mb-1 bg-gray-600 rounded-t-md">
             <label className="text-sm text-gray-300 ">From</label>
             <label className="text-sm text-gray-300 ">
-              Balance:{" "}
-              <span>
-                {currentTab === "deposit"
-                  ? USDTBalance
-                    ? USDTBalance
-                    : 0
-                  : QITBalance
-                  ? QITBalance
-                  : 0}
-              </span>
+              Balance: <span>{currentTab === "deposit" ? USDTBalance || 0 : QITBalance || 0}</span>
             </label>
           </div>
           <div className="relative z-0 flex w-full mb-4 bg-gray-600 group rounded-b-md">
@@ -141,7 +135,7 @@ function SwapCard({
 
             <span className="inline-flex items-center px-3 text-sm text-white border-0 border-b-0 border-gray-300 appearance-none peer whitespace-nowrap focus:border-blue-600 focus:outline-none focus:ring-0 dark:border-gray-600 dark:focus:border-blue-500">
               <button
-                className="mr-1 text-xs opacity-75 hover:opacity-100"
+                className="mr-2 text-sm opacity-50 hover:opacity-100"
                 type="button"
                 onClick={() => {
                   currentTab === "deposit" ? setInputValue(USDTBalance) : setInputValue(QITBalance);
@@ -150,10 +144,17 @@ function SwapCard({
                     : getWithdrawalValue(QITBalance);
                 }}
               >
-                max
+                Max
               </button>
               {currentTab == "withdrawal" ? (
-                <Image src="/quantifi_icon.png" width={24} height={29} />
+                <Image
+                  quality={100}
+                  src="/quantifi_icon.png"
+                  width={19}
+                  height={23}
+                  loading="eager"
+                  layout="fixed"
+                />
               ) : (
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -212,7 +213,14 @@ function SwapCard({
 
             <span className="inline-flex items-center px-3 text-sm text-white border-0 border-b-0 border-gray-300 appearance-none peer whitespace-nowrap focus:border-blue-600 focus:outline-none focus:ring-0 dark:border-gray-600 dark:focus:border-blue-50">
               {currentTab == "deposit" ? (
-                <Image src="/quantifi_icon.png" width={24} height={29} />
+                <Image
+                  quality={100}
+                  src="/quantifi_icon.png"
+                  width={19}
+                  height={23}
+                  loading="eager"
+                  layout="fixed"
+                />
               ) : (
                 // <USDTIcon width="22px" />
                 <svg
@@ -241,13 +249,14 @@ function SwapCard({
             </span>
           </div>
           <button
+            disabled={loading}
             onClick={() => {
               swapOrApprove();
             }}
             type="button"
-            className="w-full rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 "
+            className="flex w-full justify-center rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 disabled:opacity-40 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
           >
-            {swapButtonText}
+            {loading ? <Spinner height={20} width={20} /> : swapButtonText}
           </button>
         </form>
       </div>

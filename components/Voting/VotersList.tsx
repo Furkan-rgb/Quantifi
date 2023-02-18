@@ -96,13 +96,13 @@ export default function VotersList({ proposalId }: { proposalId: string }) {
   }, [proposalId]);
 
   return (
-    <div className="px-4 pt-6 bg-gray-200 sm:rounded-lg sm:px-6 sm:shadow-lg lg:px-8">
+    <div className="bg-gray-200 px-4 pt-6 sm:rounded-lg sm:px-6 sm:shadow-lg lg:px-8">
       <div className="sm:flex sm:items-center">
         <div className="sm:flex-auto">
           <h1 className="text-2xl font-semibold text-gray-900">Voters</h1>
         </div>
       </div>
-      <div className="flex flex-col mt-6">
+      <div className="mt-6 flex flex-col">
         <div className="-mx-4 -my-2 sm:-mx-6 lg:-mx-8">
           <div className="inline-block min-w-full py-2 align-middle">
             <div className="shadow-sm ring-1 ring-black ring-opacity-5">
@@ -117,13 +117,13 @@ export default function VotersList({ proposalId }: { proposalId: string }) {
                     </th>
                     <th
                       scope="col"
-                      className="sticky top-0 z-10 hidden border-b border-gray-300 bg-gray-50 bg-opacity-75 px-3 py-3.5 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter sm:table-cell"
+                      className="sticky top-0 z-10  border-b border-gray-300 bg-gray-50 bg-opacity-75 px-3 py-3.5 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter sm:table-cell"
                     >
                       Option
                     </th>
                     <th
                       scope="col"
-                      className="sticky top-0 z-10 hidden border-b border-gray-300 bg-gray-50 bg-opacity-75 px-3 py-3.5 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter lg:table-cell"
+                      className="sticky top-0 z-10 hidden border-b border-gray-300 bg-gray-50 bg-opacity-75 px-3 py-3.5 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter sm:table-cell"
                     >
                       Stake (QNTFI)
                     </th>

@@ -1,7 +1,7 @@
 import { useWeb3React } from "@web3-react/core";
 import { ChartOptions } from "chart.js";
 import { ethers, BigNumber } from "ethers";
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import Linechart from "../components/Dashboard/Linechart";
 import Staking from "../components/Dividends/Staking";
 import { Unstaking } from "../components/Dividends/Unstaking";
@@ -11,8 +11,16 @@ import Spinner from "../components/animations/Spinner";
 import Notification, { NotificationContent } from "../components/Notification";
 import { timeout } from "../components/utils/timeout";
 
+import { useAccount, useProvider, useSigner } from "wagmi";
+import { fetchSigner } from "@wagmi/core";
+
 // our-domain.com/governance
 function GovernancePage() {
+  const [ready, setReady] = useState<boolean>(false);
+  useEffect(() => {
+    setReady(true);
+  }, []);
+
   const [notificationStatus, setNotificationStatus] =
     useState<NotificationContent["status"]>("info");
   const [totalStakedWeight, setTotalStakedWeight] = useState<number>(0);
@@ -42,10 +50,16 @@ function GovernancePage() {
     totalQntfiStaked: ethers.BigNumber.from(0),
   });
 
+  const [QNTFIStaked, setQNTFIStaked] = useState<string>();
+  const [stakedWeight, setStakedWeight] = useState<string>();
+
+  const provider = useProvider();
+  const { address, isConnecting, isDisconnected, isConnected } = useAccount();
+
   const QNTFI = new ethers.Contract(
     "0x0781B099a57B1ebCaF1c1D72A2dC72Aa5773d3B5",
     qntfiABI,
-    library
+    provider
   );
 
   const [showNotification, setNotificationShow] = useState(false);
@@ -62,28 +76,30 @@ function GovernancePage() {
   // Sets the contract values
   async function _setContractInfo() {
     setLoading(true);
-    if (!account) return;
+    if (isDisconnected) return;
     try {
       setQntfiInfo({
         address: QNTFI.address,
         tokenName: "QNTFI",
-        qntfiBalance: await QNTFI.balanceOf(account),
-        numStakes: await QNTFI.numStakes(account),
-        qntfiStaked: await QNTFI.tokensStaked(account),
+        qntfiBalance: await QNTFI.balanceOf(address),
+        numStakes: await QNTFI.numStakes(address),
+        qntfiStaked: await QNTFI.tokensStaked(address),
         totalQntfiStaked: await QNTFI.getTotalStakes(),
       });
     } catch (error) {
       console.error("Couldn't set QNTFI contract info: " + error);
     } finally {
       setLoading(false);
+      console.log(qntfiInfo);
     }
   }
 
   async function stakeQNTFI(amount: number, days: number) {
     if (!amount) return;
-    if (!account) return;
+    if (!isConnected) return;
 
-    const QNTFIConnect = QNTFI.connect(library.getSigner());
+    const signer = await fetchSigner();
+    const QNTFIConnect = QNTFI.connect(signer!);
     try {
       // Request stake
       const tx = await QNTFIConnect.stakeTokens(ethers.utils.parseEther(amount.toString()), days);
@@ -103,8 +119,9 @@ function GovernancePage() {
   }
 
   async function unstakeQNTFI(arrIndex: number) {
-    if (!account) return;
-    const QNTFIConnect = QNTFI.connect(library.getSigner());
+    if (isDisconnected) return;
+    const signer = await fetchSigner();
+    const QNTFIConnect = QNTFI.connect(signer!);
     try {
       changeNotificationContent("In progress", "Unstaking Requested", "loading");
       setNotificationShow(true);
@@ -118,7 +135,9 @@ function GovernancePage() {
       await timeout(2000);
       setNotificationShow(false);
     } catch (error: any) {
-      changeNotificationContent("Failed", "Unstaking Failed", "error");
+      if (error.message.includes("Unlock time not yet reached")) {
+        changeNotificationContent("Failed", "Unlock time not yet reached", "error");
+      } else changeNotificationContent("Failed", "Unstaking Failed", "error");
       setNotificationShow(true);
       console.error("Couldn't unstake QNTFI: " + error.message);
     }
@@ -126,16 +145,21 @@ function GovernancePage() {
 
   // account change -> contract info update
   useEffect(() => {
-    if (!account) return;
+    if (isDisconnected) return;
+    if (isConnecting) return;
+
     _setContractInfo();
-  }, [account, active, library]);
+  }, [address, isConnected]);
 
   // Calculate staked weight value
   useEffect(() => {
+    console.log("Contract info", qntfiInfo);
     if (!qntfiInfo.qntfiStaked) return;
-    if (!totalStakedWeight) return;
-    setTotalStakedWeightPercentage((+totalStakedWeight / +qntfiInfo.totalQntfiStaked) * 100);
-  }, [totalStakedWeight]);
+    // if (!totalStakedWeight) return;
+    if (!qntfiInfo.totalQntfiStaked || qntfiInfo.totalQntfiStaked.isZero()) return;
+    setTotalStakedWeightPercentage((+qntfiInfo.qntfiStaked / +qntfiInfo.totalQntfiStaked) * 100);
+    console.log("weight", stakedWeight);
+  }, [totalStakedWeight, qntfiInfo]);
 
   // Line chart stuff
   const labels = new Array(7).fill(0).map((_, i) => `Day ${i + 1}`);
@@ -194,6 +218,35 @@ function GovernancePage() {
     },
   };
 
+  function TotalQNTFIStaked() {
+    setQNTFIStaked(
+      (+ethers.utils.formatUnits(qntfiInfo.qntfiStaked, 18)).toLocaleString(undefined, {
+        minimumFractionDigits: 3,
+      })
+    );
+  }
+
+  async function updateTotalStakes() {
+    if (isDisconnected) return;
+    try {
+      setQntfiInfo({
+        ...qntfiInfo,
+        totalQntfiStaked: await QNTFI.getTotalStakes(),
+      });
+    } catch (error) {
+      console.error("Couldn't update total stakes: " + error);
+    }
+  }
+
+  function StakedWeight() {
+    setStakedWeight(totalStakedWeightPercentage?.toFixed(3) + "%");
+  }
+
+  useEffect(() => {
+    TotalQNTFIStaked();
+    StakedWeight();
+  }, [qntfiInfo, loading, isConnected, isDisconnected, totalStakedWeightPercentage]);
+
   return (
     <>
       <main className="mt-16 sm:my-24">
@@ -223,96 +276,94 @@ function GovernancePage() {
           </div>
         </div>
       </main>
-      <div className="pt-12 bg-gray-50 sm:pt-16">
-        <Staking
-          balance={qntfiInfo.qntfiBalance.sub(qntfiInfo.qntfiStaked)}
-          stake={stakeQNTFI}
-          amount={inputValue}
-          lockUpDays={lockUpDays}
-        />
 
-        {/* Title  */}
-        <div className="px-4 pt-16 mx-auto max-w-7xl sm:px-6 lg:px-8">
-          <div className="max-w-4xl mx-auto text-center">
-            <h2 className="mb-4 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
-              Your staked QNTFI
-            </h2>
+      {ready && isConnected ? (
+        <div className="bg-gray-50 pt-12 sm:pt-16 ">
+          <Staking
+            balance={qntfiInfo.qntfiBalance.sub(qntfiInfo.qntfiStaked)}
+            stake={stakeQNTFI}
+            amount={inputValue}
+            lockUpDays={lockUpDays}
+          />
+
+          {/* Title  */}
+          <div className="mx-auto max-w-7xl px-4 pt-16 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-4xl text-center">
+              <h2 className="mb-4 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
+                Your staked QNTFI
+              </h2>
+            </div>
           </div>
-        </div>
-        {/* Table and Info */}
-        <div className="pb-12 bg-white sm:pb-16">
-          <div className="relative">
-            <div className="absolute inset-0 h-1/2 bg-gray-50" />
-            <div className="relative mx-auto max-w-7xl sm:px-6 lg:px-8">
-              <div className="max-w-2xl px-2 mx-auto sm:px-0">
-                <dl className="bg-white rounded-lg shadow-md sm:grid sm:grid-cols-2 sm:shadow-lg">
-                  <div className="flex flex-col items-center justify-center p-6 text-center border-b border-gray-100 sm:border-0 sm:border-r">
-                    <dt className="order-2 mt-2 text-lg font-medium leading-6 text-gray-500">
-                      {account && "Your total QNTFI staked"}
-                    </dt>
-                    <dd className="order-1 text-5xl font-bold tracking-tight text-indigo-600">
-                      {loading ? (
-                        <Spinner height={32} width={32} />
-                      ) : (
-                        <>
-                          {!account && (
-                            <div className="w-full py-2 font-sans text-lg antialiased font-normal text-center text-slate-600">
-                              Connect your wallet to view your stakes
-                            </div>
-                          )}
-                          {account &&
-                            (+ethers.utils.formatUnits(qntfiInfo.qntfiStaked, 18)).toFixed(2) +
-                              " " +
-                              qntfiInfo.tokenName}
-                        </>
-                      )}
-                    </dd>
+          {/* Table and Info */}
+          <div className="bg-white pb-12 sm:pb-16">
+            <div className="relative">
+              <div className="absolute inset-0 h-1/2 bg-gray-50" />
+              <div className="relative mx-auto max-w-7xl sm:px-6 lg:px-8">
+                <div className="mx-auto max-w-2xl px-2 sm:px-0">
+                  <dl className="rounded-lg bg-white shadow-md sm:grid sm:grid-cols-2 sm:shadow-lg">
+                    <div className="flex flex-col items-center justify-center border-b border-gray-100 p-6 text-center sm:border-0 sm:border-r">
+                      <dt className="order-2 mt-2 text-lg font-medium leading-6 text-gray-500">
+                        {!loading && "Your total QNTFI staked"}
+                      </dt>
+                      <dd className="order-1 text-5xl font-bold tracking-tight text-indigo-600">
+                        {loading || totalStakedWeightPercentage === undefined ? (
+                          <Spinner height={32} width={32} />
+                        ) : (
+                          QNTFIStaked?.toLocaleString()
+                        )}
+                      </dd>
+                    </div>
+                    <div className="flex flex-col items-center justify-center border-t border-b border-gray-100 p-6 text-center sm:border-0 sm:border-l sm:border-r">
+                      <dt className="order-2 mt-2 text-lg font-medium leading-6 text-gray-500">
+                        {!loading && "Your staked weight"}
+                      </dt>
+                      <dd className="order-1 text-5xl font-bold tracking-tight text-indigo-600">
+                        {loading || totalStakedWeightPercentage === undefined ? (
+                          <Spinner height={32} width={32} />
+                        ) : (
+                          stakedWeight
+                        )}
+                      </dd>
+                    </div>
+                  </dl>
+                </div>
+                <div className="flex w-full justify-center">
+                  <div className="w-full max-w-2xl">
+                    <Unstaking
+                      totalStakes={+qntfiInfo.numStakes}
+                      updateTotalStakes={updateTotalStakes}
+                      getStake={QNTFI.stakes}
+                      setTotalStakedWeight={setTotalStakedWeight}
+                      unstakeQNTFI={unstakeQNTFI}
+                    />
                   </div>
-                  <div className="flex flex-col items-center justify-center p-6 text-center border-t border-b border-gray-100 sm:border-0 sm:border-l sm:border-r">
-                    <dt className="order-2 mt-2 text-lg font-medium leading-6 text-gray-500">
-                      {account && "Your Staked Weight"}
-                    </dt>
-                    <dd className="order-1 text-5xl font-bold tracking-tight text-indigo-600">
-                      {loading || totalStakedWeightPercentage === undefined ? (
-                        <Spinner height={32} width={32} />
-                      ) : (
-                        <>
-                          {!account && (
-                            <div className="w-full py-2 font-sans text-lg antialiased font-normal text-center text-slate-600">
-                              Connect your wallet to view your staked weight
-                            </div>
-                          )}
-                          {account && totalStakedWeightPercentage?.toFixed(3) + "%"}
-                        </>
-                      )}
-                    </dd>
-                  </div>
-                </dl>
-              </div>
-              <div className="flex justify-center w-full">
-                <div className="w-full max-w-2xl">
-                  <Unstaking
-                    totalStakes={qntfiInfo.numStakes.toNumber()}
-                    getStake={QNTFI.stakes}
-                    setTotalStakedWeight={setTotalStakedWeight}
-                    unstakeQNTFI={unstakeQNTFI}
-                  />
                 </div>
               </div>
             </div>
           </div>
         </div>
-        {/* Proposals */}
-        <div className="flex justify-center pb-4 bg-white">
-          <div className="w-full max-w-2xl pb-6 text-center">
-            <h2
-              id="proposals"
-              className="mb-4 text-4xl font-bold tracking-tight text-gray-900 -scroll-mt-60 sm:text-5xl"
-            >
-              Proposals
-            </h2>
-            <Proposals />
+      ) : (
+        <div className="bg-white py-12 sm:py-16">
+          <div className="mx-auto max-w-7xl bg-gray-100 px-4 py-16 sm:rounded-md sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-4xl text-center">
+              <h2 className="pb-4 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
+                Connect your wallet to stake QNTFI
+              </h2>
+            </div>
           </div>
+        </div>
+      )}
+
+      {/* Proposals */}
+      <div className="flex justify-center bg-white pb-4">
+        <div className="w-full max-w-2xl pb-6 text-center">
+          <h2
+            id="proposals"
+            className="mb-4 -scroll-mt-60 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl"
+          >
+            Proposals
+          </h2>
+          <Proposals />
         </div>
       </div>
 
@@ -327,5 +378,16 @@ function GovernancePage() {
     </>
   );
 }
+
+// GovernancePage.getInitialProps = async () => {
+//   return {
+//     isConnecting: false,
+//     isDisconnected: false,
+//     isConnected: false,
+//     qntfiInfo: {
+//       qntfiStaked: 0,
+//     },
+//   };
+// };
 
 export default GovernancePage;

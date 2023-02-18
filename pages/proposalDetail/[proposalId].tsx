@@ -31,13 +31,13 @@ export default function proposalDetail() {
   }, [router, proposalState]);
 
   return (
-    <div className="flex justify-center min-h-screen bg-white">
-      <div className="grid w-full grid-flow-row grid-cols-2 gap-4 pt-4 pb-8 max-w-7xl auto-rows-max sm:px-8">
+    <div className="flex min-h-screen justify-center bg-white">
+      <div className="grid w-full max-w-7xl grid-flow-row auto-rows-max grid-cols-2 gap-4 pt-4 pb-8 sm:px-8">
         {/* Top section */}
-        <div className="col-span-2 p-4 h-max sm:pl-0">
+        <div className="col-span-2 h-max p-4 sm:pl-0">
           <div className=" lg:w-1/2 xl:pr-16">
-            <div className="flex items-center text-black cursor-pointer">
-              <ChevronLeftIcon className="inline-block w-5 h-5 sm:h-6 sm:w-6" />{" "}
+            <div className="flex cursor-pointer items-center text-black">
+              <ChevronLeftIcon className="inline-block h-5 w-5 sm:h-6 sm:w-6" />{" "}
               <Link href="/governance#proposals">
                 <span className="hover:underline sm:text-sm md:text-base">Back to Proposals</span>
               </Link>
@@ -47,10 +47,10 @@ export default function proposalDetail() {
             <h1 className="mt-3 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl md:text-6xl lg:text-5xl xl:text-6xl">
               <span className="block xl:inline">{query.title}</span>
             </h1>
-            <p className="max-w-md mx-auto mt-3 text-lg text-gray-500 sm:text-xl md:mt-5 md:max-w-3xl">
+            <span className="mx-auto mt-3 max-w-md text-lg text-gray-500 sm:text-xl md:mt-5 md:max-w-3xl">
               {query.description}
-            </p>
-            <div className="flex mt-2">
+            </span>
+            <div className="mt-2 flex">
               <div className="flex items-center text-sm text-gray-500">
                 <CalendarIcon
                   className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
@@ -91,13 +91,12 @@ export default function proposalDetail() {
         </div>
         {/* Results Card */}
         <div className="col-span-2 h-max bg-clip-padding sm:col-span-1 sm:rounded-lg sm:shadow-lg">
-          <div className="px-6 py-6 bg-gray-200 sm:flex sm:items-center sm:rounded-t-lg">
+          <div className="bg-gray-200 px-6 py-6 sm:flex sm:items-center sm:rounded-t-lg">
             <div className="sm:flex-auto">
               <h1 className="text-2xl font-semibold text-gray-900">Results</h1>
             </div>
           </div>
           <div className="w-full px-6">
-            {/* Need Context Provider here for voting function sharing */}
             {proposalId === undefined ? (
               <div className="flex justify-center">
                 <p>Loading...</p>

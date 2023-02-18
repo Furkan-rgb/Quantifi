@@ -1,9 +1,9 @@
 import { Disclosure, Transition } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useRouter } from "next/router";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useState, useRef } from "react";
 import WalletConnectButton from "./buttons/walletConnectButton";
-import { useRef } from "react";
+import { CustomConnectButton } from "./buttons/CustomConnectButton";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
@@ -103,7 +103,8 @@ export default function Navbar() {
 
               {/* Connect Wallet Button */}
               <div className="absolute inset-y-0 right-0 flex items-center pt-2 pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-                <WalletConnectButton></WalletConnectButton>
+                {/* <WalletConnectButton></WalletConnectButton> */}
+                <CustomConnectButton />
               </div>
             </div>
           </div>

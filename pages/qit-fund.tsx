@@ -1,14 +1,14 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import myPageAbi from "../components/abi/QIT.json";
 import erc20ABI from "../components/abi/erc20.json";
-import { useWeb3React, UnsupportedChainIdError } from "@web3-react/core";
 import { BigNumber, ethers } from "ethers";
-import { networkParams } from "../components/utils/networks";
-import { ArrowDownIcon, XMarkIcon } from "@heroicons/react/24/outline";
-import { Transition } from "@headlessui/react";
 import Notification, { NotificationContent } from "../components/Notification";
-import Spinner from "../components/animations/Spinner";
 import LiquiditySwapCard from "../components/swap/LiquiditySwapCard";
+
+import { useAccount, useProvider, useSigner } from "wagmi";
+import { fetchSigner } from "@wagmi/core";
+
+import { timeout } from "../components/utils/timeout";
 
 function MyPage() {
   const [showNotification, setNotificationShow] = useState(false);
@@ -35,6 +35,11 @@ function MyPage() {
     pendingWithdrawals: BigNumber.from(0),
   });
 
+  const [ready, setReady] = useState<boolean>(false);
+  useEffect(() => {
+    setReady(true);
+  }, []);
+
   const [notificationStatus, setNotificationStatus] =
     useState<NotificationContent["status"]>("info");
   const [notificationMessage, setNotificationMessage] = useState<string>("");
@@ -44,24 +49,37 @@ function MyPage() {
   const minTopup = 500; // this will be updated to actual value
   const [loading, setLoading] = useState<boolean>(false); // loading state for button
 
-  const { library, chainId, account, active, error, setError, connector } = useWeb3React();
+  const { address, isConnecting, isDisconnected, isConnected } = useAccount();
+  const provider = useProvider();
 
-  const QIT = new ethers.Contract("0x4C4470D0B9c0dD92B25Be1D2fB5181cdA7e6E3f7", myPageAbi, library);
+  const QIT = new ethers.Contract(
+    "0x4C4470D0B9c0dD92B25Be1D2fB5181cdA7e6E3f7",
+    myPageAbi,
+    provider
+  );
   const ERC20 = new ethers.Contract(
     "0xEcAD8721BA48dBdc0eac431D68A0b140F07c0801",
     erc20ABI,
-    library
+    provider
   );
-  function classNames(...classes: string[]) {
-    return classes.filter(Boolean).join(" ");
-  }
 
-  async function getHoldingValue(_address: string) {
-    try {
-      const _holdingValue = await QIT.getHoldingValue(_address);
-      setHoldingValue(_holdingValue.toString());
-    } catch (error) {
-      console.error("Couldn't get holdingValue" + error);
+  async function getHoldingValue() {
+    if (isConnecting) {
+      console.log("Connecting...");
+      return;
+    }
+    if (isDisconnected) {
+      console.log("Disconnected");
+      return;
+    }
+    if (isConnected) {
+      console.log("Connected", address);
+      try {
+        const _holdingValue = await QIT.getHoldingValue(address);
+        setHoldingValue(_holdingValue.toString());
+      } catch (error) {
+        console.error("Couldn't get holdingValue: " + error);
+      }
     }
   }
 
@@ -114,11 +132,14 @@ function MyPage() {
 
   // Logic to determine if user can swap or needs approval first
   async function swapOrApprove() {
+    const signer = await fetchSigner();
     // DEPOSITS
-    if (currentTab == "deposit" && inputValue !== "") {
+    if (currentTab == "deposit" && inputValue !== "" && signer) {
       if (contractInfo.allowance.toBigInt() < ethers.utils.parseEther(inputValue).toBigInt()) {
-        const ERC20connect = ERC20.connect(library.getSigner());
+        const ERC20connect = ERC20.connect(signer);
         try {
+          setLoading(true);
+          console.log("Approving");
           // Approving
           const transaction = await ERC20connect.approve(
             QIT.address,
@@ -136,21 +157,25 @@ function MyPage() {
         } catch (error) {
           changeNotificationContent("Failed", "Approval was rejected", "error");
           setNotificationShow(true);
-
           console.log("Wallet transaction did not complete");
+        } finally {
+          setLoading(false);
         }
         // update after completion
       } else {
-        const QITconnect = QIT.connect(library.getSigner());
+        const QITconnect = QIT.connect(signer);
         try {
+          setLoading(true);
+          console.log("Depositing");
           // Depositing
           const transaction = await QITconnect.depositToFund(ethers.utils.parseEther(inputValue));
+          console.log("Transaction: ", transaction);
           changeNotificationContent("In progress", "Deposit Requested", "loading");
           setNotificationShow(true);
           const receipt = await transaction.wait();
 
           changeNotificationContent("Complete", "Deposit was successful", "success");
-          console.log(receipt);
+          console.log("Receipt: ", receipt);
 
           await timeout(2000);
           setNotificationShow(false);
@@ -159,43 +184,12 @@ function MyPage() {
           changeNotificationContent("Failed", "Deposit was rejected", "error");
           setNotificationShow(true);
           console.log("Unable to complete Deposit");
+        } finally {
+          setLoading(false);
         }
       }
-    }
-    function timeout(delay: number) {
-      return new Promise((res) => setTimeout(res, delay));
-    }
-
-    // WITHDRAWALS
-    if (currentTab == "withdrawal") {
-      if (
-        contractInfo.qitbalance > BigNumber.from(0) &&
-        inputValue !== "" &&
-        Date.now() / 1000 > contractInfo.lockupEnds
-      ) {
-        if (ethers.utils.parseEther(inputValue).toBigInt() > 0) {
-          const QITconnect = QIT.connect(library.getSigner());
-          try {
-            const transaction = await QITconnect.requestWithdrawal(
-              ethers.utils.parseUnits(inputValue, 6)
-            );
-            changeNotificationContent("In progress", "Withdrawal Requested", "loading");
-            setNotificationShow(true);
-            const receipt = await transaction.wait();
-
-            changeNotificationContent("Complete", "Withdrawal was successful", "success");
-            console.log(receipt);
-
-            await timeout(2000);
-            setNotificationShow(false);
-            _setContractInfo();
-          } catch (error: any) {
-            changeNotificationContent("Failed", "Withdrawal was rejected", "error");
-            setNotificationShow(true);
-            console.log("User rejected transaction");
-          }
-        }
-      }
+    } else {
+      console.log("No signer");
     }
   }
 
@@ -206,11 +200,11 @@ function MyPage() {
       setContractInfo({
         address: QIT.address,
         tokenName: "QIT",
-        qitbalance: await QIT.balanceOf(account),
-        usdtbalance: await ERC20.balanceOf(account),
-        allowance: await ERC20.allowance(account, QIT.address),
-        lockupEnds: await QIT.withdrawalLockTime(account),
-        pendingWithdrawals: await QIT.pendingWithdrawals(account),
+        qitbalance: await QIT.balanceOf(address),
+        usdtbalance: await ERC20.balanceOf(address),
+        allowance: await ERC20.allowance(address, QIT.address),
+        lockupEnds: await QIT.withdrawalLockTime(address),
+        pendingWithdrawals: await QIT.pendingWithdrawals(address),
       });
     } catch (error) {
       console.error("Couldn't set QIT contract info: " + error);
@@ -218,18 +212,20 @@ function MyPage() {
       setLoading(false);
     }
 
-    if (account !== null || account !== undefined) {
-      await getHoldingValue(account!);
+    if (isConnected) {
+      await getHoldingValue();
+    } else if (isConnecting) {
+      console.log("Connecting account");
     } else {
-      console.log("No account");
+      console.log("Not connected");
     }
   }
   // account change -> contract info update
   useEffect(() => {
-    if (account) {
+    if (address) {
       _setContractInfo();
     }
-  }, [account]);
+  }, [address]);
 
   // Returns swap button with correct body text based on input value
   function changeSwapButtonText() {
@@ -253,8 +249,8 @@ function MyPage() {
   }
   // Keeps track of input value to update swap button text
   useEffect(() => {
-    return () => changeSwapButtonText();
-  }, [inputValue, contractInfo.allowance]);
+    changeSwapButtonText();
+  }, [inputValue, contractInfo.allowance, currentTab]);
 
   function resetOutputValue(_currentTab: string) {
     if (_currentTab === currentTab) {
@@ -270,8 +266,8 @@ function MyPage() {
       {/* Exchange */}
       <div className="min-h-screen">
         <div className="md:flex md:items-center md:justify-between">
-          <div className="px-4 pt-4 mx-auto max-w-7xl sm:px-6 lg:flex lg:justify-between lg:px-8">
-            <div className="flex-1 min-w-0">
+          <div className="mx-auto max-w-7xl px-4 pt-4 sm:px-6 lg:flex lg:justify-between lg:px-8">
+            <div className="min-w-0 flex-1">
               <h2 className="text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
                 Quantifi Investor Fund
               </h2>
@@ -279,14 +275,14 @@ function MyPage() {
           </div>
         </div>
         {/* Cards */}
-        <div className="flex flex-col items-center justify-center w-full px-4 my-10 sm:flex-row sm:items-start ">
+        <div className="my-10 flex w-full flex-col items-center justify-center px-4 sm:flex-row sm:items-start ">
           {/* Holdings */}
-          <div className="w-full max-w-lg min-h-full px-6 py-4 my-3 overflow-hidden text-gray-900 rounded-lg shadow-lg mx-7 bg-neutral-100 ">
+          <div className="my-3 mx-7 min-h-full w-full max-w-lg overflow-hidden rounded-lg bg-neutral-100 px-6 py-4 text-gray-900 shadow-lg ">
             {/* Title */}
             <div className="mb-2 text-xl font-bold">My Holdings</div>
             <div>
               <div className="flex justify-between">
-                <span className="block py-1 mb-2 mr-2 text-base font-semibold text-gray-700 rounded-full">
+                <span className="mb-2 mr-2 block rounded-full py-1 text-base font-semibold text-gray-700">
                   Tokens
                 </span>
                 <span className="text-right">
@@ -294,7 +290,7 @@ function MyPage() {
                     (+ethers.utils.formatUnits(contractInfo.qitbalance, 6)).toFixed(2)
                   ) : (
                     <svg
-                      className="inline w-4 h-4 mr-1 -ml-1 text-black animate-spin"
+                      className="mr-1 -ml-1 inline h-4 w-4 animate-spin text-black"
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
                       viewBox="0 0 24 24"
@@ -318,8 +314,8 @@ function MyPage() {
                 </span>
               </div>
 
-              <div className="flex justify-between h-full">
-                <span className="block py-1 mb-2 mr-2 text-base font-semibold text-gray-700 rounded-full">
+              <div className="flex h-full justify-between">
+                <span className="mb-2 mr-2 block rounded-full py-1 text-base font-semibold text-gray-700">
                   Value
                 </span>
                 <span className="text-right">
@@ -327,7 +323,7 @@ function MyPage() {
                     (+ethers.utils.formatEther(holdingValue)).toFixed(2)
                   ) : (
                     <svg
-                      className="inline w-4 h-4 mr-1 -ml-1 text-black animate-spin"
+                      className="mr-1 -ml-1 inline h-4 w-4 animate-spin text-black"
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
                       viewBox="0 0 24 24"
@@ -352,7 +348,7 @@ function MyPage() {
               </div>
 
               <div className="flex justify-between">
-                <span className="block py-1 mb-2 mr-2 text-base font-semibold text-gray-700 rounded-full">
+                <span className="mb-2 mr-2 block rounded-full py-1 text-base font-semibold text-gray-700">
                   Change
                 </span>
                 <span className="text-right">12%</span>
@@ -360,21 +356,21 @@ function MyPage() {
             </div>
           </div>
           {/* My Withdrawals */}
-          <div className="w-full h-full max-w-lg px-6 py-4 my-3 overflow-hidden text-gray-900 rounded-lg shadow-lg mx-7 bg-neutral-100 ">
+          <div className="my-3 mx-7 h-full w-full max-w-lg overflow-hidden rounded-lg bg-neutral-100 px-6 py-4 text-gray-900 shadow-lg ">
             {/* Title */}
             <div className="mb-2 text-xl font-bold">My Withdrawals</div>
             <div>
               <div className="flex justify-between">
-                <span className="block py-1 mb-2 mr-2 text-base font-semibold text-gray-700 rounded-full">
+                <span className="mb-2 mr-2 block rounded-full py-1 text-base font-semibold text-gray-700">
                   Withdrawal Lockup Ends
                 </span>
                 <span className="text-right">
-                  {new Date(contractInfo.lockupEnds * 1000).toLocaleString()}
+                  {ready && new Date(contractInfo.lockupEnds * 1000).toLocaleString()}
                 </span>
               </div>
 
               <div className="flex justify-between">
-                <span className="block py-1 mb-2 mr-2 text-base font-semibold text-gray-700 rounded-full">
+                <span className="mb-2 mr-2 block rounded-full py-1 text-base font-semibold text-gray-700">
                   Pending Withdrawals
                 </span>
                 <span className="text-right">
@@ -387,12 +383,12 @@ function MyPage() {
 
         {/* Information text */}
         <div className="bg-gray-800">
-          <div className="max-w-6xl px-4 py-16 mx-auto sm:py-24 sm:px-6 lg:flex lg:justify-between lg:px-8">
+          <div className="mx-auto max-w-6xl px-4 py-16 sm:py-24 sm:px-6 lg:flex lg:justify-between lg:px-8">
             <div className="max-w-2xl">
               <h1 className="text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl">
                 About the Fund
               </h1>
-              <p className="mt-5 text-gray-400 text-md flex-nowrap sm:text-xl">
+              <p className="text-md mt-5 flex-nowrap text-gray-400 sm:text-xl">
                 The Quantifi Investor Fund offers managed exposure to a wide array of
                 cryptocurrencies on the BNB Blockchain. The fund prioritizes low drawdown and is
                 directed by a sophisticated quantitative investment model (see{" "}
@@ -409,7 +405,7 @@ function MyPage() {
                     viewBox="0 0 24 24"
                     strokeWidth={1.5}
                     stroke="currentColor"
-                    className="inline-block w-4 h-4 pl-1"
+                    className="inline-block h-4 w-4 pl-1"
                   >
                     <path
                       strokeLinecap="round"
@@ -429,6 +425,7 @@ function MyPage() {
         {/* Swap */}
         <div className="flex justify-center">
           <LiquiditySwapCard
+            loading={loading}
             currentTab={currentTab}
             setCurrentTab={setCurrentTab}
             resetOutputValue={resetOutputValue}
