@@ -1,12 +1,16 @@
-import { useWeb3React } from "@web3-react/core";
-import { ethers } from "ethers";
 import { useEffect, useState } from "react";
 import { VoteResults } from "./VoteResults";
-import govABI from "../../components/abi/governor.json";
 import Notification, { NotificationContent } from "../../components/Notification";
 import { timeout } from "../../components/utils/timeout";
+
 import Spinner from "../animations/Spinner";
 import { LinkIcon } from "@heroicons/react/24/outline";
+
+// Web3
+import { ethers } from "ethers";
+import govABI from "../../components/abi/governor.json";
+import { fetchSigner } from "@wagmi/core";
+import { useAccount, useProvider, useSigner } from "wagmi";
 
 // If proposal is open or closed,
 // show voting options or results
@@ -27,10 +31,11 @@ export function VoteAction({
     useState<NotificationContent["status"]>("info");
   const [loading, setLoading] = useState(false);
   const totalVotes = votingOptions.reduce((a: any, b: { votes: any }) => a + (b.votes || 0), 0);
-  const { library, account } = useWeb3React();
   const [voted, setVoted] = useState<boolean | null | undefined>();
 
-  const GOV = new ethers.Contract("0x506abE228305e35e24b0019C69728f0A5c32A206", govABI, library);
+  const { address, isConnecting, isDisconnected, isConnected } = useAccount();
+  const provider = useProvider();
+  const GOV = new ethers.Contract("0x506abE228305e35e24b0019C69728f0A5c32A206", govABI, provider);
 
   function changeNotificationContent(
     title: NotificationContent["title"],
@@ -43,17 +48,13 @@ export function VoteAction({
   }
 
   async function checkIfVoted() {
-    console.log("Checking if voted");
-    if (!account) return;
-    console.log("Account: " + account);
-    // if (!proposalId) return;
-    console.log("Proposal ID: " + proposalId);
-    console.log("Loading: " + voted);
-    const GOVConnect = GOV.connect(library.getSigner());
-    console.log("Checking if voted");
-    console.log("Proposal ID", proposalId);
-    const hasVoted = await GOVConnect.hasVoted(proposalId, account);
-    console.log("Has voted: " + hasVoted);
+    if (isDisconnected || isConnecting) return;
+
+    const signer = await fetchSigner();
+    if (!signer) return;
+
+    const GOVConnect = GOV.connect(signer);
+    const hasVoted = await GOVConnect.hasVoted(proposalId, address);
     setVoted(hasVoted);
   }
 
@@ -61,16 +62,19 @@ export function VoteAction({
     console.info("Checking if voted function call");
     checkIfVoted();
     console.log("Proposal Id is here", proposalId);
-  }, [account, proposalId]);
+  }, [address, proposalId]);
 
   async function vote(voteOption: number) {
     console.log("voteOnProposal");
     console.log(proposalId);
     console.log(voteOption);
 
-    if (!account) return;
+    if (isDisconnected || isConnecting) return;
 
-    const GOVConnect = GOV.connect(library.getSigner());
+    const signer = await fetchSigner();
+    if (!signer) return;
+
+    const GOVConnect = GOV.connect(signer);
     try {
       setLoading(true);
       changeNotificationContent("In progress", "Submitting Vote", "loading");
@@ -104,10 +108,10 @@ export function VoteAction({
   }
 
   // If checking whether user has voted, show loading
-  if (voted === undefined && account) {
+  if (voted === undefined && address) {
     console.log("Voted or not:", voted);
     return (
-      <div className="flex flex-col items-center justify-center w-full h-64 bg-white">
+      <div className="flex h-64 w-full flex-col items-center justify-center bg-white">
         <span className="mb-2">Checking vote status...</span>
         <Spinner height={64} width={64} />
       </div>
@@ -115,11 +119,11 @@ export function VoteAction({
   }
 
   // If no account, show connect wallet message
-  if (!account) {
+  if (isDisconnected || isConnecting) {
     return (
-      <div className="flex flex-col items-center justify-center w-full h-64 bg-white">
-        <div className="flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full">
-          <LinkIcon className="w-8 h-8 text-gray-400" />
+      <div className="flex h-64 w-full flex-col items-center justify-center bg-white">
+        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">
+          <LinkIcon className="h-8 w-8 text-gray-400" />
         </div>
         <h3 className="mt-4 text-sm font-medium text-gray-900">
           Please connect your wallet to vote
@@ -144,13 +148,13 @@ export function VoteAction({
                 } relative my-4 cursor-pointer overflow-hidden rounded-lg border border-gray-200 p-4 hover:border-indigo-500`}
               >
                 <div className="absolute inset-0 w-full origin-left bg-opacity-50"></div>
-                <div className="relative text-black z-100 ">
+                <div className="z-100 relative text-black ">
                   <div className="font-medium">{option.description}</div>
                 </div>
               </div>
             </div>
           ))}
-          <div className="flex flex-col items-center justify-center w-full bg-white">
+          <div className="flex w-full flex-col items-center justify-center bg-white">
             <button
               onClick={() => {
                 if (!voteOption) return;
@@ -158,7 +162,7 @@ export function VoteAction({
               }}
               type="button"
               disabled={!voteOption || loading}
-              className="inline-flex items-center px-6 py-2 mb-4 text-sm font-medium leading-4 text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-25"
+              className="mb-4 inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-6 py-2 text-sm font-medium leading-4 text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-25"
             >
               {loading ? <Spinner height={16} width={16} /> : "Vote"}
             </button>

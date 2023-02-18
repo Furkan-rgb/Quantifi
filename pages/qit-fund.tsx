@@ -1,13 +1,8 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import myPageAbi from "../components/abi/QIT.json";
 import erc20ABI from "../components/abi/erc20.json";
-import { useWeb3React, UnsupportedChainIdError } from "@web3-react/core";
 import { BigNumber, ethers } from "ethers";
-import { networkParams } from "../components/utils/networks";
-import { ArrowDownIcon, XMarkIcon } from "@heroicons/react/24/outline";
-import { Transition } from "@headlessui/react";
 import Notification, { NotificationContent } from "../components/Notification";
-import Spinner from "../components/animations/Spinner";
 import LiquiditySwapCard from "../components/swap/LiquiditySwapCard";
 
 import { useAccount, useProvider, useSigner } from "wagmi";
@@ -53,8 +48,6 @@ function MyPage() {
   const minDeposit = 1000; // this will be updated to actual value
   const minTopup = 500; // this will be updated to actual value
   const [loading, setLoading] = useState<boolean>(false); // loading state for button
-
-  const { library, chainId, account, active, error, setError, connector } = useWeb3React();
 
   const { address, isConnecting, isDisconnected, isConnected } = useAccount();
   const provider = useProvider();
