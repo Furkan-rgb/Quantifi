@@ -43,11 +43,11 @@ export default function Navbar() {
       href: "/governance",
       current: router.pathname == "/governance" ? true : false,
     },
-    {
+    {/*{
       name: "Dividends",
       href: "/dividends",
       current: router.pathname == "/dividends" ? true : false,
-    },
+    },*/}
     {
       name: "Docs",
       href: "https://quantifi.gitbook.io/docs",
