@@ -1,6 +1,6 @@
 import { ChartOptions } from "chart.js";
 import React, { useEffect } from "react";
-import Linechart from "../components1/Dashboard/Linechart";
+import Linechart from "../components/Dashboard/Linechart";
 import { XMarkIcon } from "@heroicons/react/24/solid";
 
 function DividendsPage() {

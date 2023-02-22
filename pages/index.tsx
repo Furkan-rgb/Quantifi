@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import Carousel from "../components1/carousel";
+import Carousel from "../components/carousel";
 import useOnScreen from "../hooks/useOnScreen";
 import { motion } from "framer-motion";
 import { useRouter } from "next/router";

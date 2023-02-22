@@ -1,8 +1,8 @@
 import "../styles/globals.css";
 import type { AppProps } from "next/app";
 
-import Navbar from "../components1/Navbar";
-import Footer from "../components1/Footer";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 import { ethers } from "ethers";
 import { Web3ReactProvider } from "@web3-react/core";
 

@@ -1,10 +1,10 @@
 import { ChartData, ChartOptions } from "chart.js";
 import { useEffect, useState } from "react";
-import Barchart from "../components1/Dashboard/Barchart";
-import Doughnut from "../components1/Dashboard/Doughnut";
-import Linechart from "../components1/Dashboard/Linechart";
+import Barchart from "../components/Dashboard/Barchart";
+import Doughnut from "../components/Dashboard/Doughnut";
+import Linechart from "../components/Dashboard/Linechart";
 import "chartjs-adapter-date-fns";
-import { formatCurrency } from "../components1/utils/formatter";
+import { formatCurrency } from "../components/utils/formatter";
 
 type dashboardData = {
   averageHolding: number;
