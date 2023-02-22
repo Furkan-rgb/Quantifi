@@ -41,7 +41,7 @@ export const CustomConnectButton = () => {
               }
               if (chain.unsupported) {
                 return (
-                  <button onClick={openChainModal} type="button">
+                  <button className="text-white" onClick={openChainModal} type="button">
                     Wrong network
                   </button>
                 );
@@ -50,7 +50,7 @@ export const CustomConnectButton = () => {
                 <div className="flex items-center gap-3">
                   <button
                     onClick={openChainModal}
-                    className="flex h-10 w-10 items-center justify-center"
+                    className="flex h-10 w-10 items-center justify-center text-white"
                     type="button"
                   >
                     {chain.hasIcon && (
