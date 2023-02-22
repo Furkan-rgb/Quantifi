@@ -30,7 +30,11 @@ export const CustomConnectButton = () => {
             {(() => {
               if (!connected) {
                 return (
-                  <button onClick={openConnectModal} type="button">
+                  <button
+                    className="rounded-md p-2 text-white"
+                    onClick={openConnectModal}
+                    type="button"
+                  >
                     Connect Wallet
                   </button>
                 );
@@ -46,11 +50,11 @@ export const CustomConnectButton = () => {
                 <div className="flex items-center gap-3">
                   <button
                     onClick={openChainModal}
-                    className="flex items-center justify-center w-10 h-10"
+                    className="flex h-10 w-10 items-center justify-center"
                     type="button"
                   >
                     {chain.hasIcon && (
-                      <div className="w-full h-full ">
+                      <div className="h-full w-full ">
                         {chain.iconUrl && (
                           <Image
                             alt={chain.name ?? "Chain icon"}
