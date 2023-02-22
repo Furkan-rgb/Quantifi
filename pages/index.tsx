@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import Carousel from "../components/carousel";
+import Carousel from "../components1/carousel";
 import useOnScreen from "../hooks/useOnScreen";
 import { motion } from "framer-motion";
 import { useRouter } from "next/router";
@@ -34,11 +34,11 @@ function HomePage() {
       <motion.div className="relative flex min-h-[calc(100vh_-_5rem)] items-center justify-center overflow-hidden bg-gradient-to-b from-qdark via-[#225a7a] to-black transition delay-300 ease-in-out sm:bg-black">
         {/* Cone */}
         {/* <div className="absolute w-full max-w-full overflow-hidden cone min-w-fit"></div> */}
-        <div className="z-0 grid justify-center grid-cols-4 max-w-7xl">
+        <div className="z-0 grid max-w-7xl grid-cols-4 justify-center">
           <div className="col-span-4 text-center sm:col-span-2">
-            <main className="relative flex items-center h-full px-4 pt-10 mx-auto sm:px-6 sm:pt-12 md:pt-16 lg:px-8 lg:pt-20 xl:pt-28">
+            <main className="relative mx-auto flex h-full items-center px-4 pt-10 sm:px-6 sm:pt-12 md:pt-16 lg:px-8 lg:pt-20 xl:pt-28">
               {/* Text part */}
-              <div className="z-20 items-start w-full sm:text-center">
+              <div className="z-20 w-full items-start sm:text-center">
                 <h1 className="mb-2 text-4xl font-bold tracking-tight text-gray-200 sm:text-5xl sm:tracking-tight md:text-6xl md:tracking-tight">
                   <span className="block">Data Driven</span>
                   <span className="block text-gray-200">Investments</span>
@@ -67,9 +67,9 @@ function HomePage() {
             </main>
           </div>
 
-          <div className="relative z-10 flex items-center col-span-4 pt-8 overflow-x-hidden text-center scale-125 sm:col-span-2 sm:scale-150 lg:text-right">
+          <div className="relative z-10 col-span-4 flex scale-125 items-center overflow-x-hidden pt-8 text-center sm:col-span-2 sm:scale-150 lg:text-right">
             <video
-              className="inline-block object-cover w-full h-full "
+              className="inline-block h-full w-full object-cover "
               ref={videoRef}
               autoPlay
               loop
@@ -84,14 +84,14 @@ function HomePage() {
 
       {/* Carousel */}
       <div className="flex justify-center bg-black">
-        <div className="overflow-hidden max-w-7xl">
+        <div className="max-w-7xl overflow-hidden">
           <Carousel />
         </div>
       </div>
 
       {/* Join us section */}
-      <div className="flex items-center justify-center py-32 align-middle motion-safe:animate-fadeIn min-h-fit snap-start bg-slate-50">
-        <div className="mx-2 text-center text-gray-900 align-middle dark:text-gray-900">
+      <div className="motion-safe:animate-fadeIn flex min-h-fit snap-start items-center justify-center bg-slate-50 py-32 align-middle">
+        <div className="mx-2 text-center align-middle text-gray-900 dark:text-gray-900">
           <h1 className="text-4xl font-bold tracking-tight sm:text-5xl sm:tracking-tight md:text-6xl md:tracking-tight">
             <span className="block">Are you ready to join us?</span>
           </h1>
@@ -101,13 +101,13 @@ function HomePage() {
           {/* Glowing buttons, need to stay together */}
           <div className="mt-5 max-h-16">
             <button
-              className="w-8/12 text-2xl prose btnAnimated font-lg h-14 rounded-2xl"
+              className="btnAnimated font-lg prose h-14 w-8/12 rounded-2xl text-2xl"
               onClick={(e) => {
                 e.preventDefault();
                 router.push("/qit-fund");
               }}
             >
-              <div className="z-10 flex items-center justify-center w-full h-full">
+              <div className="z-10 flex h-full w-full items-center justify-center">
                 <div>Get started</div>
               </div>
             </button>

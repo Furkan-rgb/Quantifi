@@ -1,6 +1,6 @@
 import { ChartOptions } from "chart.js";
 import React, { useEffect } from "react";
-import Linechart from "../components/Dashboard/Linechart";
+import Linechart from "../components1/Dashboard/Linechart";
 import { XMarkIcon } from "@heroicons/react/24/solid";
 
 function DividendsPage() {
@@ -31,14 +31,14 @@ function DividendsPage() {
             localStorage.setItem("hideBanner", "true");
           }}
         >
-          <XMarkIcon className="w-6 h-6" />
+          <XMarkIcon className="h-6 w-6" />
         </div>
-        <div className="max-w-5xl px-4 py-10 mx-auto sm:py-18 sm:px-6 lg:flex lg:justify-between lg:px-8">
+        <div className="sm:py-18 mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:flex lg:justify-between lg:px-8">
           <div>
             <h1 className="text-lg font-bold tracking-tight text-white sm:text-xl lg:text-2xl">
               About Dividends
             </h1>
-            <p className="my-5 text-gray-400 text-md sm:text-lg">
+            <p className="text-md my-5 text-gray-400 sm:text-lg">
               The Quantifi Investor Fund offers dividends to all stakers. Stakers of the QNTFI token
               are elligible to receive dividends from fees collected by Quantifi's products. Staking
               can be done through the Governance page.
@@ -49,9 +49,9 @@ function DividendsPage() {
           </div>
         </div>
       </div>
-      <div className="flex justify-center p-6 bg-white">
-        <div className="grid w-full min-h-screen grid-cols-12 gap-4 text-center sm:max-w-7xl">
-          <h1 className="col-span-12 mt-0 mb-6 text-3xl font-semibold text-start">
+      <div className="flex justify-center bg-white p-6">
+        <div className="grid min-h-screen w-full grid-cols-12 gap-4 text-center sm:max-w-7xl">
+          <h1 className="col-span-12 mt-0 mb-6 text-start text-3xl font-semibold">
             Upcoming Dividends
           </h1>
           <p>There are currently no scheduled dividends</p>

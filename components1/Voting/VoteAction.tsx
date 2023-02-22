@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import { VoteResults } from "./VoteResults";
-import Notification, { NotificationContent } from "../../components/Notification";
-import { timeout } from "../../components/utils/timeout";
+import Notification, { NotificationContent } from "../Notification";
+import { timeout } from "../utils/timeout";
 
 import Spinner from "../animations/Spinner";
 import { LinkIcon } from "@heroicons/react/24/outline";
 
 // Web3
 import { ethers } from "ethers";
-import govABI from "../../components/abi/governor.json";
+import govABI from "../abi/governor.json";
 import { fetchSigner } from "@wagmi/core";
 import { useAccount, useProvider, useSigner } from "wagmi";
 

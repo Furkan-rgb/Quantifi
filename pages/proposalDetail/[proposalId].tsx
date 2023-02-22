@@ -2,13 +2,13 @@ import { ArrowUpIcon, CalendarIcon, ChevronLeftIcon } from "@heroicons/react/24/
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import VotersList from "../../components/Voting/VotersList";
+import VotersList from "../../components1/Voting/VotersList";
 import {
   returnProposalState,
   returnProposalLabel,
   Proposal,
-} from "../../components/utils/proposalUtils";
-import { VotingSection } from "../../components/Voting/VotingSection";
+} from "../../components1/utils/proposalUtils";
+import { VotingSection } from "../../components1/Voting/VotingSection";
 
 export default function proposalDetail() {
   const router = useRouter();

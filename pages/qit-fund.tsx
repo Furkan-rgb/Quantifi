@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
-import myPageAbi from "../components/abi/QIT.json";
-import erc20ABI from "../components/abi/erc20.json";
+import myPageAbi from "../components1/abi/QIT.json";
+import erc20ABI from "../components1/abi/erc20.json";
 import { BigNumber, ethers } from "ethers";
-import Notification, { NotificationContent } from "../components/Notification";
-import LiquiditySwapCard from "../components/swap/LiquiditySwapCard";
+import Notification, { NotificationContent } from "../components1/Notification";
+import LiquiditySwapCard from "../components1/swap/LiquiditySwapCard";
 
 import { useAccount, useProvider, useSigner } from "wagmi";
 import { fetchSigner } from "@wagmi/core";
 
-import { timeout } from "../components/utils/timeout";
+import { timeout } from "../components1/utils/timeout";
 
 function MyPage() {
   const [showNotification, setNotificationShow] = useState(false);
