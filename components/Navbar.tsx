@@ -56,27 +56,27 @@ export default function Navbar() {
   ];
 
   return (
-    <Disclosure ref={panelRef} as="nav" className="border-indigo-500 rounded-bl-lg rounded-br-lg">
+    <Disclosure ref={panelRef} as="nav" className="border-indigo-500 ">
       {({ open }) => (
         <>
-          <div className="px-2 mx-auto sm:px-10 lg:px-12">
-            <div className="relative flex items-center justify-between h-20">
+          <div className="mx-auto px-2 sm:px-10 lg:px-12">
+            <div className="relative flex h-20 items-center justify-between">
               <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
                 {/* Mobile menu button*/}
                 <Disclosure.Button className="inline-flex items-center justify-center p-2 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
                   <span className="sr-only">Open main menu</span>
                   {open ? (
-                    <XMarkIcon className="block w-6 h-6" aria-hidden="true" />
+                    <XMarkIcon className="block h-6 w-6" aria-hidden="true" />
                   ) : (
-                    <Bars3Icon className="block w-6 h-6" aria-hidden="true" />
+                    <Bars3Icon className="block h-6 w-6" aria-hidden="true" />
                   )}
                 </Disclosure.Button>
               </div>
 
-              <div className="flex items-center justify-center flex-1 sm:items-stretch sm:justify-start">
-                <div className="flex items-center flex-shrink-0">
-                  <img className="block w-auto h-8 lg:hidden" src="/logo.svg" alt="QuantifiLogo" />
-                  <img className="hidden w-auto h-8 lg:block" src="/logo.svg" alt="QuantifiLogo" />
+              <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
+                <div className="flex flex-shrink-0 items-center">
+                  <img className="block h-8 w-auto lg:hidden" src="/logo.svg" alt="QuantifiLogo" />
+                  <img className="hidden h-8 w-auto lg:block" src="/logo.svg" alt="QuantifiLogo" />
                 </div>
 
                 {/* Map through nav items */}
@@ -118,7 +118,7 @@ export default function Navbar() {
             leaveFrom="opacity-100 scale-100"
             leaveTo="opacity-0 scale-95"
           >
-            <Disclosure.Panel className="absolute inset-x-0 z-10 p-2 transition origin-top-right transform top-14 md:hidden">
+            <Disclosure.Panel className="absolute inset-x-0 top-14 z-10 origin-top-left transform p-2 transition md:hidden">
               {({ close }) => (
                 useEffect(() => {
                   if (open && !show) {
@@ -127,7 +127,7 @@ export default function Navbar() {
                 }, [show]),
                 (
                   <>
-                    <div className="px-2 pt-2 pb-3 space-y-1 overflow-hidden bg-gray-900 rounded-lg shadow-md ring-1 ring-black ring-opacity-5">
+                    <div className="space-y-1 overflow-hidden rounded-lg bg-gray-900 px-2 pt-2 pb-3 shadow-md ring-1 ring-black ring-opacity-5">
                       {navigation.map((item) => (
                         <Disclosure.Button
                           key={item.name}

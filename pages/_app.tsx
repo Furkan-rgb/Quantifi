@@ -64,7 +64,7 @@ function MyApp({ Component, pageProps }: AppProps) {
             learnMoreUrl: "https://quantifi.gitbook.io/docs/about-quantifi/welcome-to-quantifi",
           }}
         >
-          <div className="min-h-screen bg-qdark">
+          <div className="min-h-screen bg-transparent">
             <Navbar />
             <Component {...pageProps} />
             <Footer />
