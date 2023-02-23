@@ -56,7 +56,7 @@ export default function Navbar() {
   ];
 
   return (
-    <Disclosure ref={panelRef} as="nav" className="rounded-bl-lg rounded-br-lg border-indigo-500">
+    <Disclosure ref={panelRef} as="nav" className="border-indigo-500 ">
       {({ open }) => (
         <>
           <div className="mx-auto px-2 sm:px-10 lg:px-12">

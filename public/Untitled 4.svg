@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Created with Vectornator (http://vectornator.io/) -->
+<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" version="1.1" viewBox="0 0 1920 1080" width="100%" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<defs>
+<radialGradient cx="341.687" cy="560.558" gradientTransform="matrix(-10.6711 0.73628 -1.09638 -15.8901 5353.95 9307.27)" gradientUnits="userSpaceOnUse" id="RadialGradient" r="92.8967">
+<stop offset="0" stop-color="#0078b9"/>
+<stop offset="0.51875" stop-color="#245d7d" stop-opacity="0.589583"/>
+<stop offset="1" stop-color="#000002" stop-opacity="0"/>
+</radialGradient>
+<filter color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse" height="936.001" id="Filter" width="1240.42" x="23.091" y="74.1422">
+<feGaussianBlur in="SourceGraphic" result="Blur" stdDeviation="29.1666"/>
+</filter>
+<radialGradient cx="831.453" cy="641.653" gradientTransform="matrix(0.893898 -0.0158968 0.0163295 0.91823 284.026 -109.372)" gradientUnits="userSpaceOnUse" id="RadialGradient_2" r="905.265">
+<stop offset="0" stop-color="#d438c5"/>
+<stop offset="0.527083" stop-color="#9b2c90" stop-opacity="0.5"/>
+<stop offset="1" stop-color="#000000" stop-opacity="0"/>
+</radialGradient>
+<filter color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse" height="910.717" id="Filter_2" width="1074.82" x="843.117" y="80.3308">
+<feGaussianBlur in="SourceGraphic" result="Blur" stdDeviation="29.1666"/>
+</filter>
+</defs>
+<g id="Layer-2">
+<g opacity="1">
+<path d="M1189.9 504.428C1204.89 721.615 972.314 914.566 670.432 935.395C368.55 956.224 111.678 797.044 96.6929 579.857C81.7075 362.67 314.283 169.72 616.165 148.891C918.048 128.062 1174.92 287.241 1189.9 504.428Z" fill="url(#RadialGradient)" fill-rule="nonzero" filter="url(#Filter)" opacity="1" stroke="#007aff" stroke-linecap="butt" stroke-linejoin="round" stroke-width="0"/>
+<path d="M916.084 543.949C912.329 332.782 1117.22 157.9 1373.73 153.338C1630.24 148.777 1841.22 316.263 1844.97 527.43C1848.73 738.597 1643.83 913.479 1387.33 918.04C1130.82 922.602 919.839 755.116 916.084 543.949Z" fill="url(#RadialGradient_2)" fill-rule="nonzero" filter="url(#Filter_2)" opacity="1" stroke="#007aff" stroke-linecap="butt" stroke-linejoin="round" stroke-width="0"/>
+</g>
+</g>
+</svg>
