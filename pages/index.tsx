@@ -57,7 +57,9 @@ function HomePage() {
                   {/* Get started button */}
                   <div>
                     <button className=" flex h-full w-full items-center justify-center rounded-lg bg-gradient-to-r from-[#4FC0FF] via-[#6977EE] to-[#FF6098] px-8 py-3 text-base font-medium text-white transition-all duration-75 ease-in hover:opacity-80 md:py-4 md:px-10 md:text-lg">
-                      <a href="qit-fund">Get started</a>
+                      <a href="qit-fund" className="h-full w-full">
+                        Get started
+                      </a>
                     </button>
                   </div>
 
@@ -65,7 +67,9 @@ function HomePage() {
                     {/* Dashboard button */}
                     <div className="rounded-lg bg-gradient-to-r from-[#4FC0FF] via-[#6977EE] to-[#FF6098] p-0.5 sm:ml-3 ">
                       <button className="flex w-full items-center justify-center rounded-md bg-gray-100 px-8 py-3 text-base font-medium text-gray-900 transition-all duration-75 ease-in hover:bg-gray-200 dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-gray-700 md:py-3.5 md:px-8 md:text-lg">
-                        <a href="/dashboard">View Dashboard</a>
+                        <a href="/dashboard" className="h-full w-full">
+                          View Dashboard
+                        </a>
                       </button>
                     </div>
                   </div>
