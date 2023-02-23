@@ -38,7 +38,7 @@ function HomePage() {
       {/* 1 */}
       <div className="relative flex min-h-[calc(100vh_-_5rem)] items-center justify-center overflow-x-clip">
         {/* Circle */}
-        <BlueGradient classNames="absolute -z-20 max-w-7xl sm:-translate-x-20 -translate-y-10 sm:scale-150 scale-[250%]" />
+        <BlueGradient classNames="absolute -z-20 max-w-4xl sm:-translate-x-20 -translate-y-0 sm:scale-150 scale-[250%] top-0 left-0" />
         <PurpleGradient classNames="bottom-0 right-0 absolute -z-20 w-full max-w-7xl translate-y-20 md:translate-x-96 sm:translate-x-64 translate-x-48" />
 
         <div className="absolute z-20 grid max-w-7xl grid-cols-4 justify-center">
