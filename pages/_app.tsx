@@ -14,6 +14,7 @@ import { bsc, bscTestnet } from "wagmi/chains";
 import { publicProvider } from "wagmi/providers/public";
 import { infuraProvider } from "wagmi/providers/infura";
 import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
+import WrongChainModal from "../components/Modal/WrongChainModal";
 
 const defaultChains: Chain[] = [
   {
@@ -68,6 +69,7 @@ function MyApp({ Component, pageProps }: AppProps) {
             <Navbar />
             <Component {...pageProps} />
             <Footer />
+            <WrongChainModal />
           </div>
         </RainbowKitProvider>
       </WagmiConfig>

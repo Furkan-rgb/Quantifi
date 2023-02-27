@@ -75,7 +75,7 @@ function Carousel() {
   ];
 
   return (
-    <div className="h-full max-w-full overflow-hidden  md:h-fit" ref={emblaRef}>
+    <div className="h-full max-w-full overflow-hidden md:h-fit" ref={emblaRef}>
       <div className="flex">
         {slides.map((slide) => {
           return (
@@ -83,7 +83,7 @@ function Carousel() {
             <div key={slide.id} className="flex flex-embla flex-col-reverse sm:flex-row">
               {/* Image half */}
               <div className="bg-center-right flex h-[48vh] w-full items-center justify-center  bg-cover bg-no-repeat sm:h-full sm:w-1/2">
-                <div className="bg-right-center max-w-screen absolute h-[49vh] w-full bg-gradient-to-t from-transparent via-transparent to-black sm:h-full sm:w-1/2 sm:bg-gradient-to-r" />
+                <div className="bg-right-center max-w-screen absolute h-[49vh] w-full bg-gradient-to-t to-[#111111] sm:h-full sm:w-1/2 sm:bg-gradient-to-r" />
                 <Image
                   className="h-full w-full object-cover"
                   src={slide.img}
