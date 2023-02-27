@@ -44,11 +44,6 @@ export default function Navbar() {
       current: router.pathname == "/governance" ? true : false,
     },
     {
-      name: "Dividends",
-      href: "/dividends",
-      current: router.pathname == "/dividends" ? true : false,
-    },
-    {
       name: "Docs",
       href: "https://quantifi.gitbook.io/docs",
       current: router.pathname == "https://quantifi.gitbook.io/docs" ? true : false,
