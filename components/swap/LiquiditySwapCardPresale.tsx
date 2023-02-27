@@ -13,7 +13,6 @@ function SwapCard({
   resetOutputValue,
   outputValue,
   getDepositValue,
-  getWithdrawalValue,
   swapOrApprove,
   swapButtonText,
   USDTBalance,
@@ -26,7 +25,6 @@ function SwapCard({
   resetOutputValue: Function;
   outputValue: string | undefined;
   getDepositValue: Function;
-  getWithdrawalValue: Function;
   swapOrApprove: Function;
   swapButtonText: string;
   USDTBalance: number | string;
@@ -91,7 +89,7 @@ function SwapCard({
                 setInputValue(e.target.value);
                 currentTab === "deposit"
                   ? getDepositValue(e.target.value)
-                  : getWithdrawalValue(e.target.value);
+                  : 0;
               }}
               type="number"
               min={10}
@@ -113,7 +111,7 @@ function SwapCard({
                   currentTab === "deposit" ? setInputValue(USDTBalance) : setInputValue(0);
                   currentTab === "deposit"
                     ? getDepositValue(USDTBalance)
-                    : getWithdrawalValue(0);
+                    : 0;
                 }}
               >
                 Max
