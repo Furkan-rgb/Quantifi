@@ -75,7 +75,7 @@ function Carousel() {
   ];
 
   return (
-    <div className="h-full max-w-full overflow-hidden md:h-fit" ref={emblaRef}>
+    <div className="h-full max-w-full overflow-hidden  md:h-fit" ref={emblaRef}>
       <div className="flex">
         {slides.map((slide) => {
           return (
@@ -95,7 +95,7 @@ function Carousel() {
               </div>
               {/* Text half */}
               <div className="z-20 flex h-[49vh] max-h-fit w-full flex-col items-center justify-start overflow-visible py-6 text-center text-5xl sm:h-full sm:w-1/2 sm:items-center sm:justify-center sm:text-left">
-                <div className="max-w-lg overflow-visible bg-gradient-to-t from-transparent to-black px-5 sm:bg-transparent">
+                <div className="max-w-lg overflow-visible bg-gradient-to-t to-black px-5 mix-blend-lighten sm:bg-transparent">
                   {/* Title */}
                   <div className="mb-4 md:mb-0">
                     {slide.header.keyword.first ? (

@@ -1,6 +1,6 @@
 import { ComponentProps } from "react";
 
-export function BlueGradient({ classNames }: { classNames: ComponentProps<"svg">["className"] }) {
+export function BlueGradient({ className }: { className: ComponentProps<"svg">["className"] }) {
   return (
     <svg
       strokeMiterlimit="10"
@@ -10,7 +10,7 @@ export function BlueGradient({ classNames }: { classNames: ComponentProps<"svg">
         strokeLinecap: "round",
         strokeLinejoin: "round",
       }}
-      className={classNames}
+      className={className}
       version="1.1"
       viewBox="0 0 1920 1080"
       xmlSpace="preserve"
@@ -58,7 +58,7 @@ export function BlueGradient({ classNames }: { classNames: ComponentProps<"svg">
   );
 }
 
-export function PurpleGradient({ classNames }: { classNames: ComponentProps<"svg">["className"] }) {
+export function PurpleGradient({ className }: { className: ComponentProps<"svg">["className"] }) {
   return (
     <svg
       height="100%"
@@ -69,7 +69,7 @@ export function PurpleGradient({ classNames }: { classNames: ComponentProps<"svg
         strokeLinecap: "round",
         strokeLinejoin: "round",
       }}
-      className={classNames}
+      className={className}
       version="1.1"
       viewBox="0 0 1920 1080"
       width="100%"
@@ -122,9 +122,9 @@ export function PurpleGradient({ classNames }: { classNames: ComponentProps<"svg
 }
 
 export function PurpleBlueGradientCombined({
-  classNames,
+  className,
 }: {
-  classNames: ComponentProps<"svg">["className"];
+  className: ComponentProps<"svg">["className"];
 }) {
   return (
     <svg
@@ -136,7 +136,7 @@ export function PurpleBlueGradientCombined({
         strokeLinecap: "round",
         strokeLinejoin: "round",
       }}
-      className={classNames}
+      className={className}
       version="1.1"
       viewBox="0 0 1920 1080"
       width="100%"

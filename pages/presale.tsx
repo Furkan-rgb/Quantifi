@@ -1,18 +1,22 @@
-import React, { useEffect, useState } from "react";
-import myPageAbi from "../components/abi/QIT.json";
-import erc20ABI from "../components/abi/erc20.json";
-import { BigNumber, ethers } from "ethers";
-import Notification, { NotificationContent } from "../components/Notification";
-import LiquiditySwapCard from "../components/swap/LiquiditySwapCard";
-
-import { useAccount, useNetwork, useProvider, useSigner } from "wagmi";
 import { fetchSigner } from "@wagmi/core";
+import { BigNumber, ethers } from "ethers";
+import React, { useEffect, useState } from "react";
 
+import LiquiditySwapCard from "../components/swap/LiquiditySwapCard";
 import { timeout } from "../components/utils/timeout";
-import SmallSpinner from "../components/animations/SmallSpinner";
+import seedRoundABI from "../components/abi/seedRound.json";
+import erc20ABI from "../components/abi/erc20.json";
+import qitABI from "../components/abi/QIT.json";
+import { useAccount, useProvider } from "wagmi";
+import Notification, { NotificationContent } from "../components/Notification";
 
-function MyPage() {
+function presale() {
   const [showNotification, setNotificationShow] = useState(false);
+  const [notificationStatus, setNotificationStatus] =
+    useState<NotificationContent["status"]>("info");
+  const [notificationMessage, setNotificationMessage] = useState<string>("");
+  const [notificationTitle, setNotificationTitle] = useState<string>("");
+
   const [currentTab, setCurrentTab] = useState<string>("deposit");
   const [inputValue, setInputValue] = useState<string>("");
   const [outputValue, setOutputValue] = useState<string>();
@@ -22,6 +26,7 @@ function MyPage() {
     address: ethers.Contract["address"];
     tokenName: string;
     qitbalance: ethers.BigNumber;
+    qitallowed: ethers.BigNumber;
     usdtbalance: ethers.BigNumber;
     allowance: ethers.BigNumber;
     lockupEnds: number;
@@ -30,22 +35,17 @@ function MyPage() {
     address: "-",
     tokenName: "QIT",
     qitbalance: BigNumber.from(0),
+    qitallowed: BigNumber.from(0),
     usdtbalance: BigNumber.from(0),
     allowance: BigNumber.from(0),
     lockupEnds: 0,
     pendingWithdrawals: BigNumber.from(0),
   });
-  const { chain } = useNetwork();
 
   const [ready, setReady] = useState<boolean>(false);
   useEffect(() => {
     setReady(true);
   }, []);
-
-  const [notificationStatus, setNotificationStatus] =
-    useState<NotificationContent["status"]>("info");
-  const [notificationMessage, setNotificationMessage] = useState<string>("");
-  const [notificationTitle, setNotificationTitle] = useState<string>("");
 
   const minDeposit = 1000; // this will be updated to actual value
   const minTopup = 500; // this will be updated to actual value
@@ -54,11 +54,14 @@ function MyPage() {
   const { address, isConnecting, isDisconnected, isConnected } = useAccount();
   const provider = useProvider();
 
-  const QIT = new ethers.Contract(
-    "0x4C4470D0B9c0dD92B25Be1D2fB5181cdA7e6E3f7",
-    myPageAbi,
+  const QIT = new ethers.Contract("0x4C4470D0B9c0dD92B25Be1D2fB5181cdA7e6E3f7", qitABI, provider);
+
+  const SEED = new ethers.Contract(
+    "0x463eb27921b1372f3d09c822e44c22d41ff28a38",
+    seedRoundABI,
     provider
   );
+
   const ERC20 = new ethers.Contract(
     "0xEcAD8721BA48dBdc0eac431D68A0b140F07c0801",
     erc20ABI,
@@ -84,11 +87,6 @@ function MyPage() {
       }
     }
   }
-
-  useEffect(() => {
-    getHoldingValue();
-    _setContractInfo();
-  }, [isConnecting, isDisconnected, isConnected, chain]);
 
   async function getWithdrawalValue(value: string) {
     const number = parseInt(value, 10);
@@ -208,15 +206,18 @@ function MyPage() {
         address: QIT.address,
         tokenName: "QIT",
         qitbalance: await QIT.balanceOf(address),
+        qitallowed: await SEED.allowed(address),
         usdtbalance: await ERC20.balanceOf(address),
         allowance: await ERC20.allowance(address, QIT.address),
         lockupEnds: await QIT.withdrawalLockTime(address),
         pendingWithdrawals: await QIT.pendingWithdrawals(address),
       });
+      console.log("Contract Info: ", contractInfo);
     } catch (error) {
       console.error("Couldn't set QIT contract info: " + error);
     } finally {
       setLoading(false);
+      console.log("Contract Info: ", contractInfo);
     }
 
     if (isConnected) {
@@ -266,160 +267,30 @@ function MyPage() {
     setOutputValue("");
   }
 
-  // Update balances
-
   return (
-    <>
-      {/* Exchange */}
-      <div className="min-h-screen">
-        <div className="md:flex md:items-center md:justify-between">
-          <div className="mx-auto max-w-7xl px-4 pt-4 sm:px-6 lg:flex lg:justify-between lg:px-8">
-            <div className="min-w-0 flex-1">
-              <h2 className="text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
-                Quantifi Investor Fund
-              </h2>
-            </div>
-          </div>
+    <div className="flex w-screen flex-col justify-center bg-black">
+      <header className="flex w-full justify-center text-center">
+        <div className="prose">
+          <h1 className="text-slate-50">Presale</h1>
         </div>
-        {/* Cards */}
-        <div className="my-10 flex w-full flex-col items-center justify-center px-4 sm:flex-row sm:items-start ">
-          {/* Holdings */}
-          <div className="my-3 mx-7 min-h-full w-full max-w-lg overflow-hidden rounded-lg bg-neutral-100 px-6 py-4 text-gray-900 shadow-lg ">
-            {/* Title */}
-            <div className="mb-2 text-xl font-bold">My Holdings</div>
-            <div>
-              <div className="flex justify-between">
-                <span className="mb-2 mr-2 block rounded-full py-1 text-base font-semibold text-gray-700">
-                  Tokens
-                </span>
-                <span className="text-right">
-                  {!loading ? (
-                    (+ethers.utils.formatUnits(contractInfo.qitbalance, 6)).toLocaleString(
-                      undefined,
-                      {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2,
-                      }
-                    )
-                  ) : (
-                    <SmallSpinner />
-                  )}{" "}
-                  QIT
-                </span>
-              </div>
-
-              <div className="flex h-full justify-between">
-                <span className="mb-2 mr-2 block rounded-full py-1 text-base font-semibold text-gray-700">
-                  Value
-                </span>
-                <span className="text-right">
-                  {!loading ? (
-                    (+ethers.utils.formatEther(holdingValue)).toLocaleString(undefined, {
-                      minimumFractionDigits: 2,
-                      maximumFractionDigits: 2,
-                    })
-                  ) : (
-                    <SmallSpinner />
-                  )}{" "}
-                  USDT
-                </span>
-              </div>
-
-              <div className="flex justify-between">
-                <span className="mb-2 mr-2 block rounded-full py-1 text-base font-semibold text-gray-700">
-                  Change
-                </span>
-                <span className="text-right">12%</span>
-              </div>
-            </div>
-          </div>
-          {/* My Withdrawals */}
-          <div className="my-3 mx-7 h-full w-full max-w-lg overflow-hidden rounded-lg bg-neutral-100 px-6 py-4 text-gray-900 shadow-lg ">
-            {/* Title */}
-            <div className="mb-2 text-xl font-bold">My Withdrawals</div>
-            <div>
-              <div className="flex justify-between">
-                <span className="mb-2 mr-2 block rounded-full py-1 text-base font-semibold text-gray-700">
-                  Withdrawal Lockup Ends
-                </span>
-                <span className="text-right">
-                  {ready && new Date(contractInfo.lockupEnds * 1000).toLocaleString()}
-                </span>
-              </div>
-
-              <div className="flex justify-between">
-                <span className="mb-2 mr-2 block rounded-full py-1 text-base font-semibold text-gray-700">
-                  Pending Withdrawals
-                </span>
-                <span className="text-right">
-                  {(+ethers.utils.formatUnits(contractInfo.pendingWithdrawals, 6)).toFixed(2)} QIT
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Information text */}
-        <div className="bg-gray-800">
-          <div className="mx-auto max-w-6xl px-4 py-16 sm:py-24 sm:px-6 lg:flex lg:justify-between lg:px-8">
-            <div className="max-w-2xl">
-              <h1 className="text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl">
-                About the Fund
-              </h1>
-              <p className="text-md mt-5 flex-nowrap text-gray-400 sm:text-xl">
-                The Quantifi Investor Fund offers managed exposure to a wide array of
-                cryptocurrencies on the BNB Blockchain. The fund prioritizes low drawdown and is
-                directed by a sophisticated quantitative investment model (see{" "}
-                <a
-                  href="Https://joel-lowe.gitbook.io/quantifi"
-                  className="text-gray-300 hover:text-white"
-                  rel="noopener noreferrer"
-                  target="_blank"
-                >
-                  Docs
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                    className="inline-block h-4 w-4 pl-1"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"
-                    />
-                  </svg>
-                </a>
-                ). Please note: Investment in the fund requires a minimum deposit of ${minDeposit},
-                or minimum top up of ${minTopup}. All deposits are subject to a 30 day lockup and
-                incur a 2% deposit fee.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Swap */}
-        <div className="flex justify-center">
-          <LiquiditySwapCard
-            loading={loading}
-            currentTab={currentTab}
-            setCurrentTab={setCurrentTab}
-            resetOutputValue={resetOutputValue}
-            swapButtonText={swapButtonText}
-            inputValue={inputValue}
-            setInputValue={setInputValue}
-            outputValue={outputValue}
-            getDepositValue={getDepositValue}
-            getWithdrawalValue={getWithdrawalValue}
-            swapOrApprove={swapOrApprove}
-            QITBalance={(+ethers.utils.formatUnits(contractInfo.qitbalance, 6)).toFixed(2)}
-            USDTBalance={(+ethers.utils.formatEther(contractInfo.usdtbalance)).toFixed(2)}
-          />
-        </div>
-      </div>
-
+      </header>
+      <main className="flex w-full justify-center">
+        <LiquiditySwapCard
+          loading={loading}
+          currentTab={currentTab}
+          setCurrentTab={setCurrentTab}
+          resetOutputValue={resetOutputValue}
+          swapButtonText={swapButtonText}
+          inputValue={inputValue}
+          setInputValue={setInputValue}
+          outputValue={outputValue}
+          getDepositValue={getDepositValue}
+          getWithdrawalValue={getWithdrawalValue}
+          swapOrApprove={swapOrApprove}
+          QITBalance={(+ethers.utils.formatUnits(contractInfo.qitbalance, 6)).toFixed(2)}
+          USDTBalance={(+ethers.utils.formatEther(contractInfo.usdtbalance)).toFixed(2)}
+        />
+      </main>
       {/* Notification */}
       <Notification
         title={notificationTitle}
@@ -428,8 +299,8 @@ function MyPage() {
         status={notificationStatus}
         setNotificationShow={setNotificationShow}
       />
-    </>
+    </div>
   );
 }
 
-export default MyPage;
+export default presale;

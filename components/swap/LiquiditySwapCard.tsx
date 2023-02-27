@@ -34,22 +34,22 @@ function SwapCard({
   QITBalance: number | string;
 }) {
   return (
-    <div className="flex flex-col items-center justify-start w-full max-w-md px-4 my-10 text-black bg-gray-800 sm:rounded-md">
+    <div className="my-10 flex w-full max-w-md flex-col items-center justify-start bg-gray-800 px-4 text-black sm:rounded-md">
       {/* Header */}
-      <div className="w-full prose">
-        <h3 className="flex items-center justify-start w-full mt-4 mb-0 text-gray-50">
+      <div className="prose w-full">
+        <h3 className="mt-4 mb-0 flex w-full items-center justify-start text-gray-50">
           {currentTab === "deposit" ? "Enter the Fund" : "Exit the Fund"}
         </h3>
-        <p className="flex items-center justify-start w-full text-gray-50">
+        <p className="flex w-full items-center justify-start text-gray-50">
           {currentTab === "deposit"
             ? "Swap USDT for Quantifi Investor Tokens"
             : "Swap Quantifi Investor Tokens for USDT"}
         </p>
       </div>
       {/* End Header */}
-      <div className="w-full mt-3 border-b-2 opacity-50 border-slate-400"></div>
+      <div className="mt-3 w-full border-b-2 border-slate-400 opacity-50"></div>
       {/* Tab Section */}
-      <div className="grid grid-cols-2 mt-3 text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:border-gray-700 dark:text-gray-400">
+      <div className="mt-3 grid grid-cols-2 border-b border-gray-200 text-center text-sm font-medium text-gray-500 dark:border-gray-700 dark:text-gray-400">
         <div className="col-span-1">
           <button
             onClick={() => {
@@ -96,17 +96,17 @@ function SwapCard({
       {/* End Tab Section */}
 
       {/* Input */}
-      <div className="w-full my-5">
+      <div className="my-5 w-full">
         <form>
           {/* Top section */}
           {/* From */}
-          <div className="flex justify-between p-2 pb-1 -mb-1 bg-gray-600 rounded-t-md">
+          <div className="-mb-1 flex justify-between rounded-t-md bg-gray-600 p-2 pb-1">
             <label className="text-sm text-gray-300 ">From</label>
             <label className="text-sm text-gray-300 ">
               Balance: <span>{currentTab === "deposit" ? USDTBalance || 0 : QITBalance || 0}</span>
             </label>
           </div>
-          <div className="relative z-0 flex w-full mb-4 bg-gray-600 group rounded-b-md">
+          <div className="group relative z-0 mb-4 flex w-full rounded-b-md bg-gray-600">
             <input
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                 setInputValue(e.target.value);
@@ -133,7 +133,7 @@ function SwapCard({
               value={inputValue}
             />
 
-            <span className="inline-flex items-center px-3 text-sm text-white border-0 border-b-0 border-gray-300 appearance-none peer whitespace-nowrap focus:border-blue-600 focus:outline-none focus:ring-0 dark:border-gray-600 dark:focus:border-blue-500">
+            <span className="peer inline-flex appearance-none items-center whitespace-nowrap border-0 border-b-0 border-gray-300 px-3 text-sm text-white focus:border-blue-600 focus:outline-none focus:ring-0 dark:border-gray-600 dark:focus:border-blue-500">
               <button
                 className="mr-2 text-sm opacity-50 hover:opacity-100"
                 type="button"
@@ -188,14 +188,14 @@ function SwapCard({
 
           {/* Arrow Down Icon */}
           <div className="flex justify-center">
-            <ArrowDownIcon className="p-1 text-black rounded-full h-7 w-7 bg-gray-50" />
+            <ArrowDownIcon className="h-7 w-7 rounded-full bg-gray-50 p-1 text-black" />
           </div>
 
           {/* Output */}
-          <div className="flex justify-between p-2 pb-1 mt-4 -mb-1 bg-gray-600 rounded-t-md">
+          <div className="mt-4 -mb-1 flex justify-between rounded-t-md bg-gray-600 p-2 pb-1">
             <label className="text-sm text-gray-300 ">To</label>
           </div>
-          <div className="relative z-0 flex w-full mb-6 bg-gray-600 group rounded-b-md">
+          <div className="group relative z-0 mb-6 flex w-full rounded-b-md bg-gray-600">
             <input
               type="number"
               name="floating_output"
@@ -211,7 +211,7 @@ function SwapCard({
               {outputValue}
             </label>
 
-            <span className="inline-flex items-center px-3 text-sm text-white border-0 border-b-0 border-gray-300 appearance-none peer whitespace-nowrap focus:border-blue-600 focus:outline-none focus:ring-0 dark:border-gray-600 dark:focus:border-blue-50">
+            <span className="peer inline-flex appearance-none items-center whitespace-nowrap border-0 border-b-0 border-gray-300 px-3 text-sm text-white focus:border-blue-600 focus:outline-none focus:ring-0 dark:border-gray-600 dark:focus:border-blue-50">
               {currentTab == "deposit" ? (
                 <Image
                   quality={100}
@@ -222,7 +222,6 @@ function SwapCard({
                   layout="fixed"
                 />
               ) : (
-                // <USDTIcon width="22px" />
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 48 48"
