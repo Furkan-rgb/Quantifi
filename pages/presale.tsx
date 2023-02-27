@@ -7,6 +7,7 @@ import { timeout } from "../components/utils/timeout";
 import seedRoundABI from "../components/abi/seedRound.json";
 import erc20ABI from "../components/abi/erc20.json";
 import qitABI from "../components/abi/QIT.json";
+import vestingABI from "../components/abi/vesting.json";
 import { useAccount, useProvider } from "wagmi";
 import Notification, { NotificationContent } from "../components/Notification";
 
@@ -55,6 +56,11 @@ function presale() {
   const provider = useProvider();
 
   const QIT = new ethers.Contract("0x4C4470D0B9c0dD92B25Be1D2fB5181cdA7e6E3f7", qitABI, provider);
+  const VEST = new ethers.Contract(
+    "0x75cbCF9D4FF9a699542599e29ad366f83C4c5E92",
+    vestingABI,
+    provider
+  );
 
   const SEED = new ethers.Contract(
     "0x463eb27921b1372f3d09c822e44c22d41ff28a38",
@@ -230,8 +236,9 @@ function presale() {
   }
   // account change -> contract info update
   useEffect(() => {
-    if (address) {
+    if (address !== undefined) {
       _setContractInfo();
+      getVestingInfo();
     }
   }, [address]);
 
@@ -267,6 +274,23 @@ function presale() {
     setOutputValue("");
   }
 
+  const [vestInfo, setVestInfo] = useState({
+    vestStart: 0,
+    vestFinish: 0,
+    amount: 0,
+    claimed: 0,
+  });
+  function getVestingInfo() {
+    console.log("Getting vesting info for: ", address);
+    try {
+      const vestingInfo = VEST.tokensVested(address);
+      console.log("Vesting Info: ", vestingInfo);
+      setVestInfo(vestingInfo);
+    } catch (error) {
+      console.log("Error getting vesting info: ", error);
+    }
+  }
+
   return (
     <div className="flex w-screen flex-col justify-center bg-black">
       <header className="flex w-full justify-center text-center">
@@ -274,7 +298,14 @@ function presale() {
           <h1 className="text-slate-50">Presale</h1>
         </div>
       </header>
-      <main className="flex w-full justify-center">
+      <main className="flex w-full flex-col items-center justify-center">
+        <div className="mt-4 rounded-md bg-white p-4">
+          <h2>Vest Info</h2>
+          <p>Vesting Started: {vestInfo.vestStart}</p>
+          <p>Vesting Finished: {vestInfo.vestFinish}</p>
+          <p>Vesting Amount: {vestInfo.amount}</p>
+          <p>Vesting Claimed: {vestInfo.claimed}</p>
+        </div>
         <LiquiditySwapCard
           loading={loading}
           currentTab={currentTab}
