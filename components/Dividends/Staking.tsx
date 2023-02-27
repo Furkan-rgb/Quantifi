@@ -1,7 +1,7 @@
 import { ArrowDownIcon } from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
 import DatePicker from "../DatePicker";
-import { getStakingMultiplier, StakingProps } from "../../components/utils/stakingUtils";
+import { getStakingMultiplier, StakingProps } from "../utils/stakingUtils";
 import { BigNumber, ethers } from "ethers";
 import Spinner from "../animations/Spinner";
 
@@ -50,8 +50,8 @@ function Staking({ balance, stake }: StakingProps) {
 
   return (
     <div>
-      <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto text-center">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-4xl text-center">
           <h2 className="mb-4 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
             Stake QNTFI
           </h2>
@@ -60,11 +60,11 @@ function Staking({ balance, stake }: StakingProps) {
       <div className="grid grid-cols-3 gap-4">
         {/* Stake */}
         <div className="col-span-3 lg:col-span-3">
-          <div className="flex flex-col items-center justify-start w-full p-4 text-black bg-white sm:mx-auto sm:max-w-md sm:px-4 md:rounded-lg md:shadow-md">
+          <div className="flex w-full flex-col items-center justify-start bg-white p-4 text-black sm:mx-auto sm:max-w-md sm:px-4 md:rounded-lg md:shadow-md">
             {/* Input */}
-            <div className="w-full my-5">
+            <div className="my-5 w-full">
               <form onSubmit={handleStake}>
-                <div className="relative z-0 flex w-full mb-4 group">
+                <div className="group relative z-0 mb-4 flex w-full">
                   <input
                     onChange={(e) => {
                       setStakeAmountQNTFI(e.target.valueAsNumber);
@@ -87,13 +87,13 @@ function Staking({ balance, stake }: StakingProps) {
                     )}
                   </label>
 
-                  <span className="inline-flex items-center px-3 text-sm text-black border-0 border-b-2 border-gray-300 appearance-none peer focus:border-blue-600 focus:outline-none focus:ring-0 dark:border-gray-600 dark:focus:border-blue-500">
+                  <span className="peer inline-flex appearance-none items-center border-0 border-b-2 border-gray-300 px-3 text-sm text-black focus:border-blue-600 focus:outline-none focus:ring-0 dark:border-gray-600 dark:focus:border-blue-500">
                     QNTFI
                   </span>
                 </div>
                 <div className="pb-2">
                   <div>
-                    <div className="relative z-0 flex w-full mb-4 group">
+                    <div className="group relative z-0 mb-4 flex w-full">
                       <input
                         onChange={(e) => {
                           if (e.target.valueAsNumber >= 0) {
@@ -116,7 +116,7 @@ function Staking({ balance, stake }: StakingProps) {
                       >
                         Days to stake
                       </label>
-                      <span className="inline-flex items-center px-3 text-sm text-black border-0 border-b-2 border-gray-300 appearance-none peer focus:border-blue-600 focus:outline-none focus:ring-0 dark:border-gray-600 dark:focus:border-blue-500">
+                      <span className="peer inline-flex appearance-none items-center border-0 border-b-2 border-gray-300 px-3 text-sm text-black focus:border-blue-600 focus:outline-none focus:ring-0 dark:border-gray-600 dark:focus:border-blue-500">
                         Days
                       </span>
                     </div>

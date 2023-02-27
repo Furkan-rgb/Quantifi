@@ -75,17 +75,17 @@ function Carousel() {
   ];
 
   return (
-    <div className="h-full max-w-full overflow-hidden bg-black md:h-fit" ref={emblaRef}>
+    <div className="h-full max-w-full overflow-hidden md:h-fit" ref={emblaRef}>
       <div className="flex">
         {slides.map((slide) => {
           return (
             // Slide
-            <div key={slide.id} className="flex flex-col-reverse flex-embla sm:flex-row">
+            <div key={slide.id} className="flex flex-embla flex-col-reverse sm:flex-row">
               {/* Image half */}
               <div className="bg-center-right flex h-[48vh] w-full items-center justify-center  bg-cover bg-no-repeat sm:h-full sm:w-1/2">
-                <div className="bg-right-center max-w-screen absolute h-[49vh] w-full bg-gradient-to-t from-transparent via-transparent to-black sm:h-full sm:w-1/2 sm:bg-gradient-to-r" />
+                <div className="bg-right-center max-w-screen absolute h-[49vh] w-full bg-gradient-to-t to-[#111111] sm:h-full sm:w-1/2 sm:bg-gradient-to-r" />
                 <Image
-                  className="object-cover w-full h-full"
+                  className="h-full w-full object-cover"
                   src={slide.img}
                   width={500}
                   height={500}
@@ -94,8 +94,8 @@ function Carousel() {
                 />
               </div>
               {/* Text half */}
-              <div className="z-20 flex h-[49vh] max-h-fit w-full flex-col items-center justify-start overflow-visible bg-black py-6 text-center text-5xl sm:h-full sm:w-1/2 sm:items-center sm:justify-center sm:text-left">
-                <div className="max-w-lg px-5 overflow-visible bg-gradient-to-t from-transparent to-black sm:bg-transparent">
+              <div className="z-20 flex h-[49vh] max-h-fit w-full flex-col items-center justify-start overflow-visible py-6 text-center text-5xl sm:h-full sm:w-1/2 sm:items-center sm:justify-center sm:text-left">
+                <div className="max-w-lg overflow-visible bg-gradient-to-t to-black px-5 mix-blend-lighten sm:bg-transparent">
                   {/* Title */}
                   <div className="mb-4 md:mb-0">
                     {slide.header.keyword.first ? (

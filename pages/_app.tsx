@@ -14,6 +14,7 @@ import { bsc, bscTestnet } from "wagmi/chains";
 import { publicProvider } from "wagmi/providers/public";
 import { infuraProvider } from "wagmi/providers/infura";
 import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
+import WrongChainModal from "../components/Modal/WrongChainModal";
 
 const defaultChains: Chain[] = [
   {
@@ -64,10 +65,11 @@ function MyApp({ Component, pageProps }: AppProps) {
             learnMoreUrl: "https://quantifi.gitbook.io/docs/about-quantifi/welcome-to-quantifi",
           }}
         >
-          <div className="min-h-screen bg-qdark">
+          <div className="min-h-screen bg-transparent">
             <Navbar />
             <Component {...pageProps} />
             <Footer />
+            <WrongChainModal />
           </div>
         </RainbowKitProvider>
       </WagmiConfig>

@@ -55,7 +55,7 @@ function StatusSymbol({ status }: { status: NotificationContent["status"] }) {
 
 export default function Notification(props: NotificationContent) {
   return (
-    <>
+    <div className="relative z-50">
       {/* Global notification live region, render this permanently at the end of the document */}
       <div
         aria-live="assertive"
@@ -101,6 +101,6 @@ export default function Notification(props: NotificationContent) {
           </Transition>
         </div>
       </div>
-    </>
+    </div>
   );
 }

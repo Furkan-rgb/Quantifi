@@ -130,7 +130,7 @@ function Dashboard() {
       },
     },
   };
-  
+
   const dailyPriceConfig: ChartOptions<"line"> = {
     responsive: true,
     elements: {
@@ -157,29 +157,29 @@ function Dashboard() {
   return (
     <div className="min-h-90vh">
       <div className="flex justify-center text-black">
-        <div className="grid self-center grid-cols-2 gap-4 p-3 pb-6 text-black min-w-fit max-w-7xl">
+        <div className="grid min-w-fit max-w-7xl grid-cols-2 gap-4 self-center p-3 pb-6 text-black">
           {/* Doughnut */}
-          <div className="col-span-2 pt-2 bg-white rounded-lg dark:bg-slate-50 sm:col-span-1">
-            <div className="flex flex-col items-center justify-center p-4 space-y-4">
+          <div className="col-span-2 rounded-lg bg-white pt-2 dark:bg-slate-50 sm:col-span-1">
+            <div className="flex flex-col items-center justify-center space-y-4 p-4">
               {/* Title */}
               <div className="flex flex-col justify-center ">
                 <div className="text-center text-gray-500">QNTFI Supply (mil)</div>
-                <div className="text-2xl subpixel-antialiased font-medium text-center"></div>
+                <div className="text-center text-2xl font-medium subpixel-antialiased"></div>
               </div>
               <Doughnut />
             </div>
           </div>
           {/* Barchart, stats */}
           <div className="col-span-2 sm:col-span-1">
-            <div className="flex flex-col justify-between h-full">
+            <div className="flex h-full flex-col justify-between">
               <div className="grid gap-3 ">
-                <div className="p-4 bg-white rounded-lg h-fit dark:bg-slate-50">
+                <div className="h-fit rounded-lg bg-white p-4 dark:bg-slate-50">
                   {barData.datasets[0].data.length !== 0 ? (
                     <Barchart data={barData} config={config} />
                   ) : (
-                    <div className="flex items-center justify-center w-full h-full">
+                    <div className="flex h-full w-full items-center justify-center">
                       <svg
-                        className="inline w-4 h-4 mr-1 -ml-1 text-black animate-spin"
+                        className="mr-1 -ml-1 inline h-4 w-4 animate-spin text-black"
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
                         viewBox="0 0 24 24"
@@ -203,8 +203,8 @@ function Dashboard() {
                   )}
                 </div>
                 {/* Nr of investors */}
-                <div className="flex flex-col items-center justify-center w-full col-span-1 px-4 py-5 overflow-hidden text-center bg-white rounded-lg shadow h-fit dark:bg-slate-50 sm:flex sm:flex-col sm:p-6">
-                  <dt className="text-sm font-medium text-gray-500 text-clip">
+                <div className="col-span-1 flex h-fit w-full flex-col items-center justify-center overflow-hidden rounded-lg bg-white px-4 py-5 text-center shadow dark:bg-slate-50 sm:flex sm:flex-col sm:p-6">
+                  <dt className="text-clip text-sm font-medium text-gray-500">
                     {"Holders of QNTFI"}
                   </dt>
                   <dd className="mt-1 text-xl font-semibold tracking-tight text-gray-900 sm:text-3xl">
@@ -213,8 +213,8 @@ function Dashboard() {
                 </div>
 
                 {/* Avg investment into fund */}
-                <div className="flex flex-col items-center justify-center w-full col-span-1 px-4 py-5 overflow-hidden text-center bg-white rounded-lg shadow h-fit dark:bg-slate-50 sm:flex sm:flex-col sm:p-6">
-                  <dt className="text-sm font-medium text-gray-500 text-clip">
+                <div className="col-span-1 flex h-fit w-full flex-col items-center justify-center overflow-hidden rounded-lg bg-white px-4 py-5 text-center shadow dark:bg-slate-50 sm:flex sm:flex-col sm:p-6">
+                  <dt className="text-clip text-sm font-medium text-gray-500">
                     {"Average Stake Length (days)"}
                   </dt>
                   <dd className="mt-1 text-xl font-semibold tracking-tight text-gray-900 sm:text-3xl">
@@ -226,13 +226,13 @@ function Dashboard() {
           </div>
 
           {/* Line chart card */}
-          <div className="col-span-2 p-4 text-center bg-white rounded-lg dark:bg-slate-50">
+          <div className="col-span-2 rounded-lg bg-white p-4 text-center dark:bg-slate-50">
             <div className="mb-2 text-xl font-medium tracking-tight text-gray-500">
               Daily QNTFI Prices
             </div>
 
             {/* Line chart filter buttons */}
-            <div className="grid grid-cols-6 text-sm text-center border rounded-lg dark:border-gray-700">
+            <div className="grid grid-cols-6 rounded-lg border text-center text-sm dark:border-gray-700">
               <div
                 onClick={() => {
                   setChartDate(1);
@@ -298,9 +298,9 @@ function Dashboard() {
             {lineData.datasets[0].data.length !== 0 ? (
               <Linechart data={lineData} config={dailyPriceConfig}></Linechart>
             ) : (
-              <div className="flex items-center justify-center w-full h-full py-4">
+              <div className="flex h-full w-full items-center justify-center py-4">
                 <svg
-                  className="inline w-4 h-4 mr-1 -ml-1 text-black animate-spin"
+                  className="mr-1 -ml-1 inline h-4 w-4 animate-spin text-black"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
