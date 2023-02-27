@@ -282,7 +282,7 @@ function presale() {
           setInputValue={setInputValue}
           outputValue={outputValue}
           getDepositValue={getDepositValue}
-          getWithdrawalValue={getWithdrawalValue}
+          getWithdrawalValue={0}
           swapOrApprove={swapOrApprove}
           USDTBalance={(+ethers.utils.formatEther(contractInfo.usdtbalance)).toFixed(2)}
         />
