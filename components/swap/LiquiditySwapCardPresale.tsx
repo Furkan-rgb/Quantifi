@@ -82,7 +82,7 @@ function SwapCard({
           <div className="-mb-1 flex justify-between rounded-t-md bg-gray-600 p-2 pb-1">
             <label className="text-sm text-gray-300 ">From</label>
             <label className="text-sm text-gray-300 ">
-              Balance: <span>{currentTab === "deposit" ? USDTBalance || 0 : QITBalance || 0}</span>
+              Balance: <span>{USDTBalance}</span>
             </label>
           </div>
           <div className="group relative z-0 mb-4 flex w-full rounded-b-md bg-gray-600">
@@ -95,15 +95,8 @@ function SwapCard({
               }}
               type="number"
               min={10}
-              max={
-                currentTab === "deposit"
-                  ? USDTBalance
-                    ? USDTBalance
-                    : 0
-                  : QITBalance
-                  ? QITBalance
-                  : 0
-              }
+              max={USDTBalance
+                             }
               name="floating_input"
               id="floating_input"
               className="peer block w-full appearance-none items-center border-0 border-b-0 border-gray-300 bg-transparent py-2.5 px-0 pl-2 text-sm text-gray-300 focus:border-blue-600 focus:outline-none focus:ring-0 dark:border-gray-600 dark:text-white dark:focus:border-blue-500"
@@ -117,10 +110,10 @@ function SwapCard({
                 className="mr-2 text-sm opacity-50 hover:opacity-100"
                 type="button"
                 onClick={() => {
-                  currentTab === "deposit" ? setInputValue(USDTBalance) : setInputValue(QITBalance);
+                  currentTab === "deposit" ? setInputValue(USDTBalance) : setInputValue(0);
                   currentTab === "deposit"
                     ? getDepositValue(USDTBalance)
-                    : getWithdrawalValue(QITBalance);
+                    : getWithdrawalValue(0);
                 }}
               >
                 Max
@@ -223,7 +216,7 @@ function SwapCard({
                   />
                 </svg>
               )}
-              <span className="ml-1">{currentTab == "deposit" ? "QIT" : "USDT"}</span>
+              <span className="ml-1">{currentTab == "deposit" ? "QNTFI" : "USDT"}</span>
             </span>
           </div>
           <button
