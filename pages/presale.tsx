@@ -168,12 +168,12 @@ function presale() {
         }
         // update after completion
       } else {
-        const QITconnect = QIT.connect(signer);
+        const SEEDconnect = SEED.connect(signer);
         try {
           setLoading(true);
           console.log("Depositing");
           // Depositing
-          const transaction = await QITconnect.depositToFund(ethers.utils.parseEther(inputValue));
+          const transaction = await SEEDconnect.buyToken(ethers.utils.parseEther(inputValue));
           console.log("Transaction: ", transaction);
           changeNotificationContent("In progress", "Deposit Requested", "loading");
           setNotificationShow(true);
