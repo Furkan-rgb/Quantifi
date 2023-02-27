@@ -17,7 +17,6 @@ function SwapCard({
   swapOrApprove,
   swapButtonText,
   USDTBalance,
-  QITBalance,
 }: {
   loading: boolean;
   currentTab: string;
@@ -31,18 +30,17 @@ function SwapCard({
   swapOrApprove: Function;
   swapButtonText: string;
   USDTBalance: number | string;
-  QITBalance: number | string;
 }) {
   return (
     <div className="my-10 flex w-full max-w-md flex-col items-center justify-start bg-gray-800 px-4 text-black sm:rounded-md">
       {/* Header */}
       <div className="prose w-full">
         <h3 className="mt-4 mb-0 flex w-full items-center justify-start text-gray-50">
-          {currentTab === "deposit" ? "Enter the Fund" : "Exit the Fund"}
+          {currentTab === "deposit" ? "Invest Into the QuantiFi Seed Funding Round" : "Exit the Fund"}
         </h3>
         <p className="flex w-full items-center justify-start text-gray-50">
           {currentTab === "deposit"
-            ? "Swap USDT for Quantifi Investor Fund Tokens"
+            ? "Swap USDT for Vested QNTFI Tokens"
             : "Swap Quantifi Investor Fund Tokens for USDT"}
         </p>
       </div>
@@ -72,25 +70,6 @@ function SwapCard({
           </button>
         </div>
         <div className="col-span-1">
-          <button
-            onClick={() => {
-              setCurrentTab("withdrawal");
-              resetOutputValue("withdrawal");
-            }}
-            className={`${
-              currentTab == "withdrawal"
-                ? "active inline-block  rounded-t-lg  border-b-2  border-gray-100 p-4 text-gray-100"
-                : "inline-block rounded-t-lg  p-4 "
-            } w-full text-center font-normal transition duration-200 ease-in-out`}
-          >
-            <div
-              className={`${
-                currentTab == "withdrawal" ? "-translate-y-1" : ""
-              } transition duration-200 ease-in-out`}
-            >
-              Withdrawal
-            </div>
-          </button>
         </div>
       </div>
       {/* End Tab Section */}
