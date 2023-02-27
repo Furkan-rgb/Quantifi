@@ -33,7 +33,7 @@ function SwapCard({
     <div className="my-10 flex w-full max-w-md flex-col items-center justify-start bg-gray-800 px-4 text-black sm:rounded-md">
       {/* Header */}
       <div className="prose w-full">
-        <h3 className="mt-4 mb-0 flex w-full items-center justify-start text-gray-50">
+        <h3 className="mt-4 mb-0 flex w-full items-center text-center text-gray-50">
           {currentTab === "deposit" ? "Invest Into the QuantiFi Seed Funding Round" : "Exit the Fund"}
         </h3>
         <p className="flex w-full items-center justify-start text-gray-50">
@@ -45,7 +45,7 @@ function SwapCard({
       {/* End Header */}
       <div className="mt-3 w-full border-b-2 border-slate-400 opacity-50"></div>
       {/* Tab Section */}
-      <div className="mt-3 grid grid-cols-2 border-b border-gray-200 text-center text-sm font-medium text-gray-500 dark:border-gray-700 dark:text-gray-400">
+      <div className="mt-3 grid grid-cols-1 border-b border-gray-200 text-center text-sm font-medium text-gray-500 dark:border-gray-700 dark:text-gray-400">
         <div className="col-span-1">
           <button
             onClick={() => {
