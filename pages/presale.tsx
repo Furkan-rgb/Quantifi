@@ -178,7 +178,7 @@ function presale() {
     setLoading(true);
     try {
       setContractInfo({
-        address: QNTFI.address,
+        address: "-",
         tokenName: "QNTFI",
         usdtallowed: await SEED.allowed(address),
         usdtbalance: await USDT.balanceOf(address),
