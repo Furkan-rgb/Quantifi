@@ -8,6 +8,8 @@ import {
   PurpleBlueGradientCombined,
   PurpleGradient,
 } from "../components/svg/GradientCircles";
+import FadeIn from "../components/FadeIn/FadeIn";
+import { Transition } from "@headlessui/react";
 
 // home page
 function HomePage() {
@@ -38,8 +40,10 @@ function HomePage() {
       {/* 1 */}
       <div className="relative flex min-h-[calc(100vh_-_5rem)] items-center justify-center overflow-x-clip">
         {/* Circle */}
-        <BlueGradient classNames="absolute -z-20 max-w-4xl sm:-translate-x-20 -translate-y-0 sm:scale-150 scale-[250%] top-0 left-0" />
-        <PurpleGradient classNames="bottom-0 right-0 absolute -z-20 w-full max-w-7xl translate-y-20 md:translate-x-96 sm:translate-x-64 translate-x-48" />
+        <FadeIn>
+          <BlueGradient className="absolute top-0 left-0 -z-20 max-w-4xl -translate-y-0 scale-[250%] animate-pulse-slow sm:-translate-x-20 sm:scale-150" />
+        </FadeIn>
+        <PurpleGradient className="absolute bottom-0 right-0 -z-20 w-full max-w-7xl translate-x-48 translate-y-20 animate-pulse-slow sm:translate-x-64 md:translate-x-96" />
 
         <div className="absolute z-20 grid max-w-7xl grid-cols-4 justify-center">
           <div className="col-span-4 text-center sm:col-span-2">
@@ -101,8 +105,8 @@ function HomePage() {
       </div>
 
       {/* Join us section */}
-      <div className="motion-safe:animate-fadeIn relative flex min-h-fit snap-start items-center justify-center overflow-x-clip py-32 align-middle">
-        <PurpleBlueGradientCombined classNames="absolute -z-10 sm:scale-100 scale-125" />
+      <div className="relative flex min-h-fit snap-start items-center justify-center overflow-x-clip py-32 align-middle motion-safe:animate-fadeIn">
+        <PurpleBlueGradientCombined className="absolute -z-10 scale-125 animate-pulse-slow sm:scale-100" />
         <div className="mx-2 text-center align-middle text-gray-200">
           <h1 className="text-4xl font-bold tracking-tight sm:text-5xl sm:tracking-tight md:text-6xl md:tracking-tight">
             <span className="block drop-shadow-lg">Are you ready to join us?</span>

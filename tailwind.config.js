@@ -7,9 +7,31 @@ module.exports = {
   theme: {
     extend: {
       animation: {
+        'pulse-slow': 'pulse 12s cubic-bezier(0.4, 0, 0.6, 1) infinite;',
         fadeIn: "fadeIn 2s ease-in forwards",
+        wiggle: 'wiggle 10s ease-in-out infinite',
       },
       keyframes: {
+        'pulse-slow': {
+          '0%': {
+            opacity: 1
+          },
+          '100%': {
+            opacity: 1
+          },
+          '50%': {
+            opacity: .6
+          },
+          '40%': {
+            opacity: .6
+          },
+          '30%': {
+            opacity: .6
+          },
+          '80%': {
+            opacity: .9
+          }
+        },
         fadeIn: {
           "0%": { opacity: 0 },
           "100%": { opacity: 1 }
@@ -22,9 +44,6 @@ module.exports = {
             transform: 'rotate(5deg)'
           },
         }
-      },
-      animation: {
-        wiggle: 'wiggle 10s ease-in-out infinite',
       },
       variants: {
         animation: ["motion-safe"]
