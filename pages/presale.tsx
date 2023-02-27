@@ -182,7 +182,7 @@ function presale() {
       setContractInfo({
         address: QNTFI.address,
         tokenName: "QNTFI",
-        qitbalance: await QNTFI.balanceOf(address),
+        qntfibalance: await QNTFI.balanceOf(address),
         usdtallowed: await SEED.allowed(address),
         usdtbalance: await USDT.balanceOf(address),
         allowance: await USDT.allowance(address, SEED.address),
