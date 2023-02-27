@@ -42,8 +42,8 @@ function SwapCard({
         </h3>
         <p className="flex w-full items-center justify-start text-gray-50">
           {currentTab === "deposit"
-            ? "Swap USDT for Quantifi Investor Tokens"
-            : "Swap Quantifi Investor Tokens for USDT"}
+            ? "Swap USDT for Quantifi Investor Fund Tokens"
+            : "Swap Quantifi Investor Fund Tokens for USDT"}
         </p>
       </div>
       {/* End Header */}
