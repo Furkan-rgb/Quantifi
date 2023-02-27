@@ -2,7 +2,7 @@ import { fetchSigner } from "@wagmi/core";
 import { BigNumber, ethers } from "ethers";
 import React, { useEffect, useState } from "react";
 
-import LiquiditySwapCard2 from "../components/swap/LiquiditySwapCard";
+import LiquiditySwapCard2 from "../components/swap/LiquiditySwapCardPresale";
 import { timeout } from "../components/utils/timeout";
 import seedRoundABI from "../components/abi/seedRound.json";
 import erc20ABI from "../components/abi/erc20.json";
