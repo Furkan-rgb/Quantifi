@@ -78,7 +78,7 @@ function Dashboard() {
             gradient.addColorStop(1, "rgba(235,237,255,0)");
             return gradient;
           },
-          label: "UST",
+          label: "USD",
           fill: "start",
           borderColor: "#8E95DF",
           data: qitData.dailyPriceDates.map((item) => item.price).slice(-chartDate),

@@ -7,16 +7,17 @@ import { formatCurrency } from "../utils/formatter";
 function DoughnutChart() {
   // Center of doughnut chart
 
-  const vested = 85;
-  const totalStaked = 15;
-  const circulating = 100;
+  const vested = 0;
+  const totalStaked = 0;
+  const circulating = 0;
+  const pending=200;
   const dataDoughnut = {
-    labels: ["Vested", "Staked","Circulating"],
+    labels: ["Vested", "Staked","Circulating","Pending"],
     datasets: [
       {
         label: "Token Allocations",
-        data: [vested, totalStaked,circulating],
-        backgroundColor: ["rgb(59, 87, 155)", "rgb(135, 151, 199)","rgb(75, 187, 55)",],
+        data: [vested, totalStaked,circulating,pending],
+        backgroundColor: ["rgb(59, 87, 155)", "rgb(135, 151, 199)","rgb(75, 187, 55)","rgb(59, 87, 155)"],
         borderColor: ["rgb(78, 101, 166)", "rgb(159, 172, 213)"],
         hoverOffset: 4,
       },

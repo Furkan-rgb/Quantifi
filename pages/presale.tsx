@@ -2,11 +2,10 @@ import { fetchSigner } from "@wagmi/core";
 import { BigNumber, ethers } from "ethers";
 import React, { useEffect, useState } from "react";
 
-import LiquiditySwapCard from "../components/swap/LiquiditySwapCard";
+import LiquiditySwapCard2 from "../components/swap/LiquiditySwapCardPresale";
 import { timeout } from "../components/utils/timeout";
 import seedRoundABI from "../components/abi/seedRound.json";
 import erc20ABI from "../components/abi/erc20.json";
-import qitABI from "../components/abi/QIT.json";
 import vestingABI from "../components/abi/vesting.json";
 import { useAccount, useProvider } from "wagmi";
 import Notification, { NotificationContent } from "../components/Notification";
@@ -26,21 +25,15 @@ function presale() {
   const [contractInfo, setContractInfo] = useState<{
     address: ethers.Contract["address"];
     tokenName: string;
-    qitbalance: ethers.BigNumber;
-    qitallowed: ethers.BigNumber;
+    usdtallowed: ethers.BigNumber;
     usdtbalance: ethers.BigNumber;
     allowance: ethers.BigNumber;
-    lockupEnds: number;
-    pendingWithdrawals: ethers.BigNumber;
   }>({
     address: "-",
-    tokenName: "QIT",
-    qitbalance: BigNumber.from(0),
-    qitallowed: BigNumber.from(0),
+    tokenName: "QNTFI",
+    usdtallowed: BigNumber.from(0),
     usdtbalance: BigNumber.from(0),
     allowance: BigNumber.from(0),
-    lockupEnds: 0,
-    pendingWithdrawals: BigNumber.from(0),
   });
 
   const [ready, setReady] = useState<boolean>(false);
@@ -49,13 +42,12 @@ function presale() {
   }, []);
 
   const minDeposit = 1000; // this will be updated to actual value
-  const minTopup = 500; // this will be updated to actual value
+  const minTopup = 1000; // this will be updated to actual value
   const [loading, setLoading] = useState<boolean>(false); // loading state for button
 
   const { address, isConnecting, isDisconnected, isConnected } = useAccount();
   const provider = useProvider();
 
-  const QIT = new ethers.Contract("0x4C4470D0B9c0dD92B25Be1D2fB5181cdA7e6E3f7", qitABI, provider);
   const VEST = new ethers.Contract(
     "0x75cbCF9D4FF9a699542599e29ad366f83C4c5E92",
     vestingABI,
@@ -68,8 +60,8 @@ function presale() {
     provider
   );
 
-  const ERC20 = new ethers.Contract(
-    "0xEcAD8721BA48dBdc0eac431D68A0b140F07c0801",
+  const USDT = new ethers.Contract(
+    "0x55d398326f99059ff775485246999027b3197955",
     erc20ABI,
     provider
   );
@@ -86,7 +78,7 @@ function presale() {
     if (isConnected) {
       console.log("Connected", address);
       try {
-        const _holdingValue = await QIT.getHoldingValue(address);
+        const _holdingValue = await USDT.balanceOf(address);
         setHoldingValue(_holdingValue.toString());
       } catch (error) {
         console.error("Couldn't get holdingValue: " + error);
@@ -94,36 +86,13 @@ function presale() {
     }
   }
 
-  async function getWithdrawalValue(value: string) {
-    const number = parseInt(value, 10);
-    if (value !== "" || number == 0) {
-      try {
-        setOutputValue("Loading...");
-        const n = ethers.utils.parseUnits(value, 6);
-        const wd = await QIT.getWithdrawalReturn(n);
-        setOutputValue((+ethers.utils.formatUnits(wd, 18)).toFixed(2));
-      } catch (error) {
-        console.log(error);
-      }
-    } else {
-      setOutputValue("0");
-    }
-  }
   async function getDepositValue(value: string) {
     const number = parseInt(value, 10);
+    const numQNTFI=number*20; // price is 5c
     if (value !== "" || number == 0) {
       if (number >= minDeposit) {
-        try {
-          setOutputValue("Loading...");
-          const n = ethers.utils.parseEther(value);
-          const deposit = await QIT.getDepositReturn(n);
-          setOutputValue((+ethers.utils.formatUnits(deposit, 6)).toFixed(2));
-        } catch (error) {
-          console.log(error);
-        }
+          setOutputValue(numQNTFI.toFixed(0));
       } else {
-        //TODO: Change to red and show Min Deposit = $x
-        //console.log("Input is less than minDeposit");
         setOutputValue("Min deposit is " + minDeposit);
       }
     } else {
@@ -147,14 +116,14 @@ function presale() {
     // DEPOSITS
     if (currentTab == "deposit" && inputValue !== "" && signer) {
       if (contractInfo.allowance.toBigInt() < ethers.utils.parseEther(inputValue).toBigInt()) {
-        const ERC20connect = ERC20.connect(signer);
+        const ERC20connect = USDT.connect(signer);
         try {
           setLoading(true);
           console.log("Approving");
           // Approving
           const transaction = await ERC20connect.approve(
-            QIT.address,
-            ethers.utils.parseEther("10000000000000")
+            SEED.address,
+            ethers.utils.parseEther("100000")
           );
           changeNotificationContent("In progress", "Approval Requested", "loading");
           setNotificationShow(true);
@@ -209,14 +178,11 @@ function presale() {
     setLoading(true);
     try {
       setContractInfo({
-        address: QIT.address,
-        tokenName: "QIT",
-        qitbalance: await QIT.balanceOf(address),
-        qitallowed: await SEED.allowed(address),
-        usdtbalance: await ERC20.balanceOf(address),
-        allowance: await ERC20.allowance(address, QIT.address),
-        lockupEnds: await QIT.withdrawalLockTime(address),
-        pendingWithdrawals: await QIT.pendingWithdrawals(address),
+        address: "-",
+        tokenName: "QNTFI",
+        usdtallowed: await SEED.allowed(address),
+        usdtbalance: await USDT.balanceOf(address),
+        allowance: await USDT.allowance(address, SEED.address),
       });
       console.log("Contract Info: ", contractInfo);
     } catch (error) {
@@ -306,7 +272,7 @@ function presale() {
           <p>Vesting Amount: {vestInfo.amount}</p>
           <p>Vesting Claimed: {vestInfo.claimed}</p>
         </div>
-        <LiquiditySwapCard
+        <LiquiditySwapCard2
           loading={loading}
           currentTab={currentTab}
           setCurrentTab={setCurrentTab}
@@ -316,9 +282,7 @@ function presale() {
           setInputValue={setInputValue}
           outputValue={outputValue}
           getDepositValue={getDepositValue}
-          getWithdrawalValue={getWithdrawalValue}
           swapOrApprove={swapOrApprove}
-          QITBalance={(+ethers.utils.formatUnits(contractInfo.qitbalance, 6)).toFixed(2)}
           USDTBalance={(+ethers.utils.formatEther(contractInfo.usdtbalance)).toFixed(2)}
         />
       </main>

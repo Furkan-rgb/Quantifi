@@ -47,7 +47,7 @@ function Linechart(props: LinechartData) {
           gradient.addColorStop(1, "rgba(235,237,255,0)");
           return gradient;
         },
-        label: "UST",
+        label: "USD",
         fill: "start",
         borderColor: "#8E95DF",
         data: [0, 10, 5, 2, 20, 30, 45],

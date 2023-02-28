@@ -13,11 +13,9 @@ function SwapCard({
   resetOutputValue,
   outputValue,
   getDepositValue,
-  getWithdrawalValue,
   swapOrApprove,
   swapButtonText,
   USDTBalance,
-  QITBalance,
 }: {
   loading: boolean;
   currentTab: string;
@@ -27,29 +25,27 @@ function SwapCard({
   resetOutputValue: Function;
   outputValue: string | undefined;
   getDepositValue: Function;
-  getWithdrawalValue: Function;
   swapOrApprove: Function;
   swapButtonText: string;
   USDTBalance: number | string;
-  QITBalance: number | string;
 }) {
   return (
     <div className="my-10 flex w-full max-w-md flex-col items-center justify-start bg-gray-800 px-4 text-black sm:rounded-md">
       {/* Header */}
       <div className="prose w-full">
-        <h3 className="mt-4 mb-0 flex w-full items-center justify-start text-gray-50">
-          {currentTab === "deposit" ? "Enter the Fund" : "Exit the Fund"}
+        <h3 className="mt-4 mb-0 flex w-full items-center text-center text-gray-50">
+          {currentTab === "deposit" ? "Invest Into the QuantiFi Seed Funding Round" : "Exit the Fund"}
         </h3>
         <p className="flex w-full items-center justify-start text-gray-50">
           {currentTab === "deposit"
-            ? "Swap USDT for Quantifi Investor Fund Tokens"
+            ? "Swap USDT for Vested QNTFI Tokens"
             : "Swap Quantifi Investor Fund Tokens for USDT"}
         </p>
       </div>
       {/* End Header */}
       <div className="mt-3 w-full border-b-2 border-slate-400 opacity-50"></div>
       {/* Tab Section */}
-      <div className="mt-3 grid grid-cols-2 border-b border-gray-200 text-center text-sm font-medium text-gray-500 dark:border-gray-700 dark:text-gray-400">
+      <div className="mt-3 grid grid-cols-1 border-b border-gray-200 text-center text-sm font-medium text-gray-500 dark:border-gray-700 dark:text-gray-400">
         <div className="col-span-1">
           <button
             onClick={() => {
@@ -72,25 +68,6 @@ function SwapCard({
           </button>
         </div>
         <div className="col-span-1">
-          <button
-            onClick={() => {
-              setCurrentTab("withdrawal");
-              resetOutputValue("withdrawal");
-            }}
-            className={`${
-              currentTab == "withdrawal"
-                ? "active inline-block  rounded-t-lg  border-b-2  border-gray-100 p-4 text-gray-100"
-                : "inline-block rounded-t-lg  p-4 "
-            } w-full text-center font-normal transition duration-200 ease-in-out`}
-          >
-            <div
-              className={`${
-                currentTab == "withdrawal" ? "-translate-y-1" : ""
-              } transition duration-200 ease-in-out`}
-            >
-              Withdrawal
-            </div>
-          </button>
         </div>
       </div>
       {/* End Tab Section */}
@@ -103,7 +80,7 @@ function SwapCard({
           <div className="-mb-1 flex justify-between rounded-t-md bg-gray-600 p-2 pb-1">
             <label className="text-sm text-gray-300 ">From</label>
             <label className="text-sm text-gray-300 ">
-              Balance: <span>{currentTab === "deposit" ? USDTBalance || 0 : QITBalance || 0}</span>
+              Balance: <span>{USDTBalance}</span>
             </label>
           </div>
           <div className="group relative z-0 mb-4 flex w-full rounded-b-md bg-gray-600">
@@ -112,19 +89,12 @@ function SwapCard({
                 setInputValue(e.target.value);
                 currentTab === "deposit"
                   ? getDepositValue(e.target.value)
-                  : getWithdrawalValue(e.target.value);
+                  : 0;
               }}
               type="number"
               min={10}
-              max={
-                currentTab === "deposit"
-                  ? USDTBalance
-                    ? USDTBalance
-                    : 0
-                  : QITBalance
-                  ? QITBalance
-                  : 0
-              }
+              max={USDTBalance
+                             }
               name="floating_input"
               id="floating_input"
               className="peer block w-full appearance-none items-center border-0 border-b-0 border-gray-300 bg-transparent py-2.5 px-0 pl-2 text-sm text-gray-300 focus:border-blue-600 focus:outline-none focus:ring-0 dark:border-gray-600 dark:text-white dark:focus:border-blue-500"
@@ -138,10 +108,10 @@ function SwapCard({
                 className="mr-2 text-sm opacity-50 hover:opacity-100"
                 type="button"
                 onClick={() => {
-                  currentTab === "deposit" ? setInputValue(USDTBalance) : setInputValue(QITBalance);
+                  currentTab === "deposit" ? setInputValue(USDTBalance) : setInputValue(0);
                   currentTab === "deposit"
                     ? getDepositValue(USDTBalance)
-                    : getWithdrawalValue(QITBalance);
+                    : 0;
                 }}
               >
                 Max
@@ -244,7 +214,7 @@ function SwapCard({
                   />
                 </svg>
               )}
-              <span className="ml-1">{currentTab == "deposit" ? "QIT" : "USDT"}</span>
+              <span className="ml-1">{currentTab == "deposit" ? "QNTFI" : "USDT"}</span>
             </span>
           </div>
           <button

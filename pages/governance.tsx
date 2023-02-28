@@ -57,7 +57,7 @@ function GovernancePage() {
   const { address, isConnecting, isDisconnected, isConnected } = useAccount();
 
   const QNTFI = new ethers.Contract(
-    "0x0781B099a57B1ebCaF1c1D72A2dC72Aa5773d3B5",
+    "0xe003e68Ad41F1F45B946EFBc3E5C47Ad36359395",
     qntfiABI,
     provider
   );
@@ -168,11 +168,7 @@ function GovernancePage() {
     datasets: [
       {
         label: "QNTFI Prices",
-<<<<<<< Updated upstream
-        data: [0.2, 0.22, 0.21, 0.24, 0.25, 0.24, 0.27],
-=======
-        data: [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5],
->>>>>>> Stashed changes
+        data: [0.5,0.5,0.5,0.5,0.5,0.5,0.5],
         fill: false,
         borderColor: "rgb(75, 192, 192)",
         tension: 0.4,
@@ -266,7 +262,7 @@ function GovernancePage() {
                 </p>
                 <div className="flex justify-start sm:justify-center lg:justify-start">
                   <button className="mt-8 flex items-center justify-center rounded-lg bg-gradient-to-r from-[#4FC0FF] via-[#6977EE] to-[#FF6098] px-8 py-3 text-base font-medium text-white transition-all duration-75 ease-in hover:opacity-80 md:py-4 md:px-10 md:text-lg">
-                    <a href="#">Buy QNTFI on Pancakeswap</a>
+                    <a href="#">Buy QNTFI on Pancakeswap (pending)</a>
                   </button>
                 </div>
               </div>
