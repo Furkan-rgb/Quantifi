@@ -168,7 +168,7 @@ function GovernancePage() {
     datasets: [
       {
         label: "QNTFI Prices",
-        data: [0.5,0.5,0.5,0.5,0.5,0.5,0.5],
+        data: [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5],
         fill: false,
         borderColor: "rgb(75, 192, 192)",
         tension: 0.4,
