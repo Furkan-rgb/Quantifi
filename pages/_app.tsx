@@ -32,7 +32,7 @@ const { chains, provider } = configureChains(defaultChains, [
     rpc: (chain) => ({
       // BSC Mainnet
       // `https://damp-fabled-resonance.bsc.discover.quiknode.pro/a6e1aa97c7173e264dfb91711955d76bf970f0e9/`
-      http: `https://data-seed-prebsc-1-s3.binance.org:8545`,
+      http: `https://damp-fabled-resonance.bsc.discover.quiknode.pro/a6e1aa97c7173e264dfb91711955d76bf970f0e9/`,
     }),
     priority: 0,
   }),
