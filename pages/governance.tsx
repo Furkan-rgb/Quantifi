@@ -168,11 +168,7 @@ function GovernancePage() {
     datasets: [
       {
         label: "QNTFI Prices",
-<<<<<<< Updated upstream
-        data: [0.2, 0.22, 0.21, 0.24, 0.25, 0.24, 0.27],
-=======
         data: [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5],
->>>>>>> Stashed changes
         fill: false,
         borderColor: "rgb(75, 192, 192)",
         tension: 0.4,
