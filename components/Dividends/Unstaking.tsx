@@ -12,12 +12,14 @@ interface Stake {
 }
 
 export function Unstaking({
+  loadingAcc,
   totalStakes,
   updateTotalStakes,
   getStake,
   setTotalStakedWeight,
   unstakeQNTFI,
 }: {
+  loadingAcc: boolean;
   totalStakes: number;
   updateTotalStakes: () => Promise<void>;
   getStake: (account: string, idx: number) => Promise<Stake>;
@@ -25,7 +27,7 @@ export function Unstaking({
   unstakeQNTFI: (id: number) => Promise<void>;
 }) {
   const [allStakes, setAllStakes] = useState<Stake[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
   const [loadingText, setLoadingText] = useState<string>("Connecting to wallet...");
   const { address, isConnecting, isDisconnected, isConnected } = useAccount();
 
@@ -94,19 +96,19 @@ export function Unstaking({
             </tr>
           </thead>
           {isReady && address && (
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody className="divide-y divide-gray-200 bg-white">
               {allStakes.map((stake, idx) => (
                 <tr key={idx}>
-                  <td className="w-full py-4 pl-4 pr-3 text-sm font-medium text-gray-900 max-w-0 sm:w-auto sm:max-w-none sm:pl-6">
+                  <td className="w-full max-w-0 py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:w-auto sm:max-w-none sm:pl-6">
                     {(+ethers.utils.formatUnits(stake.numTokens, 18)).toFixed(2)}
                     <dl className="font-normal lg:hidden">
                       <dt className="sr-only">Weight</dt>
-                      <dd className="mt-1 text-gray-700 truncate">
-                        <ScaleIcon className="inline w-5 h-5 mr-1 text-gray-400" />
+                      <dd className="mt-1 truncate text-gray-700">
+                        <ScaleIcon className="mr-1 inline h-5 w-5 text-gray-400" />
                       </dd>
                       <dt className="sr-only sm:hidden">Locked Date</dt>
-                      <dd className="mt-1 text-gray-500 truncate sm:hidden">
-                        <LockClosedIcon className="inline w-5 h-5 mr-1 text-gray-400" />
+                      <dd className="mt-1 truncate text-gray-500 sm:hidden">
+                        <LockClosedIcon className="mr-1 inline h-5 w-5 text-gray-400" />
                         {new Date(stake?.stakeDate.toNumber() * 1000).toLocaleDateString(
                           undefined,
                           {
@@ -138,7 +140,7 @@ export function Unstaking({
                       day: "numeric",
                     })}
                   </td>
-                  <td className="py-4 pl-3 pr-4 text-sm font-medium text-right sm:pr-6">
+                  <td className="py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
                     <button
                       onClick={() => unstakeQNTFI(idx)}
                       className="text-indigo-600 hover:text-indigo-900"
@@ -151,18 +153,18 @@ export function Unstaking({
             </tbody>
           )}
         </table>
-        {isReady && loading && isConnected && (
-          <div className="w-full py-2 font-sans antialiased text-center text-slate-600">
+        {isReady && loading && (
+          <div className="w-full py-2 text-center font-sans text-slate-600 antialiased">
             {loadingText}
           </div>
         )}
-        {isReady && !loading && allStakes.length === 0 && (
-          <div className="w-full py-2 font-sans antialiased text-center text-slate-600">
+        {isReady && !loadingAcc && allStakes.length === 0 && (
+          <div className="w-full py-2 text-center font-sans text-slate-600 antialiased">
             No stakes found
           </div>
         )}
         {isReady && isDisconnected && (
-          <div className="w-full py-2 font-sans antialiased text-center text-slate-600">
+          <div className="w-full py-2 text-center font-sans text-slate-600 antialiased">
             Connect your wallet to view your stakes
           </div>
         )}

@@ -303,26 +303,26 @@ function GovernancePage() {
                   <dl className="rounded-lg bg-white shadow-md sm:grid sm:grid-cols-2 sm:shadow-lg">
                     <div className="flex flex-col items-center justify-center border-b border-gray-100 p-6 text-center sm:border-0 sm:border-r">
                       <dt className="order-2 mt-2 text-lg font-medium leading-6 text-gray-500">
-                        {!loading && "Your total QNTFI staked"}
+                        {!loading && totalStakedWeight > 0 && "Your staked QNTFI"}
+                        {!loading && totalStakedWeight === 0 && "No staked QNTFI"}
+                        {loading && "Loading your staked weight..."}
                       </dt>
                       <dd className="order-1 text-5xl font-bold tracking-tight text-indigo-600">
-                        {loading || totalStakedWeightPercentage === undefined ? (
-                          <Spinner height={32} width={32} />
-                        ) : (
-                          QNTFIStaked?.toLocaleString()
-                        )}
+                        {loading && <Spinner height={32} width={32} />}
+                        {!loading && stakedWeight !== "undefined%" && QNTFIStaked?.toLocaleString()}
+                        {!loading && stakedWeight === "undefined%" && ""}
                       </dd>
                     </div>
                     <div className="flex flex-col items-center justify-center border-t border-b border-gray-100 p-6 text-center sm:border-0 sm:border-l sm:border-r">
                       <dt className="order-2 mt-2 text-lg font-medium leading-6 text-gray-500">
-                        {!loading && "Your staked weight"}
+                        {!loading && totalStakedWeight > 0 && "Your staked weight"}
+                        {!loading && totalStakedWeight === 0 && "No staked weight"}
+                        {loading && "Loading your staked weight..."}
                       </dt>
                       <dd className="order-1 text-5xl font-bold tracking-tight text-indigo-600">
-                        {loading || totalStakedWeightPercentage === undefined ? (
-                          <Spinner height={32} width={32} />
-                        ) : (
-                          stakedWeight
-                        )}
+                        {loading && <Spinner height={32} width={32} />}
+                        {!loading && stakedWeight !== "undefined%" && stakedWeight}
+                        {!loading && stakedWeight === "undefined%" && ""}
                       </dd>
                     </div>
                   </dl>
@@ -330,6 +330,7 @@ function GovernancePage() {
                 <div className="flex w-full justify-center">
                   <div className="w-full max-w-2xl">
                     <Unstaking
+                      loadingAcc={loading}
                       totalStakes={+qntfiInfo.numStakes}
                       updateTotalStakes={updateTotalStakes}
                       getStake={QNTFI.stakes}
@@ -378,16 +379,5 @@ function GovernancePage() {
     </>
   );
 }
-
-// GovernancePage.getInitialProps = async () => {
-//   return {
-//     isConnecting: false,
-//     isDisconnected: false,
-//     isConnected: false,
-//     qntfiInfo: {
-//       qntfiStaked: 0,
-//     },
-//   };
-// };
 
 export default GovernancePage;

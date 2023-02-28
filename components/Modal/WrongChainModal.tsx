@@ -2,9 +2,11 @@ import { Fragment, useEffect, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { ArrowPathIcon } from "@heroicons/react/24/outline";
 import { useNetwork, useSwitchNetwork } from "wagmi";
+import { useRouter } from "next/router";
 
 export default function WrongChainModal() {
   const { chains, error, isLoading, pendingChainId, switchNetwork } = useSwitchNetwork();
+  const router = useRouter();
 
   const [ready, setReady] = useState(false);
   useEffect(() => {
@@ -14,7 +16,7 @@ export default function WrongChainModal() {
 
   const [open, setOpen] = useState(false);
   useEffect(() => {
-    if (chain && chain.id !== 56) {
+    if (chain && chain.id !== 56 && router.pathname !== "/") {
       setOpen(true);
     } else setOpen(false);
   }, [chain]);

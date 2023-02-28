@@ -38,7 +38,7 @@ function HomePage() {
   return (
     <>
       {/* 1 */}
-      <div className="relative flex min-h-[calc(100vh_-_5rem)] items-center justify-center overflow-x-clip">
+      <div className="relative flex min-h-[calc(100vh_-_5rem)] animate-fadeIn items-center justify-center overflow-x-clip">
         {/* Circle */}
         <FadeIn>
           <BlueGradient className="absolute top-0 left-0 -z-20 max-w-4xl -translate-y-0 scale-[250%] animate-pulse-slow sm:-translate-x-20 sm:scale-150" />
@@ -105,7 +105,7 @@ function HomePage() {
       </div>
 
       {/* Join us section */}
-      <div className="relative flex min-h-fit snap-start items-center justify-center overflow-x-clip py-32 align-middle motion-safe:animate-fadeIn">
+      <div className="relative flex min-h-fit snap-start items-center justify-center overflow-x-clip py-32 align-middle">
         <PurpleBlueGradientCombined className="absolute -z-10 scale-125 animate-pulse-slow sm:scale-100" />
         <div className="mx-2 text-center align-middle text-gray-200">
           <h1 className="text-4xl font-bold tracking-tight sm:text-5xl sm:tracking-tight md:text-6xl md:tracking-tight">
