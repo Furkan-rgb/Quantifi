@@ -31,7 +31,7 @@ export const CustomConnectButton = () => {
               if (!connected) {
                 return (
                   <button
-                    className="rounded-md p-2 text-white"
+                    className="rounded-md bg-gray-800 px-3 py-2 text-white"
                     onClick={openConnectModal}
                     type="button"
                   >
